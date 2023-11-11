@@ -1,0 +1,19 @@
+{
+  "name": "customer",
+  "version": "1.0.0",
+  "description": "Customer management microservice",
+  "author": "eduardogomesf",
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "typescript",
+    "microservice"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "20.9.0",
+    "typescript": "5.2.2"
+  }
+}
