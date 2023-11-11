@@ -39,11 +39,14 @@ export class Customer extends BaseEntity {
     return `${this._firstName} ${this._lastName}`
   }
 
+  public getPassword () {
+    return this._password
+  }
+
   // getters
   get id () { return this._id }
   get firstName () { return this._firstName }
   get lastName () { return this._lastName }
   get email () { return this._email }
   get cellphone () { return this._cellphone }
-  get password () { return this._password }
 }
