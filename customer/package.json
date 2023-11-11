@@ -10,11 +10,12 @@
     "microservice"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "npx tsc",
     "lint": "npx eslint . --ext .ts"
   },
   "devDependencies": {
+    "@types/jest": "29.5.8",
     "@types/node": "20.9.0",
     "@types/uuid": "9.0.7",
     "@typescript-eslint/eslint-plugin": "6.10.0",
@@ -23,6 +24,8 @@
     "eslint-plugin-import": "2.29.0",
     "eslint-plugin-n": "16.3.1",
     "eslint-plugin-promise": "6.1.1",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.1",
     "typescript": "5.2.2"
   }
 }
