@@ -3,7 +3,7 @@ import {
   type CreateCustomerRepository,
   type FindCustomerByEmailRepository,
   type HashPassword
-} from '../../../../src/application/use-case/protocol'
+} from '../../../../src/application/protocol'
 
 describe('Create New Customer Use Case', () => {
   let sut: CreateNewCustomerUseCase

@@ -1,6 +1,6 @@
 import { Customer } from '../../domain/entity/customer.entity'
-import { type UseCaseResponse } from './interface'
-import { type HashPassword, type FindCustomerByEmailRepository, type CreateCustomerRepository } from './protocol'
+import { type UseCaseResponse } from '../interface'
+import { type HashPassword, type FindCustomerByEmailRepository, type CreateCustomerRepository } from '../protocol'
 
 interface CreateNewCustomerUseCaseDTO {
   firstName: string
@@ -11,14 +11,14 @@ interface CreateNewCustomerUseCaseDTO {
 }
 
 export class CreateNewCustomerUseCase {
-  constructor (
+  constructor(
     private readonly findCustomerByEmailRepository: FindCustomerByEmailRepository,
     private readonly hashPassword: HashPassword,
     private readonly createCustomerRepository: CreateCustomerRepository
 
   ) {}
 
-  async create (payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
+  async create(payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
     const userByEmail = await this.findCustomerByEmailRepository.findByEmail(payload.email)
 
     if (userByEmail) {
