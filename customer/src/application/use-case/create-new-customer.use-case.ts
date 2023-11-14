@@ -15,7 +15,6 @@ export class CreateNewCustomerUseCase {
     private readonly findCustomerByEmailRepository: FindCustomerByEmailRepository,
     private readonly hashPassword: HashPassword,
     private readonly createCustomerRepository: CreateCustomerRepository
-
   ) {}
 
   async create(payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
