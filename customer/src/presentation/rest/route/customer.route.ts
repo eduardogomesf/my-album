@@ -8,7 +8,7 @@ export function getCustomerRouter(useCases: UseCases): Router {
 
   const customerController = new CustomerController(useCases.createNewCustomer)
 
-  router.post('/customers', customerController.create as any)
+  router.post('/customers', customerController.create.bind(customerController))
 
   return router
 }
