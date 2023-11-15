@@ -22,9 +22,15 @@ export class CustomerController {
 
       const { firstName, lastName, email, password, cellphone } = request.body
 
-      await this.createNewCustomerUseCase.create({
+      const createCustomerResult = await this.createNewCustomerUseCase.create({
         firstName, lastName, email, password, cellphone
       })
+
+      if (!createCustomerResult.ok) {
+        return response.status(400).json({
+          message: createCustomerResult.message
+        })
+      }
 
       return response.status(201).send()
     } catch (error) {
