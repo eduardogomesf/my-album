@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid'
 
 export abstract class BaseEntity {
-  protected readonly _id: string
+  public readonly id: string
 
   constructor (id?: string) {
-    this._id = id ?? uuid()
+    this.id = id ?? uuid()
   }
 }
