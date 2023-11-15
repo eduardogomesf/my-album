@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
+import { ENVS } from '../../../shared'
 
 export async function connectToMongo() {
-  const connectionURL = process.env.MONGO_URL ?? 'mongodb://localhost:27017'
   try {
-    await mongoose.connect(connectionURL, {
-      appName: 'customer-service'
+    await mongoose.connect(ENVS.MONGO.URL, {
+      appName: 'customer-service',
+      dbName: ENVS.MONGO.DB_NAME
     })
     console.log('Connected to MongoDB')
   } catch (error) {

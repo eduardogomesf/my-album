@@ -3,6 +3,7 @@ import * as cors from 'cors'
 
 import { type UseCases } from '../interface/use-cases'
 import { getCustomerRouter } from './route/customer.route'
+import { ENVS } from '../../shared'
 
 function setupDefaultMiddlewares(app: express.Express) {
   app.use(express.json())
@@ -22,7 +23,7 @@ export function startExpressServer(useCases: UseCases) {
   const customerRouter = getCustomerRouter(useCases)
   app.use(customerRouter)
 
-  const port = process.env.APP_PORT ?? 3000
+  const port = ENVS.APP.PORT
   app.listen(port, () => {
     console.log(`App listening at port ${port}`)
   })
