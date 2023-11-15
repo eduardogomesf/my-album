@@ -1,8 +1,7 @@
 import { Schema, model } from 'mongoose'
-import { type Customer } from '../../../../domain/entity/customer.entity'
 
-const CustomerSchema = new Schema<Customer>({
-  id: {
+const CustomerSchema = new Schema({
+  _id: {
     type: String,
     required: true
   },
@@ -22,6 +21,14 @@ const CustomerSchema = new Schema<Customer>({
     type: String,
     required: true
   }
+})
+
+CustomerSchema.virtual('id').get(function() {
+  return this._id.toString()
+})
+
+CustomerSchema.set('toJSON', {
+  virtuals: true
 })
 
 export const CustomerModel = model('Customer', CustomerSchema, 'customers')

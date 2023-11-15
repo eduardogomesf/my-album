@@ -21,7 +21,16 @@ export class MongoCustomerRepository implements FindCustomerByEmailRepository, C
 
   async create(customer: Customer): Promise<void> {
     try {
-      await CustomerModel.create(customer)
+      const customerData = {
+        _id: customer.id,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+        cellphone: customer.cellphone,
+        password: customer.password
+      }
+
+      await CustomerModel.create(customerData)
     } catch (error) {
       console.error('Error creating customer')
       console.error(error)
