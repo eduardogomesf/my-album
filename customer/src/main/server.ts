@@ -3,10 +3,6 @@ import { startExpressServer } from '../presentation/rest/setup'
 import { type UseCases } from '../presentation/interface/use-cases'
 import { generateCreateNewCustomerUseCase } from './factory/use-case'
 
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
 export async function bootstrap() {
   await connectToMongo()
 
