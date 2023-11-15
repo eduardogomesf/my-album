@@ -12,7 +12,8 @@
   "scripts": {
     "test": "jest",
     "build": "npx tsc",
-    "lint": "npx eslint . --ext .ts"
+    "lint": "npx eslint . --ext .ts",
+    "start": "npm run build && node dist/src/main/server.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
