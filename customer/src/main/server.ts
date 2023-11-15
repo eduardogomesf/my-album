@@ -1,7 +1,7 @@
 import { connectToMongo } from '../infra/database/mongodb/client'
 import { type UseCases } from '../presentation/interface/use-cases'
 import { startExpressServer } from '../presentation/rest/setup'
-import { generateCreateNewCustomerUseCase } from './factory/use-case/create-new-customer-use-case.factory'
+import { generateCreateNewCustomerUseCase } from './factory/use-case'
 
 export async function bootstrap() {
   await connectToMongo()

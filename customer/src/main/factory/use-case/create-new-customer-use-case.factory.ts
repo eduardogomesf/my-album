@@ -1,6 +1,6 @@
 import { CreateNewCustomerUseCase } from '../../../application/use-case'
-import { generateBcryptHashPassword } from '../cryptography/bcrypt-hash-password.factory'
-import { generateMongoCustomerRepository } from '../repository/mongo-customer-repository.factory'
+import { generateBcryptHashPassword } from '../cryptography'
+import { generateMongoCustomerRepository } from '../repository'
 
 export function generateCreateNewCustomerUseCase() {
   const customerRepository = generateMongoCustomerRepository()
