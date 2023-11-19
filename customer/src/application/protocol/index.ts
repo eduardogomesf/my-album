@@ -1,3 +1,5 @@
 export * from './find-customer-by-email.protocol'
 export * from './hash-password.protocol'
 export * from './create-new-customer.protocol'
+export * from './password-validator.protocol'
+export * from './token-generator.protocol'
