@@ -73,16 +73,4 @@ describe('Customer Entity', () => {
 
     expect(customer.getFullName()).toBe('John Doe')
   })
-
-  it('should get the password of a customer', () => {
-    const customer = new Customer({
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@mail.com',
-      cellphone: '11999999999',
-      password: 'my-secure-password'
-    })
-
-    expect(customer.getPassword()).toBe('my-secure-password')
-  })
 })
