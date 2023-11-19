@@ -21,6 +21,7 @@ export function startExpressServer(useCases: UseCases) {
   })
 
   const customerRouter = getCustomerRouter(useCases)
+
   app.use(customerRouter)
 
   const port = ENVS.APP.PORT

@@ -1,13 +1,14 @@
 import { connectToMongo } from '../infra/database/mongodb/client'
 import { startExpressServer } from '../presentation/rest/setup'
 import { type UseCases } from '../presentation/interface/use-cases'
-import { generateCreateNewCustomerUseCase } from './factory/use-case'
+import { generateCreateNewCustomerUseCase, generateCustomerLoginUseCase } from './factory/use-case'
 
 export async function bootstrap() {
   await connectToMongo()
 
   const useCases: UseCases = {
-    createNewCustomer: generateCreateNewCustomerUseCase()
+    createNewCustomer: generateCreateNewCustomerUseCase(),
+    customerLogin: generateCustomerLoginUseCase()
   }
 
   startExpressServer(useCases)
