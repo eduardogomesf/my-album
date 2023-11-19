@@ -1,5 +1,5 @@
 import { CreateNewCustomerUseCase } from '../../../application/use-case'
-import { generateBcryptHashPassword } from '../cryptography'
+import { generateBcryptHashPassword } from '../util'
 import { generateMongoCustomerRepository } from '../repository'
 
 export function generateCreateNewCustomerUseCase() {
