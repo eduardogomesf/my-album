@@ -61,6 +61,12 @@ export class CustomerController {
       })
 
       if (!loginResult.ok) {
+        if (loginResult.message && loginResult.message.includes('given credentials')) {
+          return response.status(401).json({
+            message: loginResult.message
+          })
+        }
+
         return response.status(400).json({
           message: loginResult.message
         })
