@@ -14,7 +14,9 @@
     "build": "npx tsc",
     "lint": "npx eslint . --ext .ts",
     "dev": "ts-node-dev ./src/main/server.ts --respawn --transpile-only --ignore-watch node_modules",
-    "start": "npm run build && node dist/src/main/server.js"
+    "start": "npm run build && node dist/src/main/server.js",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down"
   },
   "devDependencies": {
     "@types/bcrypt": "5.0.2",
