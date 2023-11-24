@@ -16,7 +16,7 @@ export async function generateRabbitMQConnectionAndMainChannel() {
 
   console.log('Connecting to RabbitMQ...')
   rabbitMQConnection = await connect(ENVS.RABBIT_MQ.URL)
-  console.log('Connected to RabbitMQ...')
+  console.log('Connected to RabbitMQ!')
 
   rabbitMQChannel = await rabbitMQConnection.createChannel()
 
