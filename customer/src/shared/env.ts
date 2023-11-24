@@ -11,6 +11,9 @@ export const ENVS = {
     DB_NAME: process.env.MONGO_DB_NAME ?? 'customer-service-mongo'
   },
   ACCESS_TOKEN: {
-    SECRET_KEY: '40a728fbd7dfe4aa9266b6fce91784cf'
+    SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY
+  },
+  RABBIT_MQ: {
+    URL: process.env.RABBIT_MQ_URL ?? 'amqp://localhost:5672'
   }
 } as const
