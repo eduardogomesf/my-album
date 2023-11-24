@@ -21,5 +21,16 @@ services:
     depends_on:
       customer-service-mongodb:
         condition: service_started
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - "rabbitmq_data:/var/lib/rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: "user"
+      RABBITMQ_DEFAULT_PASS: "password"
 volumes:
   mongodb_data:
+  rabbitmq_data:
