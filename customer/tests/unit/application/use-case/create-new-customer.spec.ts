@@ -1,5 +1,6 @@
 import { CreateNewCustomerUseCase } from '../../../../src/application/use-case'
 import {
+  type MessageSender,
   type CreateCustomerRepository,
   type FindCustomerByEmailRepository,
   type HashPassword
@@ -10,16 +11,19 @@ describe('Create New Customer Use Case', () => {
   let mockFindCustomerByEmailRepository: FindCustomerByEmailRepository
   let mockHashPassword: HashPassword
   let mockCreateCustomerRepository: CreateCustomerRepository
+  let mockMessageSender: MessageSender
 
   beforeEach(() => {
     mockFindCustomerByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
     mockHashPassword = { hash: jest.fn().mockResolvedValue('hashed-password') }
     mockCreateCustomerRepository = { create: jest.fn().mockResolvedValue(null) }
+    mockMessageSender = { send: jest.fn().mockResolvedValue(true) }
 
     sut = new CreateNewCustomerUseCase(
       mockFindCustomerByEmailRepository,
       mockHashPassword,
-      mockCreateCustomerRepository
+      mockCreateCustomerRepository,
+      mockMessageSender
     )
   })
 

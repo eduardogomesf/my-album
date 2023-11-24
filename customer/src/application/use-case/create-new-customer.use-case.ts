@@ -1,6 +1,11 @@
 import { Customer } from '../../domain/entity/customer.entity'
 import { type UseCaseResponse } from '../interface'
-import { type HashPassword, type FindCustomerByEmailRepository, type CreateCustomerRepository } from '../protocol'
+import {
+  type HashPassword,
+  type FindCustomerByEmailRepository,
+  type CreateCustomerRepository,
+  type MessageSender
+} from '../protocol'
 
 interface CreateNewCustomerUseCaseDTO {
   firstName: string
@@ -14,7 +19,8 @@ export class CreateNewCustomerUseCase {
   constructor(
     private readonly findCustomerByEmailRepository: FindCustomerByEmailRepository,
     private readonly hashPassword: HashPassword,
-    private readonly createCustomerRepository: CreateCustomerRepository
+    private readonly createCustomerRepository: CreateCustomerRepository,
+    private readonly newCustomerCreatedSender: MessageSender
   ) {}
 
   async create(payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
@@ -38,6 +44,13 @@ export class CreateNewCustomerUseCase {
     })
 
     await this.createCustomerRepository.create(customer)
+
+    await this.newCustomerCreatedSender.send(JSON.stringify({
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      cellphone: payload.cellphone
+    }))
 
     return {
       ok: true
