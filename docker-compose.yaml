@@ -11,15 +11,20 @@ services:
     volumes:
       - mongodb_data:/data/db
   customer-service:
-    image: node:18-slim
+    container_name: customer-service-app
+    build:
+      context: ./customer
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
-      - .:/usr/app
+      - .:/usr/app  new Dockerfile setup
     working_dir: /usr/app
     command: [ "npm", "start" ]
     depends_on:
       customer-service-mongodb:
+        condition: service_started
+      rabbitmq:
         condition: service_started
   rabbitmq:
     image: "rabbitmq:3-management"
