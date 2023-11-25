@@ -1,3 +1,3 @@
 export interface MessageSender {
-  send: (message: any) => Promise<boolean>
+  send: (message: Record<string, any>) => Promise<void>
 }

@@ -3,8 +3,8 @@ import { ENVS } from '../../../shared'
 
 export const generateNewCustomerCreatedSender = () => {
   return new RabbitMQSender(
-    ENVS.RABBIT_MQ.QUEUES.NEW_CUSTOMER_CREATED.NAME,
-    { durable: true },
+    ENVS.RABBIT_MQ.EXCHANGES.CUSTOMER_REGISTRATION.NAME,
+    ENVS.RABBIT_MQ.EXCHANGES.CUSTOMER_REGISTRATION.ROUTING_KEYS.NEW_CUSTOMER_CREATED,
     { persistent: true }
   )
 }

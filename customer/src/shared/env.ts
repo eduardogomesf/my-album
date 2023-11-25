@@ -15,10 +15,12 @@ export const ENVS = {
   },
   RABBIT_MQ: {
     URL: process.env.RABBIT_MQ_URL ?? 'amqp://localhost:5672',
-    QUEUES: {
-      NEW_CUSTOMER_CREATED: {
-        NAME: process.env.RABBIT_MQ_NEW_CUSTOMER_CREATED_QUEUE ?? 'new-customer-created',
-        DURABLE: true
+    EXCHANGES: {
+      CUSTOMER_REGISTRATION: {
+        NAME: process.env.RABBIT_MQ_CUSTOMER_REGISTRATION_EXCHANGE ?? 'customer-registration',
+        ROUTING_KEYS: {
+          NEW_CUSTOMER_CREATED: process.env.RABBIT_MQ_CUSTOMER_REGISTRATION_ROUTING_KEY_NEW_CUSTOMER_CREATED ?? 'new-customer-created'
+        }
       }
     }
   }

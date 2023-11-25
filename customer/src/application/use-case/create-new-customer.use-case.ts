@@ -45,12 +45,12 @@ export class CreateNewCustomerUseCase {
 
     await this.createCustomerRepository.create(customer)
 
-    await this.newCustomerCreatedSender.send(JSON.stringify({
+    await this.newCustomerCreatedSender.send({
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
       cellphone: payload.cellphone
-    }))
+    })
 
     return {
       ok: true
