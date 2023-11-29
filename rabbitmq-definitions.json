@@ -1,0 +1,54 @@
+{
+  "rabbit_version": "3.8.9",
+  "users": [
+    {
+      "name": "user",
+      "password_hash": "/h8akdds9LAj1jjE5YcRJA0yBtFUXFwlx50wTMQHL3zlC1Jh",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "user",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {
+      "name": "new-customer-information",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "customer-registration",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "customer-registration",
+      "vhost": "/",
+      "destination": "new-customer-information",
+      "destination_type": "queue",
+      "arguments": {}
+    }
+  ]
+}

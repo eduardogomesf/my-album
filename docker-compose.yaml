@@ -33,9 +33,11 @@ services:
       - "15672:15672"
     volumes:
       - "rabbitmq_data:/var/lib/rabbitmq"
+      - ./rabbitmq-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json
     environment:
       RABBITMQ_DEFAULT_USER: "user"
       RABBITMQ_DEFAULT_PASS: "password"
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbitmq_management load_definitions "/etc/rabbitmq/rabbitmq-definitions.json"
 volumes:
   mongodb_data:
   rabbitmq_data:
