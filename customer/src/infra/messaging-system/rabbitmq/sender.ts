@@ -4,6 +4,7 @@ import { type MessageSender } from '../../../application/protocol/message-sender
 import { generateRabbitMQConnectionAndMainChannel } from './client'
 import { type Options } from 'amqplib'
 import { ENVS } from '../../../shared'
+import { Delay } from '../../../shared/delay'
 
 interface PublishOptions {
   persistent: boolean
@@ -40,13 +41,7 @@ export class RabbitMQSender implements MessageSender {
         this.exchangeName,
         this.routingKey,
         Buffer.from(message),
-        messageOptions,
-        (error, ok) => {
-          if (error) {
-            console.log('HUH')
-            throw error
-          }
-        }
+        messageOptions
       )
 
       await confirmChannel.waitForConfirms()
@@ -54,7 +49,34 @@ export class RabbitMQSender implements MessageSender {
       console.log(`Message of Id ${messageWithId.id} published to RabbitMQ`)
     } catch (error) {
       console.log('Error while sending message to RabbitMQ')
-      console.log(error)
+      console.log(error.message)
+      await this.retry(message, messageOptions)
+    }
+  }
+
+  async retry(message: string, messageOptions: Options.Publish) {
+    await Delay.wait(Number(ENVS.RABBIT_MQ.DELAY_TIMEOUT))
+
+    const { confirmChannel } = await generateRabbitMQConnectionAndMainChannel()
+
+    try {
+      console.log('[Retry] - Publishing message to RabbitMQ...')
+
+      confirmChannel.publish(
+        this.exchangeName,
+        this.routingKey,
+        Buffer.from(message),
+        messageOptions
+      )
+
+      await confirmChannel.waitForConfirms()
+
+      const messageWithId = JSON.parse(message)
+
+      console.log(`Message of Id ${messageWithId.id} published to RabbitMQ`)
+    } catch (error) {
+      console.log('[Retry] - Error while sending message to RabbitMQ')
+      console.log(error.message)
     }
   }
 }

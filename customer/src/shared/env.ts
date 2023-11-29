@@ -16,6 +16,7 @@ export const ENVS = {
   },
   RABBIT_MQ: {
     URL: process.env.RABBIT_MQ_URL ?? 'amqp://localhost:5672',
+    DELAY_TIMEOUT: process.env.RABBIT_MQ_DELAY_TIMEOUT ?? 5000,
     EXCHANGES: {
       CUSTOMER_REGISTRATION: {
         NAME: process.env.RABBIT_MQ_CUSTOMER_REGISTRATION_EXCHANGE ?? 'customer-registration',
