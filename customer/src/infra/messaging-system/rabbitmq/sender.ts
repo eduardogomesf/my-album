@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { type MessageSender } from '../../../application/protocol/message-sender.protocol'
 import { generateRabbitMQConnectionAndMainChannel } from './client'
 import { type Options } from 'amqplib'
+import { ENVS } from '../../../shared'
 
 interface PublishOptions {
   persistent: boolean
@@ -29,7 +30,8 @@ export class RabbitMQSender implements MessageSender {
     const messageOptions: Options.Publish = {
       persistent: this.publishOptions.persistent,
       timestamp: Date.now(),
-      messageId: messageWithId.id
+      messageId: messageWithId.id,
+      appId: ENVS.APP.ID
     }
 
     try {

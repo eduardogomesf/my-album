@@ -4,7 +4,8 @@ dotenv.config()
 
 export const ENVS = {
   APP: {
-    PORT: process.env.PORT ?? 3000
+    PORT: process.env.PORT ?? 3000,
+    ID: process.env.APP_ID ?? 'customer-service'
   },
   MONGO: {
     URL: process.env.MONGO_URL ?? 'mongodb://localhost:27017',
