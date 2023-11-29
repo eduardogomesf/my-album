@@ -48,6 +48,8 @@ export class RabbitMQSender implements MessageSender {
       )
 
       await confirmChannel.waitForConfirms()
+
+      console.log(`Message of Id ${messageWithId.id} published to RabbitMQ`)
     } catch (error) {
       console.log('Error while sending message to RabbitMQ')
       console.log(error)
