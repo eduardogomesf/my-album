@@ -5,6 +5,7 @@ import { generateRabbitMQConnectionAndMainChannel } from './client'
 import { type MessageSender } from '@/application/protocol/message-sender.protocol'
 import { ENVS } from '@/shared'
 import { Delay } from '@/shared/delay'
+import { type MongoUnpublishedMessagesRepository } from '../../database/mongodb/unpublished-messages'
 
 interface PublishOptions {
   persistent: boolean
@@ -14,7 +15,8 @@ export class RabbitMQSender implements MessageSender {
   constructor(
     private readonly exchangeName: string,
     private readonly routingKey: string = '',
-    private readonly publishOptions: PublishOptions = { persistent: false }
+    private readonly publishOptions: PublishOptions = { persistent: false },
+    private readonly unpublishedMessagesRepository: MongoUnpublishedMessagesRepository
   ) {
   }
 
@@ -37,6 +39,7 @@ export class RabbitMQSender implements MessageSender {
 
     try {
       console.log('Publishing message to RabbitMQ...')
+
       confirmChannel.publish(
         this.exchangeName,
         this.routingKey,
@@ -50,6 +53,7 @@ export class RabbitMQSender implements MessageSender {
     } catch (error) {
       console.log('Error while sending message to RabbitMQ')
       console.log(error.message)
+
       await this.retry(message, messageOptions)
     }
   }
@@ -58,6 +62,8 @@ export class RabbitMQSender implements MessageSender {
     await Delay.wait(Number(ENVS.RABBIT_MQ.DELAY_TIMEOUT))
 
     const { confirmChannel } = await generateRabbitMQConnectionAndMainChannel()
+
+    const parsedMessage = JSON.parse(message)
 
     try {
       console.log('[Retry] - Publishing message to RabbitMQ...')
@@ -71,12 +77,18 @@ export class RabbitMQSender implements MessageSender {
 
       await confirmChannel.waitForConfirms()
 
-      const messageWithId = JSON.parse(message)
-
-      console.log(`Message of Id ${messageWithId.id} published to RabbitMQ`)
+      console.log(`Message of Id ${parsedMessage.id} published to RabbitMQ`)
     } catch (error) {
       console.log('[Retry] - Error while sending message to RabbitMQ')
       console.log(error.message)
+
+      await this.unpublishedMessagesRepository.save({
+        id: parsedMessage.id,
+        data: parsedMessage,
+        options: messageOptions
+      })
+
+      console.log(`Message of Id ${parsedMessage.id} saved to MongoDB`)
     }
   }
 }
