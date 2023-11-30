@@ -1,5 +1,5 @@
 import { sign } from 'jsonwebtoken'
-import { type TokenGenerator } from '../../application/protocol'
+import { type TokenGenerator } from '@/application/protocol'
 
 export class JWTTokenGenerator implements TokenGenerator {
   constructor(

@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid'
-
-import { type MessageSender } from '../../../application/protocol/message-sender.protocol'
-import { generateRabbitMQConnectionAndMainChannel } from './client'
 import { type Options } from 'amqplib'
-import { ENVS } from '../../../shared'
-import { Delay } from '../../../shared/delay'
+
+import { generateRabbitMQConnectionAndMainChannel } from './client'
+import { type MessageSender } from '@/application/protocol/message-sender.protocol'
+import { ENVS } from '@/shared'
+import { Delay } from '@/shared/delay'
 
 interface PublishOptions {
   persistent: boolean

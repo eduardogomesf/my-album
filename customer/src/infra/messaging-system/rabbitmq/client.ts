@@ -1,5 +1,5 @@
 import { connect, type Connection, type Channel, type ConfirmChannel } from 'amqplib'
-import { ENVS } from '../../../shared'
+import { ENVS } from '@/shared'
 
 export let rabbitMQConnection: Connection = null as any
 export let rabbitMQChannel: Channel = null as any

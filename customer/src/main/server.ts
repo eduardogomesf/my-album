@@ -1,9 +1,9 @@
-import { MongoConnectionManager } from '../infra/database/mongodb/client'
-import { startExpressServer } from '../presentation/rest/setup'
-import { type UseCases } from '../presentation/interface/use-cases'
+import { MongoConnectionManager } from '@/infra/database/mongodb/client'
+import { startExpressServer } from '@/presentation/rest/setup'
+import { type UseCases } from '@/presentation/interface/use-cases'
 import { generateCreateNewCustomerUseCase, generateCustomerLoginUseCase } from './factory/use-case'
-import { generateRabbitMQConnectionAndMainChannel } from '../infra/messaging-system/rabbitmq/client'
-import { ENVS } from '../shared'
+import { generateRabbitMQConnectionAndMainChannel } from '@/infra/messaging-system/rabbitmq/client'
+import { ENVS } from '@/shared'
 
 export async function bootstrap() {
   MongoConnectionManager.getOrCreate(

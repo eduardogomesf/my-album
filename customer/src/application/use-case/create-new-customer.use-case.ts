@@ -1,4 +1,4 @@
-import { Customer } from '../../domain/entity/customer.entity'
+import { Customer } from '@/domain/entity/customer.entity'
 import { type UseCaseResponse } from '../interface'
 import {
   type HashPassword,

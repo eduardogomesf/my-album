@@ -1,5 +1,5 @@
-import { type FindCustomerByEmailRepository, type CreateCustomerRepository } from '../../../../../application/protocol'
-import { Customer } from '../../../../../domain/entity/customer.entity'
+import { type FindCustomerByEmailRepository, type CreateCustomerRepository } from '@/application/protocol'
+import { Customer } from '@/domain/entity/customer.entity'
 import { CustomerModel } from './customer.entity'
 
 export class MongoCustomerRepository implements FindCustomerByEmailRepository, CreateCustomerRepository {

@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express'
-import { type CustomerLoginUseCase, type CreateNewCustomerUseCase } from '../../../application/use-case'
+import { type CustomerLoginUseCase, type CreateNewCustomerUseCase } from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 
 export class CustomerController {

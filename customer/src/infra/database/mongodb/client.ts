@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { ENVS } from '../../../shared'
+import { ENVS } from '@/shared'
 
 export class MongoConnectionManager {
   private static readonly connections: Record<string, mongoose.Connection> = {}

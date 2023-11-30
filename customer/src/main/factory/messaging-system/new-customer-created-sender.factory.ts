@@ -1,5 +1,5 @@
-import { RabbitMQSender } from '../../../infra/messaging-system/rabbitmq/sender'
-import { ENVS } from '../../../shared'
+import { RabbitMQSender } from '@/infra/messaging-system/rabbitmq/sender'
+import { ENVS } from '@/shared'
 
 export const generateNewCustomerCreatedSender = () => {
   return new RabbitMQSender(

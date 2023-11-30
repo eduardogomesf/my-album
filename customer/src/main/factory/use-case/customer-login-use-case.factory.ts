@@ -1,4 +1,4 @@
-import { CustomerLoginUseCase } from '../../../application/use-case'
+import { CustomerLoginUseCase } from '@/application/use-case'
 import { generateMongoCustomerRepository } from '../repository'
 import { generateBcrypPasswordValidator } from '../util/bcrypt-password-validator.factory'
 import { generateJwtTokenGenerator } from '../util/jwt-token-generator.factory'

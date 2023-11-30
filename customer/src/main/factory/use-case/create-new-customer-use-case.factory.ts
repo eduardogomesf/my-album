@@ -1,4 +1,4 @@
-import { CreateNewCustomerUseCase } from '../../../application/use-case'
+import { CreateNewCustomerUseCase } from '@/application/use-case'
 import { generateBcryptHashPassword } from '../util'
 import { generateMongoCustomerRepository } from '../repository'
 import { generateNewCustomerCreatedSender } from '../messaging-system'

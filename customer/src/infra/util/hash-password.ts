@@ -1,6 +1,6 @@
 import { hash } from 'bcrypt'
 
-import { type HashPassword } from '../../application/protocol'
+import { type HashPassword } from '@/application/protocol'
 
 export class BcryptHashPassword implements HashPassword {
   async hash(password: string): Promise<string> {
