@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { MongoConnectionManager } from '../../client'
+import { MongoConnectionManager } from '../client'
 import { ENVS } from '@/shared'
 
 const CustomerSchema = new Schema({
