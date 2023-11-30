@@ -1,4 +1,6 @@
 import { Schema, model } from 'mongoose'
+import { MongoConnectionManager } from '../client'
+import { ENVS } from '../../../../shared'
 
 const CustomerSchema = new Schema({
   _id: {
@@ -35,4 +37,13 @@ CustomerSchema.set('toJSON', {
   virtuals: true
 })
 
-export const CustomerModel = model('Customer', CustomerSchema, 'customers')
+const connection = MongoConnectionManager.getOrCreate(
+  ENVS.MONGO.CONNECTION_NAME,
+  ENVS.MONGO.URL,
+  ENVS.MONGO.DB_NAME,
+  {}
+)
+
+export const CustomerModel = model('Customer', CustomerSchema, 'customers', {
+  connection
+})

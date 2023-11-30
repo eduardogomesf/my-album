@@ -1,17 +1,41 @@
 import mongoose from 'mongoose'
 import { ENVS } from '../../../shared'
 
-export async function connectToMongo() {
-  try {
-    console.log('Connecting to MongoDB...')
-    await mongoose.connect(ENVS.MONGO.URL, {
-      appName: 'customer-service',
-      dbName: ENVS.MONGO.DB_NAME
-    })
-    console.log('Connected to MongoDB!')
-  } catch (error) {
-    console.error('Error connecting to MongoDB')
-    console.error(error)
-    process.exit(1)
+export class MongoConnectionManager {
+  private static readonly connections: Record<string, mongoose.Connection> = {}
+
+  static getOrCreate(
+    connectionName: string,
+    connectionURL?: string,
+    dbName?: string,
+    connectionOptions?: mongoose.ConnectOptions
+  ) {
+    try {
+      if (MongoConnectionManager.connections[connectionName]) {
+        console.log(`MongoDB connection ${connectionName} already exists`)
+        return MongoConnectionManager.connections[connectionName]
+      }
+
+      console.log('Connecting to MongoDB...')
+
+      if (!connectionURL || !dbName || !connectionOptions) {
+        throw new Error('Missing connectionURL, dbName or connectionOptions')
+      }
+
+      const createdConnection = mongoose.createConnection(connectionURL, {
+        ...connectionOptions,
+        dbName,
+        appName: ENVS.APP.ID
+      })
+
+      MongoConnectionManager.connections[connectionName] = createdConnection
+
+      console.log('Connected to MongoDB!')
+      return createdConnection
+    } catch (error) {
+      console.error('Error connecting to MongoDB')
+      console.error(error)
+      process.exit(1)
+    }
   }
 }
