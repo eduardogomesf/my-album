@@ -7,7 +7,7 @@ KONG_ADMIN_URL=http://localhost:8001
 # Create the 'customer-service' service
 curl -s -X POST $KONG_ADMIN_URL/services \
     -d name=customer-service \
-    -d host=localhost \
+    -d host=customer-service \
     -d port=3000 \
     -d protocol=http \
     -d retries=5 \
