@@ -9,6 +9,6 @@ sleep 15  # Adjust the sleep duration as necessary
 
 # Now run the Kong configuration script
 echo "Configuring Kong..."
-bash ./configure-kong.sh
+bash ./scripts/configure-kong.sh
 
 echo "Services started and configured."
