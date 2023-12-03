@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Customer Management
   customer-service-mongodb:
     image: mongo:latest
     restart: always
@@ -11,6 +12,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
     volumes:
       - mongodb_data:/data/db
+
   customer-service:
     container_name: customer-service-app
     restart: always
@@ -28,6 +30,8 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_started
+
+  # Shared Services
   rabbitmq:
     image: "rabbitmq:3-management"
     restart: always
@@ -41,6 +45,8 @@ services:
       RABBITMQ_DEFAULT_USER: "user"
       RABBITMQ_DEFAULT_PASS: "password"
       RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbitmq_management load_definitions "/etc/rabbitmq/rabbitmq-definitions.json"
+
+  # Kong API Gateway
   kong-database:
     image: postgres:9.6
     environment:
@@ -49,6 +55,7 @@ services:
       POSTGRES_DB: kong
     volumes:
       - kong-db:/var/lib/postgresql/data
+
   kong-migration:
     image: kong:latest
     command: kong migrations bootstrap
@@ -60,6 +67,7 @@ services:
       KONG_PG_DATABASE: kong
     depends_on:
       - kong-database
+
   kong:
     image: kong:latest
     environment:
@@ -73,14 +81,15 @@ services:
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_ADMIN_ERROR_LOG: /dev/stderr
       KONG_ADMIN_LISTEN: '0.0.0.0:8001, 0.0.0.0:8444 ssl'
-    depends_on:
-      - kong-migration
-      - kong-database
     ports:
       - "8000:8000"
       - "8443:8443"
       - "8001:8001"
       - "8444:8444"
+    depends_on:
+      kong-database:
+        condition: service_started
+
   konga:
     image: pantsel/konga:latest
     environment:
@@ -90,7 +99,11 @@ services:
     ports:
       - "1337:1337"
     depends_on:
-      - kong-database
+      kong-database:
+        condition: service_started
+      kong:
+        condition: service_started
+
 volumes:
   mongodb_data:
   rabbitmq_data:
