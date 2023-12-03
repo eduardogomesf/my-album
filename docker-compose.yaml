@@ -77,10 +77,10 @@ services:
       - kong-migration
       - kong-database
     ports:
-      - "8000:8000" # Proxy
-      - "8443:8443" # Proxy SSL
-      - "8001:8001" # Admin API
-      - "8444:8444" # Admin API SSL
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+      - "8444:8444"
   konga:
     image: pantsel/konga:latest
     environment:
