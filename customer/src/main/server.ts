@@ -2,8 +2,8 @@ import { MongoConnectionManager } from '@/infra/database/mongodb/client'
 import { startExpressServer } from '@/presentation/rest/setup'
 import { type UseCases } from '@/presentation/interface/use-cases'
 import { generateCreateNewCustomerUseCase, generateCustomerLoginUseCase } from './factory/use-case'
-import { generateRabbitMQConnectionAndMainChannel } from '@/infra/messaging-system/rabbitmq/client'
 import { ENVS } from '@/shared'
+import { generateKafkaClient } from '../infra/messaging/kafka'
 
 export async function bootstrap() {
   MongoConnectionManager.getOrCreate(
@@ -13,10 +13,10 @@ export async function bootstrap() {
     {}
   )
 
-  await generateRabbitMQConnectionAndMainChannel()
+  await generateKafkaClient()
 
   const useCases: UseCases = {
-    createNewCustomer: generateCreateNewCustomerUseCase(),
+    createNewCustomer: await generateCreateNewCustomerUseCase(),
     customerLogin: generateCustomerLoginUseCase()
   }
 

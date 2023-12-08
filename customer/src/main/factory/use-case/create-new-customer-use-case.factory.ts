@@ -1,12 +1,12 @@
 import { CreateNewCustomerUseCase } from '@/application/use-case'
 import { generateBcryptHashPassword } from '../util'
 import { generateMongoCustomerRepository } from '../repository'
-import { generateNewCustomerCreatedSender } from '../messaging-system'
+import { generateKafkaProducer } from '../messaging'
 
-export function generateCreateNewCustomerUseCase() {
+export async function generateCreateNewCustomerUseCase() {
   const customerRepository = generateMongoCustomerRepository()
   const hashPassword = generateBcryptHashPassword()
-  const messageSender = generateNewCustomerCreatedSender()
-  const createNewCustomerUseCase = new CreateNewCustomerUseCase(customerRepository, hashPassword, customerRepository, messageSender)
+  const messageProducer = await generateKafkaProducer()
+  const createNewCustomerUseCase = new CreateNewCustomerUseCase(customerRepository, hashPassword, customerRepository, messageProducer)
   return createNewCustomerUseCase
 }
