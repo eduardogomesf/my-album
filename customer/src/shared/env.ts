@@ -16,6 +16,11 @@ export const ENVS = {
     SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY ?? ''
   },
   KAFKA: {
-    BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : []
+    BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
+    TOPICS: {
+      CUSTOMER: {
+        CREATED: process.env.KAFKA_TOPIC_CUSTOMER_CREATED ?? 'customer-created'
+      }
+    }
   }
 } as const
