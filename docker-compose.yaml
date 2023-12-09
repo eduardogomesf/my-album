@@ -39,6 +39,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -51,6 +53,9 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
     depends_on:
       zookeeper:
         condition: service_started
@@ -115,5 +120,6 @@ services:
 
 volumes:
   mongodb_data:
-  rabbitmq_data:
   kong-db:
+  kafka-data:
+  zookeeper-data:
