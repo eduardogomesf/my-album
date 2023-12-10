@@ -15,15 +15,11 @@ export const ENVS = {
   ACCESS_TOKEN: {
     SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY ?? ''
   },
-  RABBIT_MQ: {
-    URL: process.env.RABBIT_MQ_URL ?? 'amqp://localhost:5672',
-    DELAY_TIMEOUT: process.env.RABBIT_MQ_DELAY_TIMEOUT ?? 5000,
-    EXCHANGES: {
-      CUSTOMER_REGISTRATION: {
-        NAME: process.env.RABBIT_MQ_CUSTOMER_REGISTRATION_EXCHANGE ?? 'customer-registration',
-        ROUTING_KEYS: {
-          NEW_CUSTOMER_CREATED: process.env.RABBIT_MQ_CUSTOMER_REGISTRATION_ROUTING_KEY_NEW_CUSTOMER_CREATED ?? 'new-customer-created'
-        }
+  KAFKA: {
+    BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
+    TOPICS: {
+      CUSTOMER: {
+        CREATED: process.env.KAFKA_TOPIC_CUSTOMER_CREATED ?? 'customer-created'
       }
     }
   }

@@ -1,12 +1,13 @@
 import { CreateNewCustomerUseCase } from '@/application/use-case'
+import { ENVS } from '@/shared'
 import { generateBcryptHashPassword } from '../util'
 import { generateMongoCustomerRepository } from '../repository'
-import { generateNewCustomerCreatedSender } from '../messaging-system'
+import { generateKafkaProducer } from '../messaging'
 
-export function generateCreateNewCustomerUseCase() {
+export async function generateCreateNewCustomerUseCase() {
   const customerRepository = generateMongoCustomerRepository()
   const hashPassword = generateBcryptHashPassword()
-  const messageSender = generateNewCustomerCreatedSender()
-  const createNewCustomerUseCase = new CreateNewCustomerUseCase(customerRepository, hashPassword, customerRepository, messageSender)
+  const messageProducer = await generateKafkaProducer(ENVS.KAFKA.TOPICS.CUSTOMER.CREATED)
+  const createNewCustomerUseCase = new CreateNewCustomerUseCase(customerRepository, hashPassword, customerRepository, messageProducer)
   return createNewCustomerUseCase
 }
