@@ -20,7 +20,8 @@ export class CreateNewCustomerUseCase {
     private readonly findCustomerByEmailRepository: FindCustomerByEmailRepository,
     private readonly hashPassword: HashPassword,
     private readonly createCustomerRepository: CreateCustomerRepository,
-    private readonly newCustomerCreatedSender: MessageSender
+    private readonly newCustomerCreatedSender: MessageSender,
+    private readonly sendWelcomeNotification: MessageSender
   ) {}
 
   async create(payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
@@ -46,6 +47,15 @@ export class CreateNewCustomerUseCase {
     await this.createCustomerRepository.create(customer)
 
     await this.newCustomerCreatedSender.send({
+      id: customer.id,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      cellphone: payload.cellphone
+    })
+
+    await this.sendWelcomeNotification.send({
+      id: customer.id,
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
