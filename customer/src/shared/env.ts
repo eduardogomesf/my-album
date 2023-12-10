@@ -20,6 +20,11 @@ export const ENVS = {
     TOPICS: {
       CUSTOMER: {
         CREATED: process.env.KAFKA_TOPIC_CUSTOMER_CREATED ?? 'customer-created'
+      },
+      NOTIFICATIONS: {
+        CUSTOMER: {
+          WELCOME: process.env.KAFKA_TOPIC_NOTIFICATIONS_CUSTOMER_WELCOME ?? 'customer-welcome'
+        }
       }
     }
   }

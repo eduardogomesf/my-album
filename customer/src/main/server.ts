@@ -2,8 +2,8 @@ import { MongoConnectionManager } from '@/infra/database/mongodb/client'
 import { startExpressServer } from '@/presentation/rest/setup'
 import { type UseCases } from '@/presentation/interface/use-cases'
 import { generateCreateNewCustomerUseCase, generateCustomerLoginUseCase } from './factory/use-case'
-import { ENVS } from '@/shared'
 import { generateKafkaClient } from '../infra/messaging/kafka'
+import { ENVS, Logger } from '@/shared'
 
 export async function bootstrap() {
   MongoConnectionManager.getOrCreate(
@@ -24,7 +24,7 @@ export async function bootstrap() {
 }
 
 bootstrap().catch(error => {
-  console.error('Error bootstrapping application')
-  console.error(error)
+  Logger.fatal('Error bootstrapping application')
+  Logger.fatal(error)
   process.exit(1)
 })

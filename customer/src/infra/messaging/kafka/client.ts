@@ -1,16 +1,16 @@
 import { Kafka } from 'kafkajs'
-import { ENVS } from '../../../shared'
+import { ENVS, Logger } from '../../../shared'
 
 let kafkaClient: Kafka = null as any
 
 export async function generateKafkaClient(): Promise<Kafka> {
   if (kafkaClient) {
-    console.log('Kafka client already exists')
+    Logger.info('Kafka client already exists')
 
     return kafkaClient
   }
 
-  console.log('Creating Kafka client...')
+  Logger.info('Creating Kafka client...')
 
   kafkaClient = new Kafka({
     clientId: ENVS.APP.ID,
@@ -22,7 +22,7 @@ export async function generateKafkaClient(): Promise<Kafka> {
     }
   })
 
-  console.log('Kafka client created!')
+  Logger.info('Kafka client created!')
 
   return kafkaClient
 }

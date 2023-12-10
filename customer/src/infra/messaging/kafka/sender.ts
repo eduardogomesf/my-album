@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { type KafkaResources } from './resources'
 import { type MessageSender } from '@/application/protocol/message-sender.protocol'
 import { type MongoUnpublishedMessagesRepository } from '../../database/mongodb/unpublished-messages'
+import { Logger } from '@/shared'
 
 export class KafkaProducer implements MessageSender {
   constructor(
@@ -26,7 +27,7 @@ export class KafkaProducer implements MessageSender {
     try {
       const message = JSON.stringify(messageWithId)
 
-      console.log(`Publishing message to Kafka topic ${this.topic} ...`)
+      Logger.info(`Publishing message to Kafka topic ${this.topic} ...`)
 
       await producer.send({
         topic: this.topic,
@@ -38,10 +39,10 @@ export class KafkaProducer implements MessageSender {
         ]
       })
 
-      console.log(`Message of Id ${messageWithId.id} published to Kafka topic ${this.topic}`)
+      Logger.info(`Message of Id ${messageWithId.id} published to Kafka topic ${this.topic}`)
     } catch (error) {
-      console.log(`Error while sending message to Kafka topic ${this.topic}}`)
-      console.log(error.message)
+      Logger.warn(`Error while sending message to Kafka topic ${this.topic}}`)
+      Logger.warn(error.message)
 
       await this.unpublishedMessagesRepository.save({
         id: messageWithId.id,
@@ -49,7 +50,7 @@ export class KafkaProducer implements MessageSender {
         options: messageWithId
       })
 
-      console.log(`Message of Id ${messageWithId.id} saved to MongoDB`)
+      Logger.warn(`Message of Id ${messageWithId.id} saved to MongoDB`)
     }
   }
 }

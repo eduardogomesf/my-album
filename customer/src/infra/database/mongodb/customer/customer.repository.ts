@@ -1,5 +1,6 @@
 import { type FindCustomerByEmailRepository, type CreateCustomerRepository } from '@/application/protocol'
 import { Customer } from '@/domain/entity/customer.entity'
+import { Logger } from '@/shared'
 import { CustomerModel } from './customer.entity'
 
 export class MongoCustomerRepository implements FindCustomerByEmailRepository, CreateCustomerRepository {
@@ -13,8 +14,8 @@ export class MongoCustomerRepository implements FindCustomerByEmailRepository, C
 
       return new Customer(customer)
     } catch (error) {
-      console.error('Error finding customer by email')
-      console.error(error)
+      Logger.error('Error finding customer by email')
+      Logger.error(error)
       throw error
     }
   }
@@ -32,8 +33,8 @@ export class MongoCustomerRepository implements FindCustomerByEmailRepository, C
 
       await CustomerModel.create(customerData)
     } catch (error) {
-      console.error('Error creating customer')
-      console.error(error)
+      Logger.error('Error creating customer')
+      Logger.error(error)
       throw error
     }
   }
