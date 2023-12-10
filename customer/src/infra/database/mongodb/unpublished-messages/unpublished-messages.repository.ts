@@ -1,3 +1,4 @@
+import { Logger } from '@/shared'
 import { UnpublishedMessageModel } from './unpublished-messages.entity'
 
 interface Message {
@@ -17,9 +18,8 @@ export class MongoUnpublishedMessagesRepository {
 
       await UnpublishedMessageModel.create(payload)
     } catch (error) {
-      console.error('Error saving unpublished message')
-      console.log(JSON.stringify(data))
-      console.error(error)
+      Logger.error(`Error saving unpublished message: ${JSON.stringify(data)}`)
+      Logger.error(error)
       throw error
     }
   }
@@ -28,8 +28,8 @@ export class MongoUnpublishedMessagesRepository {
     try {
       return await UnpublishedMessageModel.find()
     } catch (error) {
-      console.error('Error finding unpublished messages')
-      console.error(error)
+      Logger.error('Error finding unpublished messages')
+      Logger.error(error)
       throw error
     }
   }

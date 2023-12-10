@@ -1,6 +1,7 @@
 import { type Request, type Response } from 'express'
 import { type CustomerLoginUseCase, type CreateNewCustomerUseCase } from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
+import { Logger } from '@/shared'
 
 export class CustomerController {
   constructor(
@@ -35,8 +36,8 @@ export class CustomerController {
 
       return response.status(201).send()
     } catch (error) {
-      console.error('Error creating customer')
-      console.error(error)
+      Logger.error('Error creating customer')
+      Logger.error(error)
       return response.status(500).send()
     }
   }
@@ -78,8 +79,8 @@ export class CustomerController {
 
       return response.status(200).json(responseBody)
     } catch (error) {
-      console.error('Error creating customer')
-      console.error(error)
+      Logger.error('Error creating customer')
+      Logger.error(error)
       return response.status(500).send()
     }
   }

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { ENVS } from '@/shared'
+import { ENVS, Logger } from '@/shared'
 
 export class MongoConnectionManager {
   private static readonly connections: Record<string, mongoose.Connection> = {}
@@ -12,11 +12,11 @@ export class MongoConnectionManager {
   ) {
     try {
       if (MongoConnectionManager.connections[connectionName]) {
-        console.log(`MongoDB connection ${connectionName} already exists`)
+        Logger.info(`MongoDB connection ${connectionName} already exists`)
         return MongoConnectionManager.connections[connectionName]
       }
 
-      console.log('Connecting to MongoDB...')
+      Logger.info('Connecting to MongoDB...')
 
       if (!connectionURL || !dbName || !connectionOptions) {
         throw new Error('Missing connectionURL, dbName or connectionOptions')
@@ -30,12 +30,12 @@ export class MongoConnectionManager {
 
       MongoConnectionManager.connections[connectionName] = createdConnection
 
-      console.log('Connected to MongoDB!')
+      Logger.info('Connected to MongoDB!')
       return createdConnection
     } catch (error) {
-      console.error('Error connecting to MongoDB')
-      console.error(error)
-      process.exit(1)
+      Logger.error('Error connecting to MongoDB')
+      Logger.error(error)
+      throw error
     }
   }
 }
