@@ -6,24 +6,31 @@ import {
   type HashPassword
 } from '../../../../src/application/protocol'
 
+jest.mock('uuid', () => ({
+  v4: () => 'any-id'
+}))
+
 describe('Create New Customer Use Case', () => {
   let sut: CreateNewCustomerUseCase
   let mockFindCustomerByEmailRepository: FindCustomerByEmailRepository
   let mockHashPassword: HashPassword
   let mockCreateCustomerRepository: CreateCustomerRepository
-  let mockMessageSender: MessageSender
+  let newCustomerCreatedSender: MessageSender
+  let sendWelcomeNotification: MessageSender
 
   beforeEach(() => {
     mockFindCustomerByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
     mockHashPassword = { hash: jest.fn().mockResolvedValue('hashed-password') }
     mockCreateCustomerRepository = { create: jest.fn().mockResolvedValue(null) }
-    mockMessageSender = { send: jest.fn().mockResolvedValue(true) }
+    newCustomerCreatedSender = { send: jest.fn().mockResolvedValue(true) }
+    sendWelcomeNotification = { send: jest.fn().mockResolvedValue(true) }
 
     sut = new CreateNewCustomerUseCase(
       mockFindCustomerByEmailRepository,
       mockHashPassword,
       mockCreateCustomerRepository,
-      mockMessageSender
+      newCustomerCreatedSender,
+      sendWelcomeNotification
     )
   })
 
@@ -39,6 +46,49 @@ describe('Create New Customer Use Case', () => {
     const result = await sut.create(payload)
 
     expect(result.ok).toBe(true)
+  })
+
+  it('should calls dependencies with correct input', async () => {
+    const payload = {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@mail.com',
+      password: 'random-password',
+      cellphone: '11999999999'
+    }
+
+    const findByEmailSpy = jest.spyOn(mockFindCustomerByEmailRepository, 'findByEmail')
+    const hashSpy = jest.spyOn(mockHashPassword, 'hash')
+    const createSpy = jest.spyOn(mockCreateCustomerRepository, 'create')
+    const newCustomerCreatedSpy = jest.spyOn(newCustomerCreatedSender, 'send')
+    const sendWelcomeNotificationSpy = jest.spyOn(sendWelcomeNotification, 'send')
+
+    await sut.create(payload)
+
+    expect(findByEmailSpy).toHaveBeenCalledWith(payload.email)
+    expect(hashSpy).toHaveBeenCalledWith(payload.password)
+    expect(createSpy).toHaveBeenCalledWith({
+      id: 'any-id',
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      cellphone: payload.cellphone,
+      password: 'hashed-password'
+    })
+    expect(newCustomerCreatedSpy).toHaveBeenCalledWith({
+      id: 'any-id',
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      cellphone: payload.cellphone
+    })
+    expect(sendWelcomeNotificationSpy).toHaveBeenCalledWith({
+      id: 'any-id',
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      cellphone: payload.cellphone
+    })
   })
 
   it('should not create a new customer if e-mail is already in use', async () => {
