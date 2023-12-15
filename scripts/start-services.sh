@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Start all services with Docker Compose
-docker-compose up -d
+docker-compose up -d --build
 
 # Wait for Kong to be fully operational
 echo "Waiting for Kong to start..."
