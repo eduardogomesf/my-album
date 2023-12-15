@@ -40,7 +40,8 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - zookeeper-data:/var/lib/zookeeper
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -125,3 +126,4 @@ volumes:
   kong-db:
   kafka-data:
   zookeeper-data:
+  zookeeper-log:
