@@ -4,7 +4,8 @@ import {
   type HashPassword,
   type FindCustomerByEmailRepository,
   type CreateCustomerRepository,
-  type MessageSender
+  type MessageSender,
+  type SendEmailNotification
 } from '../protocol'
 
 interface CreateNewCustomerUseCaseDTO {
@@ -21,7 +22,7 @@ export class CreateNewCustomerUseCase {
     private readonly hashPassword: HashPassword,
     private readonly createCustomerRepository: CreateCustomerRepository,
     private readonly newCustomerCreatedSender: MessageSender,
-    private readonly sendWelcomeNotification: MessageSender
+    private readonly sendEmailNotification: SendEmailNotification
   ) {}
 
   async create(payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
@@ -54,12 +55,12 @@ export class CreateNewCustomerUseCase {
       cellphone: payload.cellphone
     })
 
-    await this.sendWelcomeNotification.send({
-      id: customer.id,
+    await this.sendEmailNotification.send({
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
-      cellphone: payload.cellphone
+      title: 'Welcome to our platform',
+      template: '<p>Hello, welcome to our platform.</p>'
     })
 
     return {
