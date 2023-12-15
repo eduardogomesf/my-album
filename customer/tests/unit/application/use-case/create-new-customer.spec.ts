@@ -3,7 +3,8 @@ import {
   type MessageSender,
   type CreateCustomerRepository,
   type FindCustomerByEmailRepository,
-  type HashPassword
+  type HashPassword,
+  type SendEmailNotification
 } from '../../../../src/application/protocol'
 
 jest.mock('uuid', () => ({
@@ -16,7 +17,7 @@ describe('Create New Customer Use Case', () => {
   let mockHashPassword: HashPassword
   let mockCreateCustomerRepository: CreateCustomerRepository
   let newCustomerCreatedSender: MessageSender
-  let sendWelcomeNotification: MessageSender
+  let sendWelcomeNotification: SendEmailNotification
 
   beforeEach(() => {
     mockFindCustomerByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
@@ -83,11 +84,11 @@ describe('Create New Customer Use Case', () => {
       cellphone: payload.cellphone
     })
     expect(sendWelcomeNotificationSpy).toHaveBeenCalledWith({
-      id: 'any-id',
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
-      cellphone: payload.cellphone
+      title: 'Welcome to our platform',
+      template: '<p>Hello, welcome to our platform.</p>'
     })
   })
 
