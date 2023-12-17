@@ -1,9 +1,9 @@
 export interface SendEmailNotificationPayload {
-  firstName: string
-  lastName: string
-  title: string
-  email: string
-  template: string
+  sourceEmail: '001' | '002' | '003'
+  targetEmail: string
+  subject: string
+  tags?: string[]
+  body: string
 }
 
 export interface SendEmailNotification {
