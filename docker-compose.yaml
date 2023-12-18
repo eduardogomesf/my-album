@@ -121,6 +121,13 @@ services:
       kong:
         condition: service_started
 
+  # SMTP Server      
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   mongodb_data:
   kong-db:
