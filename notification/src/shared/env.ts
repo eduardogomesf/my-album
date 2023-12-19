@@ -18,12 +18,21 @@ export const ENVS = {
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
     TOPICS: {
-      CUSTOMER: {
-        CREATED: process.env.KAFKA_TOPIC_CUSTOMER_CREATED ?? 'customer-created'
-      },
       NOTIFICATIONS: {
         EMAIL: process.env.KAFKA_TOPIC_EMAIL_NOTIFICATIONS ?? 'email-notifications'
       }
+    },
+    CONSUMER_GROUPS: {
+      NOTIFICATIONS: {
+        EMAIL: process.env.KAFKA_CONSUMER_GROUP_EMAIL_NOTIFICATIONS ?? 'email-notifications-CG'
+      }
+    }
+  },
+  SMTP: {
+    DEFAULT: {
+      EMAIL_HOST: process.env.SMTP_DEFAULT_EMAIL_HOST ?? '',
+      EMAIL_PORT: Number(process.env.SMTP_DEFAULT_EMAIL_PORT ?? 1025),
+      EMAIL_SECURE: process.env.SMTP_DEFAULT_EMAIL_SECURE ?? ''
     }
   }
 } as const
