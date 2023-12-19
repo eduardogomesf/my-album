@@ -16,7 +16,7 @@ export const ENVS = {
     },
     CONSUMER_GROUPS: {
       NOTIFICATIONS: {
-        EMAIL: process.env.KAFKA_CONSUMER_GROUP_EMAIL_NOTIFICATIONS ?? 'email-notifications-CG'
+        EMAIL: process.env.KAFKA_CONSUMER_GROUP_EMAIL_NOTIFICATIONS ?? 'email-notifications-consumer-group'
       }
     }
   },
