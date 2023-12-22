@@ -2,7 +2,7 @@ import { ENVS } from '@/shared'
 import { SendEmailNotificationUseCase } from '@/application/use-case'
 import { generateNodemailerEmailSender } from '../email'
 
-export const generateSendEmailNotificationUseCase = async () => {
+export const generateSendEmailNotificationUseCase = () => {
   const emailSender = generateNodemailerEmailSender({
     host: ENVS.SMTP.DEFAULT.EMAIL_HOST,
     port: ENVS.SMTP.DEFAULT.EMAIL_PORT,
