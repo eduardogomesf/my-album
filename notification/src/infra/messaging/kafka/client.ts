@@ -3,7 +3,7 @@ import { ENVS, Logger } from '../../../shared'
 
 let kafkaClient: Kafka = null as any
 
-export async function generateKafkaClient(): Promise<Kafka> {
+export function generateKafkaClient(): Kafka {
   if (kafkaClient) {
     Logger.info('Kafka client already exists')
 
