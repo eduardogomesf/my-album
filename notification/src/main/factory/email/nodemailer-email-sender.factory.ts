@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+import * as nodemailer from 'nodemailer'
 import { NodemailerEmailSender } from '@/infra/email/nodemailer'
 import { type EmailSender } from '@/application/protocol'
 
