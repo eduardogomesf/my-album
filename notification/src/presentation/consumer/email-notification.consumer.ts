@@ -1,6 +1,7 @@
 import { type SendEmailNotificationUseCase } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 import { Logger } from '../../shared'
+import { type EmailNotificationDTO } from '../dto'
 
 export class EmailNotificationEventConsumer {
   constructor(
@@ -13,23 +14,18 @@ export class EmailNotificationEventConsumer {
       eachMessage: async ({ message, topic, partition }) => {
         const dataFromBuffer = message?.value?.toString() ?? '{}'
 
-        const messageWithMetadata = {
-          topic,
-          partition,
-          offset: message?.offset,
-          message: dataFromBuffer
-        }
+        const parsedData: EmailNotificationDTO = JSON.parse(dataFromBuffer)
 
-        Logger.info(`Message read: ${JSON.stringify(messageWithMetadata)}`)
+        Logger.info(`Message with id ${parsedData.id} received from ${topic} topic and ${partition} partition`)
 
-        const parsedData = JSON.parse(dataFromBuffer)
-
-        console.log(parsedData)
-
-        // await this.sendEmailNotificationUseCase.send({
-        //   email,
-        //   message: notificationMessage
-        // })
+        await this.sendEmailNotificationUseCase.send({
+          body: parsedData.body,
+          sourceEmail: parsedData.sourceEmail,
+          subject: parsedData.subject,
+          targetEmail: parsedData.targetEmail,
+          tags: parsedData.tags,
+          timestamp: parsedData.timestamp
+        })
       }
     })
   }
