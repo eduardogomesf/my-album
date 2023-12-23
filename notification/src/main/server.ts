@@ -1,10 +1,13 @@
 import { generateKafkaClient } from '../infra/messaging/kafka'
 import { Logger } from '@/shared'
+import { startConsumers } from './consumers'
 
 export async function bootstrap() {
   Logger.info('Starting application')
 
-  await generateKafkaClient()
+  generateKafkaClient()
+
+  await startConsumers()
 }
 
 bootstrap().catch(error => {

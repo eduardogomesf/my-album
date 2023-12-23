@@ -7,6 +7,7 @@ interface EmailNotificationConstructor {
   subject: string
   body: string
   tags?: string[]
+  text?: string
 }
 
 export class EmailNotification extends BaseEntity {
@@ -16,6 +17,7 @@ export class EmailNotification extends BaseEntity {
   subject: string
   body: string
   tags?: string[]
+  text?: string
 
   constructor(
     emailNotification: EmailNotificationConstructor
