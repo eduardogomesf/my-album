@@ -12,7 +12,7 @@ export async function bootstrap() {
     {}
   )
 
-  await generateKafkaClient()
+  generateKafkaClient()
 
   const useCases = await getApplicationUseCases()
 
