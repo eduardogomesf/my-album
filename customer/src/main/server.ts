@@ -1,5 +1,5 @@
 import { MongoConnectionManager } from '@/infra/database/mongodb/client'
-import { startExpressServer } from '@/presentation/rest/setup'
+import { bootstrapExpressServer } from './config/express'
 import { generateKafkaClient } from '../infra/messaging/kafka'
 import { ENVS, Logger } from '@/shared'
 import { getApplicationUseCases } from './config/use-cases'
@@ -16,7 +16,7 @@ export async function bootstrap() {
 
   const useCases = await getApplicationUseCases()
 
-  startExpressServer(useCases)
+  bootstrapExpressServer(useCases)
 }
 
 bootstrap().catch(error => {
