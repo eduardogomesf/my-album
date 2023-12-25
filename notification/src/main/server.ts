@@ -2,8 +2,10 @@ import { generateKafkaClient } from '../infra/messaging/kafka'
 import { Logger } from '@/shared'
 import { startConsumers } from './consumers'
 
+const logger = new Logger('bootstrap')
+
 export async function bootstrap() {
-  Logger.info('Starting application')
+  logger.info('Starting application')
 
   generateKafkaClient()
 
@@ -11,7 +13,7 @@ export async function bootstrap() {
 }
 
 bootstrap().catch(error => {
-  Logger.fatal('Error bootstrapping application')
-  Logger.fatal(error)
+  logger.fatal('Error bootstrapping application')
+  logger.fatal(error)
   process.exit(1)
 })

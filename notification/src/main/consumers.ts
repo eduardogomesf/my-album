@@ -1,11 +1,13 @@
 import { Logger } from '../shared'
 import { generateEmailNotificationConsumer } from './factory/consumer'
 
+const logger = new Logger('Consumers')
+
 export const startConsumers = async () => {
-  Logger.info('Starting consumers...')
+  logger.info('Starting consumers...')
 
   const emailNotificationConsumer = await generateEmailNotificationConsumer()
   await emailNotificationConsumer.start()
 
-  Logger.info('Consumers started')
+  logger.info('Consumers started')
 }

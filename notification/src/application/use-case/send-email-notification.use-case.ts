@@ -12,6 +12,8 @@ interface SendEmailNotificationPayload {
   tags?: string[]
 }
 
+const logger = new Logger('SendEmailNotificationUseCase')
+
 export class SendEmailNotificationUseCase {
   constructor(
     private readonly emailSender: EmailSender
@@ -31,7 +33,7 @@ export class SendEmailNotificationUseCase {
     const sourceEmail = ENVS.SMTP.SOURCE_EMAILS.find(email => email === emailNotification.sourceEmail)
 
     if (!sourceEmail) {
-      Logger.info(`Email ${emailNotification.sourceEmail} is not allowed to send emails`)
+      logger.info(`Email ${emailNotification.sourceEmail} is not allowed to send emails`)
       return { ok: false, message: `Email ${emailNotification.sourceEmail} is not allowed to send emails` }
     }
 
