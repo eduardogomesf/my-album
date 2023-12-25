@@ -1,12 +1,15 @@
 import * as chalk from 'chalk'
+import { DateTime } from 'luxon'
 
 export class Logger {
   private readonly logSource: string
+  private readonly timezone: string
 
   constructor(
     logSource: string
   ) {
     this.logSource = logSource
+    this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
     this.validate()
   }
@@ -15,10 +18,15 @@ export class Logger {
     if (!this.logSource) {
       throw new Error('Log source is required')
     }
+
+    if (!this.timezone) {
+      throw new Error('Timezone is required')
+    }
   }
 
   private formatMessage(message: string) {
-    return `[${this.logSource}] ${message}`
+    const now = DateTime.now().setZone(this.timezone).toFormat('yyyy-MM-dd HH:mm:ss')
+    return `[${now}][${this.logSource}] ${message}`
   }
 
   verbose(message: string) {
