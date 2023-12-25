@@ -24,6 +24,8 @@ function setRoutes(app: express.Express, useCases: UseCases) {
 }
 
 export function bootstrapExpressServer(useCases: UseCases) {
+  const logger = new Logger('bootstrapExpressServer')
+
   const app = express()
 
   setDefaultMiddlewares(app)
@@ -33,6 +35,6 @@ export function bootstrapExpressServer(useCases: UseCases) {
   const port = ENVS.APP.PORT
 
   app.listen(port, () => {
-    Logger.info(`App listening at port ${port}`)
+    logger.info(`App listening at port ${port}`)
   })
 }

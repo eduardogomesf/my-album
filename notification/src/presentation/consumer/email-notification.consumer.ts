@@ -3,6 +3,8 @@ import { type Consumer } from 'kafkajs'
 import { Logger } from '../../shared'
 import { type EmailNotificationDTO } from '../dto'
 
+const logger = new Logger('EmailNotificationEventConsumer')
+
 export class EmailNotificationEventConsumer {
   constructor(
     private readonly sendEmailNotificationUseCase: SendEmailNotificationUseCase,
@@ -16,7 +18,7 @@ export class EmailNotificationEventConsumer {
 
         const parsedData: EmailNotificationDTO = JSON.parse(dataFromBuffer)
 
-        Logger.info(`Message with id ${parsedData.id} received from ${topic} topic and ${partition} partition`)
+        logger.info(`Message with id ${parsedData.id} received from ${topic} topic and ${partition} partition`)
 
         await this.sendEmailNotificationUseCase.send({
           body: parsedData.body,

@@ -5,6 +5,8 @@ import { type MessageSender } from '@/application/protocol/message-sender.protoc
 import { type MongoUnpublishedMessagesRepository } from '../../database/mongodb/unpublished-messages'
 import { Logger } from '@/shared'
 
+const logger = new Logger('KafkaProducer')
+
 export class KafkaProducer implements MessageSender {
   constructor(
     private readonly kafkaResources: KafkaResources,
@@ -27,7 +29,7 @@ export class KafkaProducer implements MessageSender {
     try {
       const message = JSON.stringify(messageWithId)
 
-      Logger.info(`Publishing message to Kafka topic ${this.topic} ...`)
+      logger.info(`Publishing message to Kafka topic ${this.topic} ...`)
 
       await producer.send({
         topic: this.topic,
@@ -39,10 +41,10 @@ export class KafkaProducer implements MessageSender {
         ]
       })
 
-      Logger.info(`Message of Id ${messageWithId.id} published to Kafka topic ${this.topic}`)
+      logger.info(`Message of Id ${messageWithId.id} published to Kafka topic ${this.topic}`)
     } catch (error) {
-      Logger.warn(`Error while sending message to Kafka topic ${this.topic}}`)
-      Logger.warn(error.message)
+      logger.warn(`Error while sending message to Kafka topic ${this.topic}}`)
+      logger.warn(error.message)
 
       await this.unpublishedMessagesRepository.save({
         id: messageWithId.id,
@@ -50,7 +52,7 @@ export class KafkaProducer implements MessageSender {
         options: messageWithId
       })
 
-      Logger.warn(`Message of Id ${messageWithId.id} saved to MongoDB`)
+      logger.warn(`Message of Id ${messageWithId.id} saved to MongoDB`)
     }
   }
 }

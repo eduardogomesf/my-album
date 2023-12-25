@@ -3,14 +3,16 @@ import { ENVS, Logger } from '../../../shared'
 
 let kafkaClient: Kafka = null as any
 
+const logger = new Logger('generateKafkaClient')
+
 export function generateKafkaClient(): Kafka {
   if (kafkaClient) {
-    Logger.info('Kafka client already exists')
+    logger.info('Kafka client already exists')
 
     return kafkaClient
   }
 
-  Logger.info('Creating Kafka client...')
+  logger.info('Creating Kafka client...')
 
   kafkaClient = new Kafka({
     clientId: ENVS.APP.ID,
@@ -22,7 +24,7 @@ export function generateKafkaClient(): Kafka {
     }
   })
 
-  Logger.info('Kafka client created!')
+  logger.info('Kafka client created!')
 
   return kafkaClient
 }

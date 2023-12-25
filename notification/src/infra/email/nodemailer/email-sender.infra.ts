@@ -3,6 +3,8 @@ import { type EmailSenderResponse, type EmailSender } from '@/application/protoc
 import { type EmailNotification } from '@/domain/entity'
 import { Logger } from '@/shared'
 
+const logger = new Logger('NodemailerEmailSender')
+
 export class NodemailerEmailSender implements EmailSender {
   transporter: nodemailer.Transporter
 
@@ -12,7 +14,7 @@ export class NodemailerEmailSender implements EmailSender {
 
   async send(emailNotification: EmailNotification): Promise<EmailSenderResponse> {
     try {
-      Logger.info('Sending email...')
+      logger.info('Sending email...')
 
       await this.transporter.sendMail({
         from: emailNotification.sourceEmail,
@@ -22,11 +24,11 @@ export class NodemailerEmailSender implements EmailSender {
         html: emailNotification.body
       })
 
-      Logger.info('Email sent')
+      logger.info('Email sent')
 
       return { ok: true }
     } catch (error) {
-      Logger.error(error.message)
+      logger.error(error.message)
       return { ok: false, message: error.message }
     }
   }
