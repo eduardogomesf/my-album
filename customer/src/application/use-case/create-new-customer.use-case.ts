@@ -56,7 +56,7 @@ export class CreateNewCustomerUseCase {
     })
 
     await this.sendEmailNotification.send({
-      sourceEmail: '001',
+      sourceEmail: 'test@test.com',
       targetEmail: payload.email,
       subject: 'Welcome to our platform',
       body: '<p>Hello, welcome to our platform.</p>'

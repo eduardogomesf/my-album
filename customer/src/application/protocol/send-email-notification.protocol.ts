@@ -1,5 +1,5 @@
 export interface SendEmailNotificationPayload {
-  sourceEmail: '001' | '002' | '003'
+  sourceEmail: string
   targetEmail: string
   subject: string
   tags?: string[]

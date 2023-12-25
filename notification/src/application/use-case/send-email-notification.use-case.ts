@@ -1,6 +1,7 @@
 import { EmailNotification } from '@/domain/entity/email-notification.entity'
 import { type EmailSender } from '../protocol'
 import { type UseCaseResponse } from '../interface'
+import { ENVS, Logger } from '@/shared'
 
 interface SendEmailNotificationPayload {
   timestamp: number
@@ -27,8 +28,15 @@ export class SendEmailNotificationUseCase {
       return { ok: false, message: error.message }
     }
 
+    const sourceEmail = ENVS.SMTP.SOURCE_EMAILS.find(email => email === emailNotification.sourceEmail)
+
+    if (!sourceEmail) {
+      Logger.info(`Email ${emailNotification.sourceEmail} is not allowed to send emails`)
+      return { ok: false, message: `Email ${emailNotification.sourceEmail} is not allowed to send emails` }
+    }
+
     const emailWasSent = await this.emailSender.send(emailNotificationEntity)
 
-    return { ok: emailWasSent, message: emailWasSent ? 'Email was sent' : 'Email was not sent' }
+    return { ok: emailWasSent.ok, message: emailWasSent.message }
   }
 }
