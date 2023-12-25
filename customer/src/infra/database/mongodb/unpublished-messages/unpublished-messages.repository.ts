@@ -7,6 +7,8 @@ interface Message {
   options: any
 }
 
+const logger = new Logger('MongoUnpublishedMessagesRepository')
+
 export class MongoUnpublishedMessagesRepository {
   async save(data: Message) {
     try {
@@ -18,8 +20,8 @@ export class MongoUnpublishedMessagesRepository {
 
       await UnpublishedMessageModel.create(payload)
     } catch (error) {
-      Logger.error(`Error saving unpublished message: ${JSON.stringify(data)}`)
-      Logger.error(error)
+      logger.error(`Error saving unpublished message: ${JSON.stringify(data)}`)
+      logger.error(error)
       throw error
     }
   }
@@ -28,8 +30,8 @@ export class MongoUnpublishedMessagesRepository {
     try {
       return await UnpublishedMessageModel.find()
     } catch (error) {
-      Logger.error('Error finding unpublished messages')
-      Logger.error(error)
+      logger.error('Error finding unpublished messages')
+      logger.error(error)
       throw error
     }
   }

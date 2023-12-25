@@ -3,6 +3,8 @@ import { Customer } from '@/domain/entity/customer.entity'
 import { Logger } from '@/shared'
 import { CustomerModel } from './customer.entity'
 
+const logger = new Logger('MongoCustomerRepository')
+
 export class MongoCustomerRepository implements FindCustomerByEmailRepository, CreateCustomerRepository {
   async findByEmail(email: string): Promise<Customer | null> {
     try {
@@ -14,8 +16,8 @@ export class MongoCustomerRepository implements FindCustomerByEmailRepository, C
 
       return new Customer(customer)
     } catch (error) {
-      Logger.error('Error finding customer by email')
-      Logger.error(error)
+      logger.error('Error finding customer by email')
+      logger.error(error)
       throw error
     }
   }
@@ -33,8 +35,8 @@ export class MongoCustomerRepository implements FindCustomerByEmailRepository, C
 
       await CustomerModel.create(customerData)
     } catch (error) {
-      Logger.error('Error creating customer')
-      Logger.error(error)
+      logger.error('Error creating customer')
+      logger.error(error)
       throw error
     }
   }

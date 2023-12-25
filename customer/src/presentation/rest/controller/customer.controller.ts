@@ -3,6 +3,8 @@ import { type CustomerLoginUseCase, type CreateNewCustomerUseCase } from '@/appl
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
 
+const logger = new Logger('CustomerController')
+
 export class CustomerController {
   constructor(
     private readonly createNewCustomerUseCase: CreateNewCustomerUseCase,
@@ -36,8 +38,8 @@ export class CustomerController {
 
       return response.status(201).send()
     } catch (error) {
-      Logger.error('Error creating customer')
-      Logger.error(error)
+      logger.error('Error creating customer')
+      logger.error(error)
       return response.status(500).send()
     }
   }
@@ -79,8 +81,8 @@ export class CustomerController {
 
       return response.status(200).json(responseBody)
     } catch (error) {
-      Logger.error('Error creating customer')
-      Logger.error(error)
+      logger.error('Error creating customer')
+      logger.error(error)
       return response.status(500).send()
     }
   }
