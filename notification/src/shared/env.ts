@@ -25,6 +25,7 @@ export const ENVS = {
       EMAIL_HOST: process.env.SMTP_DEFAULT_EMAIL_HOST ?? '',
       EMAIL_PORT: Number(process.env.SMTP_DEFAULT_EMAIL_PORT ?? 1025),
       EMAIL_SECURE: process.env.SMTP_DEFAULT_EMAIL_SECURE ?? ''
-    }
+    },
+    SOURCE_EMAILS: process.env.SOURCE_EMAILS ? String(process.env.SOURCE_EMAILS).split(',') : ['test@test.com']
   }
 } as const

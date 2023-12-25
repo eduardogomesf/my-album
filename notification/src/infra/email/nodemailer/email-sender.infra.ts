@@ -1,6 +1,7 @@
 import type nodemailer from 'nodemailer'
-import { type EmailSender } from '@/application/protocol'
+import { type EmailSenderResponse, type EmailSender } from '@/application/protocol'
 import { type EmailNotification } from '@/domain/entity'
+import { Logger } from '@/shared'
 
 export class NodemailerEmailSender implements EmailSender {
   transporter: nodemailer.Transporter
@@ -9,8 +10,10 @@ export class NodemailerEmailSender implements EmailSender {
     this.transporter = transporter
   }
 
-  async send(emailNotification: EmailNotification): Promise<boolean> {
+  async send(emailNotification: EmailNotification): Promise<EmailSenderResponse> {
     try {
+      Logger.info('Sending email...')
+
       await this.transporter.sendMail({
         from: emailNotification.sourceEmail,
         to: emailNotification.targetEmail,
@@ -19,9 +22,12 @@ export class NodemailerEmailSender implements EmailSender {
         html: emailNotification.body
       })
 
-      return true
+      Logger.info('Email sent')
+
+      return { ok: true }
     } catch (error) {
-      return false
+      Logger.error(error.message)
+      return { ok: false, message: error.message }
     }
   }
 }
