@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Customer Management
+  # Customer Management Service
   customer-service-mongodb:
     image: mongo:latest
     restart: always
@@ -21,8 +21,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - .:/usr/app  new Dockerfile setup
     working_dir: /usr/app
     command: [ "npm", "start" ]
     depends_on:
@@ -121,7 +119,23 @@ services:
       kong:
         condition: service_started
 
-  # SMTP Server      
+  # Notification Service  
+  notification-service:
+    container_name: notification-service-app
+    restart: always
+    build:
+      context: ./notification
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    working_dir: /usr/app
+    command: [ "npm", "start" ]
+    depends_on:
+      mailhog:
+        condition: service_started
+      kafka:
+        condition: service_started
+
   mailhog:
     image: mailhog/mailhog
     ports:
