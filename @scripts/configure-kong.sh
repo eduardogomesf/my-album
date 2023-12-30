@@ -1,9 +1,16 @@
 #!/bin/sh
-# configure-kong.sh
 
-# Kong Admin URL
+# Variables
 KONG_ADMIN_URL=http://localhost:8001
 
+# Start kong related services
+echo "Starting kong related services..."
+docker compose up kong-database kong-migration kong konga -d > /dev/null 2>&1
+
+echo "Waiting for Kong to be fully operational..."
+sleep 10
+
+echo "Configuring Kong..."
 # Create the 'customer-service' service
 curl -s -X POST $KONG_ADMIN_URL/services \
     -d name=customer-service \
@@ -44,5 +51,8 @@ curl -s -X POST $KONG_ADMIN_URL/services/customer-service/routes \
     -d response_buffering=true \
     -d preserve_host=false \
     -d tags[]=customer-service
+
+# echo "Stop kong related services..."
+# docker stop kong-database kong-migration kong konga 
 
 echo "Kong configuration completed."
