@@ -142,9 +142,21 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  # File Manager Service
+  file-manager-postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: filemanager
+      POSTGRES_PASSWORD: filemanager
+      POSTGRES_DB: filemanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - file-manager-postgres:/var/lib/postgresql/data
 volumes:
   mongodb_data:
   kong-db:
   kafka-data:
   zookeeper-data:
   zookeeper-log:
+  file-manager-postgres:
