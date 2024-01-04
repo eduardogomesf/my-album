@@ -15,8 +15,8 @@ export const ENVS = {
       }
     },
     CONSUMER_GROUPS: {
-      NOTIFICATIONS: {
-        EMAIL: process.env.KAFKA_CG_NEW_CUSTOMER ?? 'file-manager-new-customer'
+      CUSTOMER: {
+        NEW_CUSTOMER: process.env.KAFKA_CG_NEW_CUSTOMER ?? 'file-manager-new-customer'
       }
     }
   }
