@@ -2,7 +2,7 @@
 **File Management Sys** is a backend system that allow users to store and manage their files in an easy and secure way.
 
 ## Description
-**File Management Sys** follows a microservice architecture where all the communication between the services works in asynchronous way through a distributed streaming platform (Apache Kafka).
+**File Management Sys** follows a microservice event-driven architecture where all the communication between the services works in asynchronous way through a distributed streaming platform (Apache Kafka).
 
 The architecture is composed by three main services: Customer Management Service, File Manager Service and Notification Service.
 
