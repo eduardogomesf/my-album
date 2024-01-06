@@ -1,12 +1,12 @@
 # Project Overview
-**File Management Sys** is a backend system that allow users to store and manage their files in a secure way.
+**File Management Sys** is a backend system that allow users to store and manage their files in an easy and secure way.
 
 ## Description
-
 **File Management Sys** follows a microservice architecture where all the communication between the services works in asynchronous way through a distributed streaming platform (Apache Kafka).
 
 The architecture is composed by three main services: Customer Management Service, File Manager Service and Notification Service.
 
+## Services
 The **Customer Management Service** is responsible for handling the management and authentication of users within the system. This service uses a MongoDB database to save all required information and communicates with other services in an asynchronous way by using Kafka Topics to send messages.
 
 The **File Manager Service** is responsible for allowing users to manage their files. This service uses a Postgres database to save all required information and uses the Amazon S3 service to store the actual files. It also communicates with other services through Kafka topics.
