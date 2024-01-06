@@ -19,7 +19,7 @@ You can find more details in the **[High-Level System Design](#high-level-system
 [Node](https://nodejs.org/en)  
 [TypeScript](https://www.typescriptlang.org/)  
 [Express](https://expressjs.com/)  
-[Kong Gateway](https://docs.konghq.com/gateway/latest/)
+[Kong Gateway](https://docs.konghq.com/gateway/latest/)  
 [MongoDB](https://www.mongodb.com/)  
 [PostgreSQL](https://www.postgresql.org/)  
 [Apache Kafka](https://kafka.apache.org/)  
