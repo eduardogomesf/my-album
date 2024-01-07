@@ -84,11 +84,10 @@ describe('Create New User Use Case', () => {
       cellphone: payload.cellphone
     })
     expect(sendWelcomeNotificationSpy).toHaveBeenCalledWith({
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      email: payload.email,
-      title: 'Welcome to our platform',
-      template: '<p>Hello, welcome to our platform.</p>'
+      sourceEmail: 'test@test.com',
+      targetEmail: payload.email,
+      subject: 'Welcome to our platform',
+      body: '<p>Hello, welcome to our platform.</p>'
     })
   })
 
