@@ -18,8 +18,8 @@ export const ENVS = {
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
     TOPICS: {
-      CUSTOMER: {
-        CREATED: process.env.KAFKA_TOPIC_CUSTOMER_CREATED ?? 'user-created'
+      USER: {
+        CREATED: process.env.KAFKA_TOPIC_USER_CREATED ?? 'user-created'
       },
       NOTIFICATIONS: {
         EMAIL: process.env.KAFKA_TOPIC_EMAIL_NOTIFICATIONS ?? 'email-notifications'

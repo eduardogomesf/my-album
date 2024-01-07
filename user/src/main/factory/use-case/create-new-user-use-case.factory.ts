@@ -7,7 +7,7 @@ import { generateKafkaProducer } from '../messaging'
 export async function generateCreateNewUserUseCase() {
   const userRepository = generateMongoUserRepository()
   const hashPassword = generateBcryptHashPassword()
-  const newUserCreatedSender = await generateKafkaProducer(ENVS.KAFKA.TOPICS.CUSTOMER.CREATED)
+  const newUserCreatedSender = await generateKafkaProducer(ENVS.KAFKA.TOPICS.USER.CREATED)
   const sendWelcomeNotification = await generateSendEmailNotificationUtil()
   const createNewUserUseCase = new CreateNewUserUseCase(
     userRepository,
