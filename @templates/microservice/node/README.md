@@ -1,4 +1,4 @@
-# Customer Management Microservice
+# User Management Microservice
 ## Overview
 
 ## Features
