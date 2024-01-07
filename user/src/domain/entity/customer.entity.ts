@@ -1,6 +1,6 @@
 import { BaseEntity } from './base.entity'
 
-interface CreateCustomerDTO {
+interface CreateUserDTO {
   id?: string
   firstName: string
   lastName: string
@@ -9,14 +9,14 @@ interface CreateCustomerDTO {
   cellphone: string
 }
 
-export class Customer extends BaseEntity {
+export class User extends BaseEntity {
   public readonly firstName: string
   public readonly lastName: string
   public readonly email: string
   public readonly password: string
   public readonly cellphone: string
 
-  constructor (payload: CreateCustomerDTO) {
+  constructor(payload: CreateUserDTO) {
     super(payload.id)
     this.firstName = payload.firstName
     this.lastName = payload.lastName
@@ -27,7 +27,7 @@ export class Customer extends BaseEntity {
     this.validate()
   }
 
-  private validate () {
+  private validate() {
     if (!this.id) throw new Error('ID should not be empty')
     if (!this.firstName) throw new Error('First name should not be empty')
     if (!this.lastName) throw new Error('Last name should not be empty')
@@ -35,7 +35,7 @@ export class Customer extends BaseEntity {
     if (!this.cellphone) throw new Error('Cellphone should not be empty')
   }
 
-  public getFullName () {
+  public getFullName() {
     return `${this.firstName} ${this.lastName}`
   }
 }

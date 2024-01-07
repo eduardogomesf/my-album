@@ -1,14 +1,14 @@
 import { type Request, type Response } from 'express'
-import { type CustomerLoginUseCase, type CreateNewCustomerUseCase } from '@/application/use-case'
+import { type UserLoginUseCase, type CreateNewUserUseCase } from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
 
-const logger = new Logger('CustomerController')
+const logger = new Logger('UserController')
 
-export class CustomerController {
+export class UserController {
   constructor(
-    private readonly createNewCustomerUseCase: CreateNewCustomerUseCase,
-    private readonly customerLoginUseCase: CustomerLoginUseCase
+    private readonly createNewUserUseCase: CreateNewUserUseCase,
+    private readonly userLoginUseCase: UserLoginUseCase
   ) {}
 
   async create(request: Request, response: Response): Promise<Response> {
@@ -26,19 +26,19 @@ export class CustomerController {
 
       const { firstName, lastName, email, password, cellphone } = request.body
 
-      const createCustomerResult = await this.createNewCustomerUseCase.create({
+      const createUserResult = await this.createNewUserUseCase.create({
         firstName, lastName, email, password, cellphone
       })
 
-      if (!createCustomerResult.ok) {
+      if (!createUserResult.ok) {
         return response.status(400).json({
-          message: createCustomerResult.message
+          message: createUserResult.message
         })
       }
 
       return response.status(201).send()
     } catch (error) {
-      logger.error('Error creating customer')
+      logger.error('Error creating user')
       logger.error(error)
       return response.status(500).send()
     }
@@ -59,7 +59,7 @@ export class CustomerController {
 
       const { email, password } = request.body
 
-      const loginResult = await this.customerLoginUseCase.login({
+      const loginResult = await this.userLoginUseCase.login({
         email, password
       })
 
@@ -81,7 +81,7 @@ export class CustomerController {
 
       return response.status(200).json(responseBody)
     } catch (error) {
-      logger.error('Error creating customer')
+      logger.error('Error creating user')
       logger.error(error)
       return response.status(500).send()
     }

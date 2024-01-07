@@ -1,16 +1,16 @@
 import { Router } from 'express'
 
 import { type UseCases } from '../../interface/use-cases'
-import { CustomerController } from '../controller/customer.controller'
+import { UserController } from '../controller/user.controller'
 
-export function getCustomerRouter(useCases: UseCases): Router {
+export function getUserRouter(useCases: UseCases): Router {
   const router = Router()
 
-  const customerController = new CustomerController(useCases.createNewCustomer, useCases.customerLogin)
+  const userController = new UserController(useCases.createNewUser, useCases.userLogin)
 
-  router.post('/customers', customerController.create.bind(customerController))
+  router.post('/users', userController.create.bind(userController))
 
-  router.post('/customers/login', customerController.login.bind(customerController))
+  router.post('/users/login', userController.login.bind(userController))
 
   return router
 }

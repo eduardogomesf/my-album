@@ -1,6 +1,6 @@
-import { type CustomerLoginUseCase, type CreateNewCustomerUseCase } from '../../application/use-case'
+import { type UserLoginUseCase, type CreateNewUserUseCase } from '../../application/use-case'
 
 export interface UseCases {
-  createNewCustomer: CreateNewCustomerUseCase
-  customerLogin: CustomerLoginUseCase
+  createNewUser: CreateNewUserUseCase
+  userLogin: UserLoginUseCase
 }

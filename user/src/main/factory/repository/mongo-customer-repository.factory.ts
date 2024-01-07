@@ -1,5 +1,5 @@
-import { MongoCustomerRepository } from '@/infra/database/mongodb/customer/customer.repository'
+import { MongoUserRepository } from '@/infra/database/mongodb/user/user.repository'
 
-export function generateMongoCustomerRepository() {
-  return new MongoCustomerRepository()
+export function generateMongoUserRepository() {
+  return new MongoUserRepository()
 }

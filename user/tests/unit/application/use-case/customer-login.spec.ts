@@ -1,14 +1,14 @@
-import { type PasswordValidator, type FindCustomerByEmailRepository, type TokenGenerator } from '../../../../src/application/protocol'
-import { CustomerLoginUseCase } from '../../../../src/application/use-case'
+import { type PasswordValidator, type FindUserByEmailRepository, type TokenGenerator } from '../../../../src/application/protocol'
+import { UserLoginUseCase } from '../../../../src/application/use-case'
 
-describe('Customer Login Use Case', () => {
-  let sut: CustomerLoginUseCase
-  let findCustomerByEmailRepository: FindCustomerByEmailRepository
+describe('User Login Use Case', () => {
+  let sut: UserLoginUseCase
+  let findUserByEmailRepository: FindUserByEmailRepository
   let passwordValidator: PasswordValidator
   let tokenGenerator: TokenGenerator
 
   beforeEach(() => {
-    findCustomerByEmailRepository = {
+    findUserByEmailRepository = {
       findByEmail: jest.fn().mockResolvedValue({
         id: 'any-id',
         name: 'any-name',
@@ -23,14 +23,14 @@ describe('Customer Login Use Case', () => {
       generate: jest.fn().mockResolvedValue('any-token')
     }
 
-    sut = new CustomerLoginUseCase(
-      findCustomerByEmailRepository,
+    sut = new UserLoginUseCase(
+      findUserByEmailRepository,
       passwordValidator,
       tokenGenerator
     )
   })
 
-  it('should successfully login a customer', async () => {
+  it('should successfully login a user', async () => {
     const result = await sut.login({
       email: 'any-email',
       password: 'any-password'
@@ -44,8 +44,8 @@ describe('Customer Login Use Case', () => {
     })
   })
 
-  it('should not allow a customer to login if email is invalid', async () => {
-    jest.spyOn(findCustomerByEmailRepository, 'findByEmail').mockResolvedValueOnce(null)
+  it('should not allow a user to login if email is invalid', async () => {
+    jest.spyOn(findUserByEmailRepository, 'findByEmail').mockResolvedValueOnce(null)
 
     const result = await sut.login({
       email: 'any-email',
@@ -54,11 +54,11 @@ describe('Customer Login Use Case', () => {
 
     expect(result).toEqual({
       ok: false,
-      message: 'No customer found with the given credentials'
+      message: 'No user found with the given credentials'
     })
   })
 
-  it('should not allow a customer to login if password is invalid', async () => {
+  it('should not allow a user to login if password is invalid', async () => {
     jest.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false)
 
     const result = await sut.login({
@@ -68,12 +68,12 @@ describe('Customer Login Use Case', () => {
 
     expect(result).toEqual({
       ok: false,
-      message: 'No customer found with the given credentials'
+      message: 'No user found with the given credentials'
     })
   })
 
-  it('should pass along any error thrown when trying to find a customer by email', async () => {
-    jest.spyOn(findCustomerByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('find-by-email-error'))
+  it('should pass along any error thrown when trying to find a user by email', async () => {
+    jest.spyOn(findUserByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('find-by-email-error'))
 
     const result = sut.login({
       email: 'any-email',
@@ -84,7 +84,7 @@ describe('Customer Login Use Case', () => {
   })
 
   it('should pass along any error thrown when trying to validate password', async () => {
-    jest.spyOn(findCustomerByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('validate-password-error'))
+    jest.spyOn(findUserByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('validate-password-error'))
 
     const result = sut.login({
       email: 'any-email',
@@ -95,7 +95,7 @@ describe('Customer Login Use Case', () => {
   })
 
   it('should pass along any error thrown when trying to generate token', async () => {
-    jest.spyOn(findCustomerByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('generate-token-error'))
+    jest.spyOn(findUserByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('generate-token-error'))
 
     const result = sut.login({
       email: 'any-email',

@@ -1,9 +1,9 @@
 import { type UseCases } from '@/presentation/interface/use-cases'
-import { generateCreateNewCustomerUseCase, generateCustomerLoginUseCase } from '../factory/use-case'
+import { generateCreateNewUserUseCase, generateUserLoginUseCase } from '../factory/use-case'
 
 export const getApplicationUseCases = async (): Promise<UseCases> => {
   return {
-    createNewCustomer: await generateCreateNewCustomerUseCase(),
-    customerLogin: generateCustomerLoginUseCase()
+    createNewUser: await generateCreateNewUserUseCase(),
+    userLogin: generateUserLoginUseCase()
   }
 }

@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 import { MongoConnectionManager } from '../client'
 import { ENVS } from '@/shared'
 
-const CustomerSchema = new Schema({
+const UserSchema = new Schema({
   _id: {
     type: String,
     required: true
@@ -29,11 +29,11 @@ const CustomerSchema = new Schema({
   }
 })
 
-CustomerSchema.virtual('id').get(function() {
+UserSchema.virtual('id').get(function() {
   return this._id.toString()
 })
 
-CustomerSchema.set('toJSON', {
+UserSchema.set('toJSON', {
   virtuals: true
 })
 
@@ -44,6 +44,6 @@ const connection = MongoConnectionManager.getOrCreate(
   {}
 )
 
-export const CustomerModel = model('Customer', CustomerSchema, 'customers', {
+export const UserModel = model('User', UserSchema, 'users', {
   connection
 })

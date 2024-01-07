@@ -1,5 +1,5 @@
-import { type Customer } from '@/domain/entity/customer.entity'
+import { type User } from '@/domain/entity/user.entity'
 
-export interface FindCustomerByEmailRepository {
-  findByEmail: (email: string) => Promise<Customer | null>
+export interface FindUserByEmailRepository {
+  findByEmail: (email: string) => Promise<User | null>
 }

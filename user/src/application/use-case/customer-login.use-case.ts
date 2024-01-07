@@ -1,31 +1,31 @@
 import { type UseCaseResponse } from '../interface'
-import { type TokenGenerator, type FindCustomerByEmailRepository, type PasswordValidator } from '../protocol'
+import { type TokenGenerator, type FindUserByEmailRepository, type PasswordValidator } from '../protocol'
 
-interface CustomerLoginUseCaseDTO {
+interface UserLoginUseCaseDTO {
   email: string
   password: string
 }
 
-export class CustomerLoginUseCase {
+export class UserLoginUseCase {
   constructor(
-    private readonly findCustomerByEmailRepository: FindCustomerByEmailRepository,
+    private readonly findUserByEmailRepository: FindUserByEmailRepository,
     private readonly passwordValidator: PasswordValidator,
     private readonly tokenGenerator: TokenGenerator
   ) {}
 
-  async login(payload: CustomerLoginUseCaseDTO): Promise<UseCaseResponse> {
-    const customerByEmail = await this.findCustomerByEmailRepository.findByEmail(payload.email)
+  async login(payload: UserLoginUseCaseDTO): Promise<UseCaseResponse> {
+    const userByEmail = await this.findUserByEmailRepository.findByEmail(payload.email)
 
-    const notValidCredentialsMessage = 'No customer found with the given credentials'
+    const notValidCredentialsMessage = 'No user found with the given credentials'
 
-    if (!customerByEmail) {
+    if (!userByEmail) {
       return {
         ok: false,
         message: notValidCredentialsMessage
       }
     }
 
-    const isPasswordValid = await this.passwordValidator.validate(payload.password, customerByEmail.password)
+    const isPasswordValid = await this.passwordValidator.validate(payload.password, userByEmail.password)
 
     if (!isPasswordValid) {
       return {
@@ -35,7 +35,7 @@ export class CustomerLoginUseCase {
     }
 
     const token = await this.tokenGenerator.generate({
-      id: customerByEmail.id
+      id: userByEmail.id
     })
 
     return {

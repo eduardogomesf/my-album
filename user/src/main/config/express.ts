@@ -3,7 +3,7 @@ import * as cors from 'cors'
 
 import { ENVS, Logger } from '@/shared'
 import { type UseCases } from '@/presentation/interface/use-cases'
-import { getCustomerRouter } from '@/presentation/rest/route'
+import { getUserRouter } from '@/presentation/rest/route'
 
 function setDefaultMiddlewares(app: express.Express) {
   app.use(express.json())
@@ -18,9 +18,9 @@ function setDefaultRoutes(app: express.Express) {
 }
 
 function setRoutes(app: express.Express, useCases: UseCases) {
-  const customerRouter = getCustomerRouter(useCases)
+  const userRouter = getUserRouter(useCases)
 
-  app.use(customerRouter)
+  app.use(userRouter)
 }
 
 export function bootstrapExpressServer(useCases: UseCases) {

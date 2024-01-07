@@ -1,20 +1,20 @@
-import { CreateNewCustomerUseCase } from '@/application/use-case'
+import { CreateNewUserUseCase } from '@/application/use-case'
 import { ENVS } from '@/shared'
 import { generateBcryptHashPassword, generateSendEmailNotificationUtil } from '../util'
-import { generateMongoCustomerRepository } from '../repository'
+import { generateMongoUserRepository } from '../repository'
 import { generateKafkaProducer } from '../messaging'
 
-export async function generateCreateNewCustomerUseCase() {
-  const customerRepository = generateMongoCustomerRepository()
+export async function generateCreateNewUserUseCase() {
+  const userRepository = generateMongoUserRepository()
   const hashPassword = generateBcryptHashPassword()
-  const newCustomerCreatedSender = await generateKafkaProducer(ENVS.KAFKA.TOPICS.CUSTOMER.CREATED)
+  const newUserCreatedSender = await generateKafkaProducer(ENVS.KAFKA.TOPICS.CUSTOMER.CREATED)
   const sendWelcomeNotification = await generateSendEmailNotificationUtil()
-  const createNewCustomerUseCase = new CreateNewCustomerUseCase(
-    customerRepository,
+  const createNewUserUseCase = new CreateNewUserUseCase(
+    userRepository,
     hashPassword,
-    customerRepository,
-    newCustomerCreatedSender,
+    userRepository,
+    newUserCreatedSender,
     sendWelcomeNotification
   )
-  return createNewCustomerUseCase
+  return createNewUserUseCase
 }

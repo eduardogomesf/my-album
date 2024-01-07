@@ -1,14 +1,14 @@
-import { Customer } from '@/domain/entity/customer.entity'
+import { User } from '@/domain/entity/user.entity'
 import { type UseCaseResponse } from '../interface'
 import {
   type HashPassword,
-  type FindCustomerByEmailRepository,
-  type CreateCustomerRepository,
+  type FindUserByEmailRepository,
+  type CreateUserRepository,
   type MessageSender,
   type SendEmailNotification
 } from '../protocol'
 
-interface CreateNewCustomerUseCaseDTO {
+interface CreateNewUserUseCaseDTO {
   firstName: string
   lastName: string
   email: string
@@ -16,17 +16,17 @@ interface CreateNewCustomerUseCaseDTO {
   password: string
 }
 
-export class CreateNewCustomerUseCase {
+export class CreateNewUserUseCase {
   constructor(
-    private readonly findCustomerByEmailRepository: FindCustomerByEmailRepository,
+    private readonly findUserByEmailRepository: FindUserByEmailRepository,
     private readonly hashPassword: HashPassword,
-    private readonly createCustomerRepository: CreateCustomerRepository,
-    private readonly newCustomerCreatedSender: MessageSender,
+    private readonly createUserRepository: CreateUserRepository,
+    private readonly newUserCreatedSender: MessageSender,
     private readonly sendEmailNotification: SendEmailNotification
   ) {}
 
-  async create(payload: CreateNewCustomerUseCaseDTO): Promise<UseCaseResponse> {
-    const userByEmail = await this.findCustomerByEmailRepository.findByEmail(payload.email)
+  async create(payload: CreateNewUserUseCaseDTO): Promise<UseCaseResponse> {
+    const userByEmail = await this.findUserByEmailRepository.findByEmail(payload.email)
 
     if (userByEmail) {
       return {
@@ -37,7 +37,7 @@ export class CreateNewCustomerUseCase {
 
     const securePassword = await this.hashPassword.hash(payload.password)
 
-    const customer = new Customer({
+    const user = new User({
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
@@ -45,10 +45,10 @@ export class CreateNewCustomerUseCase {
       password: securePassword
     })
 
-    await this.createCustomerRepository.create(customer)
+    await this.createUserRepository.create(user)
 
-    await this.newCustomerCreatedSender.send({
-      id: customer.id,
+    await this.newUserCreatedSender.send({
+      id: user.id,
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,

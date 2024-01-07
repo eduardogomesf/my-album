@@ -1,1 +1,1 @@
-export * from './mongo-customer-repository.factory'
+export * from './mongo-user-repository.factory'

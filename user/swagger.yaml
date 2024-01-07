@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-  title: Customer Service API
+  title: User Service API
   version: 1.0.0
 paths:
-  /customers/login:
+  /users/login:
     post:
-      summary: Customer Login
-      description: Allows a customer to log in using their email and password.
-      tags: ['customer']
+      summary: User Login
+      description: Allows a user to log in using their email and password.
+      tags: ["user"]
       requestBody:
         required: true
         content:
@@ -26,7 +26,7 @@ paths:
                 - email
                 - password
       responses:
-        '200':
+        "200":
           description: Successful login
           content:
             application/json:
@@ -37,24 +37,24 @@ paths:
                     type: string
                     description: Authentication token
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvbiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-        '400':
+        "400":
           description: Bad Request
-        '401':
+        "401":
           description: Unauthorized
           content:
-           application/json:
-            schema:
-              type: object
-              properties:
-               message:
-                type: string
-                description: "Error Message"
-                example: "E-mail already in use"
-  /customers:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error Message"
+                    example: "E-mail already in use"
+  /users:
     post:
-      summary: Create Customer
-      description: Register a new customer with their personal details.
-      tags: ['customer']
+      summary: Create User
+      description: Register a new user with their personal details.
+      tags: ["user"]
       requestBody:
         required: true
         content:
@@ -67,14 +67,14 @@ paths:
                   example: "John"
                 lastName:
                   type: string
-                  example: 'Doe'
+                  example: "Doe"
                 email:
                   type: string
                   format: email
-                  example: 'john.doe@mail.com'
+                  example: "john.doe@mail.com"
                 cellphone:
                   type: string
-                  example: '11999999999'
+                  example: "11999999999"
                 password:
                   type: string
                   example: "a-very-secure-password-123-#*"
@@ -85,7 +85,7 @@ paths:
                 - cellphone
                 - password
       responses:
-        '201':
-          description: Customer created successfully
-        '400':
+        "201":
+          description: User created successfully
+        "400":
           description: Bad Request

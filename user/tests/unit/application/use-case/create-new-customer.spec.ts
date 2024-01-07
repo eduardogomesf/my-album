@@ -1,8 +1,8 @@
-import { CreateNewCustomerUseCase } from '../../../../src/application/use-case'
+import { CreateNewUserUseCase } from '../../../../src/application/use-case'
 import {
   type MessageSender,
-  type CreateCustomerRepository,
-  type FindCustomerByEmailRepository,
+  type CreateUserRepository,
+  type FindUserByEmailRepository,
   type HashPassword,
   type SendEmailNotification
 } from '../../../../src/application/protocol'
@@ -11,31 +11,31 @@ jest.mock('uuid', () => ({
   v4: () => 'any-id'
 }))
 
-describe('Create New Customer Use Case', () => {
-  let sut: CreateNewCustomerUseCase
-  let mockFindCustomerByEmailRepository: FindCustomerByEmailRepository
+describe('Create New User Use Case', () => {
+  let sut: CreateNewUserUseCase
+  let mockFindUserByEmailRepository: FindUserByEmailRepository
   let mockHashPassword: HashPassword
-  let mockCreateCustomerRepository: CreateCustomerRepository
-  let newCustomerCreatedSender: MessageSender
+  let mockCreateUserRepository: CreateUserRepository
+  let newUserCreatedSender: MessageSender
   let sendWelcomeNotification: SendEmailNotification
 
   beforeEach(() => {
-    mockFindCustomerByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
+    mockFindUserByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
     mockHashPassword = { hash: jest.fn().mockResolvedValue('hashed-password') }
-    mockCreateCustomerRepository = { create: jest.fn().mockResolvedValue(null) }
-    newCustomerCreatedSender = { send: jest.fn().mockResolvedValue(true) }
+    mockCreateUserRepository = { create: jest.fn().mockResolvedValue(null) }
+    newUserCreatedSender = { send: jest.fn().mockResolvedValue(true) }
     sendWelcomeNotification = { send: jest.fn().mockResolvedValue(true) }
 
-    sut = new CreateNewCustomerUseCase(
-      mockFindCustomerByEmailRepository,
+    sut = new CreateNewUserUseCase(
+      mockFindUserByEmailRepository,
       mockHashPassword,
-      mockCreateCustomerRepository,
-      newCustomerCreatedSender,
+      mockCreateUserRepository,
+      newUserCreatedSender,
       sendWelcomeNotification
     )
   })
 
-  it('should create a new customer successfully', async () => {
+  it('should create a new user successfully', async () => {
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
@@ -58,10 +58,10 @@ describe('Create New Customer Use Case', () => {
       cellphone: '11999999999'
     }
 
-    const findByEmailSpy = jest.spyOn(mockFindCustomerByEmailRepository, 'findByEmail')
+    const findByEmailSpy = jest.spyOn(mockFindUserByEmailRepository, 'findByEmail')
     const hashSpy = jest.spyOn(mockHashPassword, 'hash')
-    const createSpy = jest.spyOn(mockCreateCustomerRepository, 'create')
-    const newCustomerCreatedSpy = jest.spyOn(newCustomerCreatedSender, 'send')
+    const createSpy = jest.spyOn(mockCreateUserRepository, 'create')
+    const newUserCreatedSpy = jest.spyOn(newUserCreatedSender, 'send')
     const sendWelcomeNotificationSpy = jest.spyOn(sendWelcomeNotification, 'send')
 
     await sut.create(payload)
@@ -76,7 +76,7 @@ describe('Create New Customer Use Case', () => {
       cellphone: payload.cellphone,
       password: 'hashed-password'
     })
-    expect(newCustomerCreatedSpy).toHaveBeenCalledWith({
+    expect(newUserCreatedSpy).toHaveBeenCalledWith({
       id: 'any-id',
       firstName: payload.firstName,
       lastName: payload.lastName,
@@ -92,8 +92,8 @@ describe('Create New Customer Use Case', () => {
     })
   })
 
-  it('should not create a new customer if e-mail is already in use', async () => {
-    mockFindCustomerByEmailRepository.findByEmail = jest.fn().mockResolvedValue({
+  it('should not create a new user if e-mail is already in use', async () => {
+    mockFindUserByEmailRepository.findByEmail = jest.fn().mockResolvedValue({
       id: 'any-id',
       firstName: 'John',
       lastName: 'Doe',
@@ -115,8 +115,8 @@ describe('Create New Customer Use Case', () => {
     expect(result.message).toBe('E-mail already in use')
   })
 
-  it('should pass along any error thrown when trying to find a customer by id', async () => {
-    mockFindCustomerByEmailRepository.findByEmail = jest.fn().mockImplementation(() => { throw new Error('any-error') })
+  it('should pass along any error thrown when trying to find a user by id', async () => {
+    mockFindUserByEmailRepository.findByEmail = jest.fn().mockImplementation(() => { throw new Error('any-error') })
 
     const payload = {
       firstName: 'John',
@@ -147,8 +147,8 @@ describe('Create New Customer Use Case', () => {
     await expect(result).rejects.toThrow(new Error('hash-error'))
   })
 
-  it('should pass along any error thrown when trying to create a customer', async () => {
-    mockCreateCustomerRepository.create = jest.fn().mockImplementation(() => { throw new Error('create-customer-error') })
+  it('should pass along any error thrown when trying to create a user', async () => {
+    mockCreateUserRepository.create = jest.fn().mockImplementation(() => { throw new Error('create-user-error') })
 
     const payload = {
       firstName: 'John',
@@ -160,6 +160,6 @@ describe('Create New Customer Use Case', () => {
 
     const result = sut.create(payload)
 
-    await expect(result).rejects.toThrow(new Error('create-customer-error'))
+    await expect(result).rejects.toThrow(new Error('create-user-error'))
   })
 })

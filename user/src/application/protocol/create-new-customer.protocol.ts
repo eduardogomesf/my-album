@@ -1,3 +1,3 @@
-export interface CreateCustomerRepository {
-  create: (customer: any) => Promise<void>
+export interface CreateUserRepository {
+  create: (user: any) => Promise<void>
 }
