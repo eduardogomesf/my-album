@@ -7,7 +7,7 @@ datasource db {
   url      = env("PG_DATABASE_URL")
 }
 
-model Customer {
+model User {
   id        String   @id @default(uuid())
   firstName String   @map("first_name")
   lastName  String   @map("last_name")
@@ -15,5 +15,5 @@ model Customer {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("customers")
+  @@map("users")
 }

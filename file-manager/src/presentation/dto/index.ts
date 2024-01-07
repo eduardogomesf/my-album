@@ -1,1 +1,1 @@
-export * from './add-new-customer.dto'
+export * from './add-new-user.dto'

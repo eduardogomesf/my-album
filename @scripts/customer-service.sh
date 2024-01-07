@@ -6,9 +6,9 @@ docker compose up -d  shared-services > /dev/null 2>&1
 
 sleep 2
 
-# Start Customer related services
-echo "Starting customer related services..."
-docker compose up customer-service-mongodb customer-service -d  --build > /dev/null 2>&1
+# Start User related services
+echo "Starting user related services..."
+docker compose up user-service-mongodb user-service -d  --build > /dev/null 2>&1
 
 echo "Services running!"
 

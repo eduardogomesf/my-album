@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  # Customer Management Service
-  customer-service-mongodb:
+  # User Management Service
+  user-service-mongodb:
     image: mongo:latest
     restart: always
     ports:
@@ -13,18 +13,18 @@ services:
     volumes:
       - mongodb_data:/data/db
 
-  customer-service:
-    container_name: customer-service-app
+  user-service:
+    container_name: user-service-app
     restart: always
     build:
-      context: ./customer
+      context: ./user
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     working_dir: /usr/app
     command: [ "npm", "start" ]
     depends_on:
-      customer-service-mongodb:
+      user-service-mongodb:
         condition: service_started
       kafka:
         condition: service_started

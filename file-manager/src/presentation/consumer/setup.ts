@@ -1,11 +1,11 @@
-import { type Injections } from '../protocol/injections.protocol'
-import { EmailNotificationEventConsumer } from './add-new-customer.consumer'
+import { type Injections } from '../interface/injections'
+import { AddNewUserEventConsumer } from './add-new-user.consumer'
 
 export const setupConsumers = (dependencies: Injections) => {
   const consumers = [
-    new EmailNotificationEventConsumer(
-      dependencies.sendEmailNotificationUseCase,
-      dependencies.kafkaConsumer
+    new AddNewUserEventConsumer(
+      dependencies.addNewUserUseCase,
+      dependencies.addNewUseKafkaConsumer
     )
   ]
 

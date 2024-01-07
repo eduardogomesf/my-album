@@ -11,10 +11,10 @@ echo "Waiting for Kong to be fully operational..."
 sleep 10
 
 echo "Configuring Kong..."
-# Create the 'customer-service' service
+# Create the 'user-service' service
 curl -s -X POST $KONG_ADMIN_URL/services \
-    -d name=customer-service \
-    -d host=customer-service \
+    -d name=user-service \
+    -d host=user-service \
     -d port=3000 \
     -d protocol=http \
     -d retries=5 \
@@ -24,10 +24,10 @@ curl -s -X POST $KONG_ADMIN_URL/services \
     -d tags[]=microservice \
     -d tags[]=user-management
 
-# Create the 'customer-login' route for the 'customer-service'
-curl -s -X POST $KONG_ADMIN_URL/services/customer-service/routes \
-    -d name=customer-login \
-    -d paths[]=/customers/login \
+# Create the 'user-login' route for the 'user-service'
+curl -s -X POST $KONG_ADMIN_URL/services/user-service/routes \
+    -d name=user-login \
+    -d paths[]=/users/login \
     -d methods[]=POST \
     -d https_redirect_status_code=426 \
     -d regex_priority=0 \
@@ -36,12 +36,12 @@ curl -s -X POST $KONG_ADMIN_URL/services/customer-service/routes \
     -d request_buffering=true \
     -d response_buffering=true \
     -d preserve_host=false \
-    -d tags[]=customer-service
+    -d tags[]=user-service
 
-# Create the 'create-new-customer' route for the 'customer-service'
-curl -s -X POST $KONG_ADMIN_URL/services/customer-service/routes \
-    -d name=create-new-customer \
-    -d paths[]=/customers \
+# Create the 'create-new-user' route for the 'user-service'
+curl -s -X POST $KONG_ADMIN_URL/services/user-service/routes \
+    -d name=create-new-user \
+    -d paths[]=/users \
     -d methods[]=POST \
     -d https_redirect_status_code=426 \
     -d regex_priority=0 \
@@ -50,7 +50,7 @@ curl -s -X POST $KONG_ADMIN_URL/services/customer-service/routes \
     -d request_buffering=true \
     -d response_buffering=true \
     -d preserve_host=false \
-    -d tags[]=customer-service
+    -d tags[]=user-service
 
 # echo "Stop kong related services..."
 # docker stop kong-database kong-migration kong konga 

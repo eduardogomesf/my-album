@@ -1,1 +1,1 @@
-export * from './add-new-customer.use-case'
+export * from './add-new-user.use-case'
