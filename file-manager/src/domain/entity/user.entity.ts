@@ -1,18 +1,18 @@
 import { BaseEntity } from './base.entity'
 
-interface CreateCustomerDTO {
+interface CreateUserDTO {
   id?: string
   firstName: string
   lastName: string
   email: string
 }
 
-export class Customer extends BaseEntity {
+export class User extends BaseEntity {
   public readonly firstName: string
   public readonly lastName: string
   public readonly email: string
 
-  constructor(payload: CreateCustomerDTO) {
+  constructor(payload: CreateUserDTO) {
     super(payload.id)
     this.firstName = payload.firstName
     this.lastName = payload.lastName

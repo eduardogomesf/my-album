@@ -1,13 +1,13 @@
 import { type Consumer } from 'kafkajs'
 import { Logger } from '@/shared'
-import { type AddNewCustomerUseCase } from '@/application/use-case'
-import { type AddNewCustomerDTO } from '../dto'
+import { type AddNewUserUseCase } from '@/application/use-case'
+import { type AddNewUserDTO } from '../dto'
 
-const logger = new Logger('AddNewCustomerEventConsumer')
+const logger = new Logger('AddNewUserEventConsumer')
 
-export class AddNewCustomerEventConsumer {
+export class AddNewUserEventConsumer {
   constructor(
-    private readonly addNewCustomerUseCase: AddNewCustomerUseCase,
+    private readonly addNewUserUseCase: AddNewUserUseCase,
     private readonly kafkaConsumer: Consumer
   ) {}
 
@@ -16,11 +16,11 @@ export class AddNewCustomerEventConsumer {
       eachMessage: async ({ message, topic, partition }) => {
         const dataFromBuffer = message?.value?.toString() ?? '{}'
 
-        const parsedData: AddNewCustomerDTO = JSON.parse(dataFromBuffer)
+        const parsedData: AddNewUserDTO = JSON.parse(dataFromBuffer)
 
         logger.info(`Message with id ${parsedData.id} received from ${topic} topic and ${partition} partition`)
 
-        await this.addNewCustomerUseCase.execute({
+        await this.addNewUserUseCase.execute({
           id: parsedData.id,
           firstName: parsedData.firstName,
           lastName: parsedData.lastName,

@@ -1,2 +1,2 @@
-export * from './get-customer-by-email-repository.protocol'
-export * from './create-customer-repository.protocol'
+export * from './get-user-by-email-repository.protocol'
+export * from './create-user-repository.protocol'

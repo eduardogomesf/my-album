@@ -2,7 +2,7 @@ import * as express from 'express'
 import * as cors from 'cors'
 
 import { ENVS, Logger } from '@/shared'
-import { type UseCases } from '@/presentation/interface/use-cases'
+import { type UseCases } from '@/presentation/interface/injections'
 
 function setDefaultMiddlewares(app: express.Express) {
   app.use(express.json())

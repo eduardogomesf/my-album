@@ -10,13 +10,13 @@ export const ENVS = {
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
     TOPICS: {
-      CUSTOMER: {
-        CREATED: process.env.KAFKA_TOPIC_CUSTOMER_CREATED ?? 'customer-created'
+      USER: {
+        CREATED: process.env.KAFKA_TOPIC_USER_CREATED ?? 'user-created'
       }
     },
     CONSUMER_GROUPS: {
-      CUSTOMER: {
-        NEW_CUSTOMER: process.env.KAFKA_CG_NEW_CUSTOMER ?? 'file-manager-new-customer'
+      USER: {
+        NEW_USER: process.env.KAFKA_CG_NEW_USER ?? 'file-manager-new-user'
       }
     }
   }

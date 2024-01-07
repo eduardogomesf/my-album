@@ -1,1 +1,1 @@
-export * from './add-new-customer.consumer'
+export * from './add-new-user.consumer'

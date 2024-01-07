@@ -1,26 +1,26 @@
-import { AddNewCustomerUseCase } from '@/application/use-case'
-import { type CreateCustomerRepository, type GetCustomerByEmailRepository } from '@/application/protocol'
+import { AddNewUserUseCase } from '@/application/use-case'
+import { type CreateUserRepository, type GetUserByEmailRepository } from '@/application/protocol'
 
 jest.mock('uuid', () => ({
   v4: () => 'any-id'
 }))
 
-describe('Add New Customer Use Case', () => {
-  let sut: AddNewCustomerUseCase
-  let mockFindCustomerByEmailRepository: GetCustomerByEmailRepository
-  let mockCreateCustomerRepository: CreateCustomerRepository
+describe('Add New User Use Case', () => {
+  let sut: AddNewUserUseCase
+  let mockFindUserByEmailRepository: GetUserByEmailRepository
+  let mockCreateUserRepository: CreateUserRepository
 
   beforeEach(() => {
-    mockFindCustomerByEmailRepository = { getByEmail: jest.fn().mockResolvedValue(null) }
-    mockCreateCustomerRepository = { create: jest.fn().mockResolvedValue(null) }
+    mockFindUserByEmailRepository = { getByEmail: jest.fn().mockResolvedValue(null) }
+    mockCreateUserRepository = { create: jest.fn().mockResolvedValue(null) }
 
-    sut = new AddNewCustomerUseCase(
-      mockFindCustomerByEmailRepository,
-      mockCreateCustomerRepository
+    sut = new AddNewUserUseCase(
+      mockFindUserByEmailRepository,
+      mockCreateUserRepository
     )
   })
 
-  it('should create a new customer successfully', async () => {
+  it('should create a new user successfully', async () => {
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
@@ -46,8 +46,8 @@ describe('Add New Customer Use Case', () => {
       email: 'john.doe@mail.com'
     }
 
-    const getByEmailSpy = jest.spyOn(mockFindCustomerByEmailRepository, 'getByEmail')
-    const createSpy = jest.spyOn(mockCreateCustomerRepository, 'create')
+    const getByEmailSpy = jest.spyOn(mockFindUserByEmailRepository, 'getByEmail')
+    const createSpy = jest.spyOn(mockCreateUserRepository, 'create')
 
     await sut.execute(payload)
 
@@ -60,8 +60,8 @@ describe('Add New Customer Use Case', () => {
     expect(getByEmailSpy).toHaveBeenCalledWith(payload.email)
   })
 
-  it('should not create a new customer if e-mail is already in use', async () => {
-    mockFindCustomerByEmailRepository.getByEmail = jest.fn().mockResolvedValue({
+  it('should not create a new user if e-mail is already in use', async () => {
+    mockFindUserByEmailRepository.getByEmail = jest.fn().mockResolvedValue({
       id: 'existing-id',
       firstName: 'John',
       lastName: 'Doe',
@@ -84,11 +84,11 @@ describe('Add New Customer Use Case', () => {
       lastName: payload.lastName,
       email: payload.email
     })
-    expect(result.message).toBe('Customer already exists')
+    expect(result.message).toBe('User already exists')
   })
 
-  it('should pass along any error thrown when trying to get a customer by id', async () => {
-    mockFindCustomerByEmailRepository.getByEmail = jest.fn().mockImplementation(() => { throw new Error('any-error') })
+  it('should pass along any error thrown when trying to get a user by id', async () => {
+    mockFindUserByEmailRepository.getByEmail = jest.fn().mockImplementation(() => { throw new Error('any-error') })
 
     const payload = {
       firstName: 'John',
@@ -101,9 +101,9 @@ describe('Add New Customer Use Case', () => {
     await expect(result).rejects.toThrow(new Error('any-error'))
   })
 
-  it('should pass along any error thrown when trying to create a customer', async () => {
-    mockCreateCustomerRepository.create = jest.fn().mockImplementation(
-      () => { throw new Error('create-customer-error') }
+  it('should pass along any error thrown when trying to create a user', async () => {
+    mockCreateUserRepository.create = jest.fn().mockImplementation(
+      () => { throw new Error('create-user-error') }
     )
 
     const payload = {
@@ -114,6 +114,6 @@ describe('Add New Customer Use Case', () => {
 
     const result = sut.execute(payload)
 
-    await expect(result).rejects.toThrow(new Error('create-customer-error'))
+    await expect(result).rejects.toThrow(new Error('create-user-error'))
   })
 })
