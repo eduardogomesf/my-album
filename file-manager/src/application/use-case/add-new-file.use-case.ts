@@ -15,6 +15,7 @@ export interface AddNewFileParams {
   extension: string
   userId: string
   buffer: Buffer
+  content: Buffer
 }
 
 export class AddNewFileUseCase {
@@ -26,7 +27,7 @@ export class AddNewFileUseCase {
 
   async add(params: AddNewFileParams): Promise<UseCaseResponse> {
     try {
-      const { name, path, size, extension, userId, encoding, type } = params
+      const { name, path, size, extension, userId, encoding, type, content } = params
 
       const file = new File({
         name,
@@ -67,9 +68,10 @@ export class AddNewFileUseCase {
 
       const { url } = await this.saveFileStorageService.save({
         name,
-        path,
-        extension,
-        size
+        content,
+        encoding,
+        type,
+        userId
       })
 
       file.url = url
