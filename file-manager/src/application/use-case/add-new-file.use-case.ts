@@ -8,7 +8,7 @@ import {
 
 export interface AddNewFileParams {
   name: string
-  path: string
+  directoryPath: string
   size: number
   encoding: string
   type: string
@@ -27,11 +27,11 @@ export class AddNewFileUseCase {
 
   async add(params: AddNewFileParams): Promise<UseCaseResponse> {
     try {
-      const { name, path, size, extension, userId, encoding, type, content } = params
+      const { name, directoryPath, size, extension, userId, encoding, type, content } = params
 
       const file = new File({
         name,
-        path,
+        directoryPath,
         size,
         encoding,
         type,

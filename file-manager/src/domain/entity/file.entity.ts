@@ -5,7 +5,7 @@ import { DomainError } from './domain-error.entity'
 interface CreateFileDTO {
   id?: string
   name: string
-  path: string
+  directoryPath: string
   size: number
   encoding: string
   type: string
@@ -18,7 +18,7 @@ interface CreateFileDTO {
 
 export class File extends BaseEntity {
   name: string
-  path: string
+  directoryPath: string
   size: number
   encoding: string
   type: string
@@ -31,7 +31,7 @@ export class File extends BaseEntity {
   constructor(data: CreateFileDTO) {
     super(data.id)
     this.name = data.name
-    this.path = data.path
+    this.directoryPath = data.directoryPath
     this.size = data.size
     this.encoding = data.encoding
     this.type = data.type
@@ -46,7 +46,7 @@ export class File extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'path', 'size', 'extension', 'userId', 'type', 'encoding'],
+      ['name', 'directoryPath', 'size', 'extension', 'userId', 'type', 'encoding'],
       this
     )
 
