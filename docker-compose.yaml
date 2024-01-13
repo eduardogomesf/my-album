@@ -153,6 +153,18 @@ services:
       - "5432:5432"
     volumes:
       - file-manager-postgres:/var/lib/postgresql/data
+
+  localstack-s3:
+    image: localstack/localstack
+    ports:
+      - "4566:4566" 
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=us-east-1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "localstack-s3:/tmp/localstack-s3" 
+
 volumes:
   mongodb_data:
   kong-db:
@@ -160,3 +172,4 @@ volumes:
   zookeeper-data:
   zookeeper-log:
   file-manager-postgres:
+  localstack-s3:
