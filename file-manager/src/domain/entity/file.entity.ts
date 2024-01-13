@@ -9,6 +9,7 @@ interface CreateFileDTO {
   size: number
   extension: string
   userId: string
+  url?: string
   createdAt?: string
   updatedAt?: string
 }
@@ -19,6 +20,7 @@ export class File extends BaseEntity {
   size: number
   extension: string
   userId: string
+  url?: string | null
   createdAt: string | null
   updatedAt: string | null
 
@@ -29,6 +31,7 @@ export class File extends BaseEntity {
     this.size = data.size
     this.extension = data.extension
     this.userId = data.userId
+    this.url = data.url ?? null
     this.createdAt = data.createdAt ?? null
     this.updatedAt = data.updatedAt ?? null
 
