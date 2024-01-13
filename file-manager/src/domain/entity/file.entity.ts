@@ -1,4 +1,6 @@
+import { MissingFieldsHelper } from '@/shared/helper'
 import { BaseEntity } from './base.entity'
+import { DomainError } from './domain-error.entity'
 
 interface CreateFileDTO {
   id?: string
@@ -34,28 +36,17 @@ export class File extends BaseEntity {
   }
 
   private validate() {
-    if (!this.name) {
-      throw new Error('Name should not be empty')
-    }
+    const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
+      ['name', 'path', 'size', 'extension', 'userId'],
+      this
+    )
 
-    if (!this.path) {
-      throw new Error('Path should not be empty')
-    }
-
-    if (!this.size) {
-      throw new Error('Size should not be empty')
-    }
-
-    if (!this.extension) {
-      throw new Error('Extension should not be empty')
-    }
-
-    if (!this.userId) {
-      throw new Error('User ID should not be empty')
+    if (missingFieldsValidation.isMissing) {
+      throw new DomainError(missingFieldsValidation.message)
     }
 
     if (this.size < 0) {
-      throw new Error('Size should be greater than 0')
+      throw new DomainError('Size should be greater than 0')
     }
   }
 }

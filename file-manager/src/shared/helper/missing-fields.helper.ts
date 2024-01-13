@@ -1,5 +1,8 @@
 export class MissingFieldsHelper {
-  static hasMissingFields(fields: string[], payload: Record<string, unknown>): { isMissing: boolean, missingFields: string[] } {
+  static hasMissingFields(
+    fields: string[],
+    payload: Record<string, unknown> | any
+  ): { isMissing: boolean, missingFields: string[], message: string } {
     const missingFields: string[] = []
 
     fields.forEach(field => {
@@ -11,7 +14,8 @@ export class MissingFieldsHelper {
 
     return {
       isMissing: missingFields.length > 0,
-      missingFields
+      missingFields,
+      message: `fields ${missingFields.join(', ')} can not be empty`
     }
   }
 }
