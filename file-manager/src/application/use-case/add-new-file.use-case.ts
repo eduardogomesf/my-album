@@ -14,7 +14,6 @@ export interface AddNewFileParams {
   type: string
   extension: string
   userId: string
-  buffer: Buffer
   content: Buffer
 }
 
@@ -62,7 +61,7 @@ export class AddNewFileUseCase {
       if (!canAddMoreFilesValidation.canAdd) {
         return {
           ok: false,
-          message: `You don't have enough space. Free space: ${canAddMoreFilesValidation.freeSpace}`
+          message: `You don't have enough space. Free space: ${canAddMoreFilesValidation.freeSpace} bytes`
         }
       }
 
