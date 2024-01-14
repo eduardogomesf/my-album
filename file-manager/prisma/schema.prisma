@@ -14,6 +14,25 @@ model User {
   email     String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  files     File[]
 
   @@map("users")
+}
+
+model File {
+  id            String   @id @default(uuid())
+  name          String
+  directoryPath String   @map("directory_path")
+  size          BigInt
+  encoding      String
+  type          String
+  extension     String
+  url           String
+  userId        String   @map("user_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("files")
 }
