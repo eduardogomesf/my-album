@@ -67,6 +67,7 @@ export class AddNewFileUseCase {
 
       const { url } = await this.saveFileStorageService.save({
         name,
+        directoryPath,
         content,
         encoding,
         type,

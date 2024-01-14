@@ -19,5 +19,12 @@ export const ENVS = {
         NEW_USER: process.env.KAFKA_CG_NEW_USER ?? 'file-manager-new-user'
       }
     }
+  },
+  S3: {
+    BUCKET_NAME: process.env.S3_BUCKET_NAME ?? 'file-manager',
+    REGION: process.env.S3_REGION ?? 'us-east-1',
+    URL: process.env.S3_URL ?? 'http://localhost:4566',
+    DEFAULT_ACL: process.env.S3_DEFAULT_ACL ?? 'public-read',
+    STORAGE_CLASS: process.env.S3_STORAGE_CLASS ?? 'STANDARD'
   }
 } as const
