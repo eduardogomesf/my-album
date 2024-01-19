@@ -3,5 +3,5 @@ export interface GetCurrentStorageUsageRepositoryResponse {
 }
 
 export interface GetCurrentStorageUsageRepository {
-  get: (userId: string) => Promise<GetCurrentStorageUsageRepositoryResponse>
+  getUsage: (userId: string) => Promise<GetCurrentStorageUsageRepositoryResponse>
 }

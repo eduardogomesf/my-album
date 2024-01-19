@@ -95,7 +95,7 @@ export class AddNewFileUseCase {
   }
 
   private async canAddMoreFiles(userId: string, size: number): Promise<{ freeSpace: number, canAdd: boolean }> {
-    const { usage } = await this.getCurrentStorageUsageRepository.get(userId)
+    const { usage } = await this.getCurrentStorageUsageRepository.getUsage(userId)
 
     const maxStorageSize = 1024 * 1024 * 50 // 50MB
 

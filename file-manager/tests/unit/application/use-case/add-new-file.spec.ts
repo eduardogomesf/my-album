@@ -12,7 +12,7 @@ describe('Add New File Use Case', () => {
   let mockSaveFileRepository: SaveFileRepository
 
   beforeEach(() => {
-    mockGetCurrentStorageUsageRepository = { get: jest.fn().mockResolvedValue({ usage: 0 }) }
+    mockGetCurrentStorageUsageRepository = { getUsage: jest.fn().mockResolvedValue({ usage: 0 }) }
     mockGetFileStorageService = { save: jest.fn().mockResolvedValue({ url: 'any-path' }) }
     mockSaveFileRepository = { save: jest.fn().mockResolvedValue(null) }
 
@@ -65,19 +65,20 @@ describe('Add New File Use Case', () => {
       userId: 'user-id'
     }
 
-    const getSpy = jest.spyOn(mockGetCurrentStorageUsageRepository, 'get')
+    const getUsageSpy = jest.spyOn(mockGetCurrentStorageUsageRepository, 'getUsage')
     const saveFileSpy = jest.spyOn(mockGetFileStorageService, 'save')
     const saveSpy = jest.spyOn(mockSaveFileRepository, 'save')
 
     await sut.add(payload)
 
-    expect(getSpy).toHaveBeenCalledWith(payload.userId)
+    expect(getUsageSpy).toHaveBeenCalledWith(payload.userId)
     expect(saveFileSpy).toHaveBeenCalledWith({
       name: payload.name,
       content: payload.content,
       encoding: payload.encoding,
       type: payload.type,
-      userId: payload.userId
+      userId: payload.userId,
+      directoryPath: payload.directoryPath
     })
     expect(saveSpy).toHaveBeenCalledWith({
       id: 'any-id',
@@ -148,7 +149,7 @@ describe('Add New File Use Case', () => {
   })
 
   it('should return nok if the size of the file is greater than the available storage space', async () => {
-    mockGetCurrentStorageUsageRepository.get = jest.fn().mockResolvedValueOnce({ usage: 1024 * 1024 * 49 })
+    mockGetCurrentStorageUsageRepository.getUsage = jest.fn().mockResolvedValueOnce({ usage: 1024 * 1024 * 49 })
 
     const payload: AddNewFileParams = {
       name: 'my-test-file',
@@ -168,7 +169,7 @@ describe('Add New File Use Case', () => {
   })
 
   it('should pass along any unknown error', async () => {
-    mockGetCurrentStorageUsageRepository.get = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    mockGetCurrentStorageUsageRepository.getUsage = jest.fn().mockRejectedValueOnce(new Error('any-error'))
 
     const payload: AddNewFileParams = {
       name: 'my-test-file',
