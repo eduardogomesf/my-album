@@ -11,7 +11,7 @@ export function getFileRouter(useCases: UseCases): Router {
 
   const fileController = new FileController(useCases.addNewFileUseCase)
 
-  router.post('/file', upload.single('file'), fileController.add.bind(fileController))
+  router.post('/files', upload.single('file'), fileController.add.bind(fileController))
 
   return router
 }
