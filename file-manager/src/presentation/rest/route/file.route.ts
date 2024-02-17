@@ -17,7 +17,11 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage })
+const limits = {
+  fileSize: 1024 * 1024 * 10 // 10MB
+}
+
+const upload = multer({ storage, limits })
 
 export function getFileRouter(useCases: UseCases): Router {
   const router = Router()

@@ -117,7 +117,7 @@ export class AddNewFileUseCase {
   }
 
   private validateSize(size: number): boolean {
-    const allowedSize = 1024 * 1024 * 10
+    const allowedSize = 1024 * 1024 * 10 // 10MB
 
     return size <= allowedSize
   }
