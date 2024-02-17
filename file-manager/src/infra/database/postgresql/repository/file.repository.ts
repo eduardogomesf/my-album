@@ -39,7 +39,7 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
         }
       })
       return {
-        usage: Number(result[0]._sum.size)
+        usage: result && result.length > 0 ? Number(result[0]._sum.size) : 0
       }
     } catch (error) {
       logger.error(error.message)
