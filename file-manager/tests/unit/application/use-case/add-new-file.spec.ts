@@ -1,5 +1,7 @@
 import { type AddNewFileParams, AddNewFileUseCase } from '@/application/use-case'
 import { type GetCurrentStorageUsageRepository, type SaveFileStorageService, type SaveFileRepository } from '@/application/protocol/files'
+import { type GetFolderByIdRepository } from '@/application/protocol'
+import { getFolderByIdMock } from '../mock/folder.mock'
 
 jest.mock('uuid', () => ({
   v4: () => 'any-id'
@@ -10,31 +12,37 @@ describe('Add New File Use Case', () => {
   let mockGetCurrentStorageUsageRepository: GetCurrentStorageUsageRepository
   let mockGetFileStorageService: SaveFileStorageService
   let mockSaveFileRepository: SaveFileRepository
+  let mockGetFolderByIdRepository: GetFolderByIdRepository
+
+  let payload: AddNewFileParams = {} as any
 
   beforeEach(() => {
     mockGetCurrentStorageUsageRepository = { getUsage: jest.fn().mockResolvedValue({ usage: 0 }) }
     mockGetFileStorageService = { save: jest.fn().mockResolvedValue({ url: 'any-path' }) }
     mockSaveFileRepository = { save: jest.fn().mockResolvedValue(null) }
+    mockGetFolderByIdRepository = { getById: jest.fn().mockResolvedValue(getFolderByIdMock()) }
 
     sut = new AddNewFileUseCase(
       mockGetCurrentStorageUsageRepository,
       mockGetFileStorageService,
-      mockSaveFileRepository
+      mockSaveFileRepository,
+      mockGetFolderByIdRepository
     )
-  })
 
-  it('should create a new file successfully', async () => {
-    const payload: AddNewFileParams = {
+    payload = {
       name: 'my-test-file',
       size: 1000,
       type: 'text/plain',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'txt',
-      directoryPath: 'all',
-      userId: 'user-id'
+      userId: 'user-id',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id'
     }
+  })
 
+  it('should create a new file successfully', async () => {
     const result = await sut.add(payload)
 
     expect(result.ok).toBe(true)
@@ -45,40 +53,32 @@ describe('Add New File Use Case', () => {
       type: payload.type,
       encoding: payload.encoding,
       extension: payload.extension,
-      directoryPath: payload.directoryPath,
       userId: payload.userId,
       url: 'any-path',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id',
+      isDeleted: false,
       createdAt: null,
       updatedAt: null
     })
   })
 
   it('should calls dependencies with correct input', async () => {
-    const payload: AddNewFileParams = {
-      name: 'my-test-file',
-      size: 1000,
-      type: 'text/plain',
-      content: Buffer.from('any-content'),
-      encoding: 'utf-8',
-      extension: 'txt',
-      directoryPath: 'all',
-      userId: 'user-id'
-    }
-
+    const getFolderById = jest.spyOn(mockGetFolderByIdRepository, 'getById')
     const getUsageSpy = jest.spyOn(mockGetCurrentStorageUsageRepository, 'getUsage')
     const saveFileSpy = jest.spyOn(mockGetFileStorageService, 'save')
     const saveSpy = jest.spyOn(mockSaveFileRepository, 'save')
 
     await sut.add(payload)
 
+    expect(getFolderById).toHaveBeenCalledTimes(2)
     expect(getUsageSpy).toHaveBeenCalledWith(payload.userId)
     expect(saveFileSpy).toHaveBeenCalledWith({
       name: payload.name,
       content: payload.content,
       encoding: payload.encoding,
       type: payload.type,
-      userId: payload.userId,
-      directoryPath: payload.directoryPath
+      userId: payload.userId
     })
     expect(saveSpy).toHaveBeenCalledWith({
       id: 'any-id',
@@ -87,11 +87,63 @@ describe('Add New File Use Case', () => {
       type: payload.type,
       encoding: payload.encoding,
       extension: payload.extension,
-      directoryPath: payload.directoryPath,
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id',
+      isDeleted: false,
       userId: payload.userId,
       url: 'any-path',
       createdAt: null,
       updatedAt: null
+    })
+  })
+
+  it('should not add a file if folder does not exist', async () => {
+    mockGetFolderByIdRepository.getById = jest.fn().mockResolvedValueOnce(getFolderByIdMock()).mockResolvedValueOnce(null)
+
+    const result = await sut.add(payload)
+
+    expect(result).toEqual({
+      ok: false,
+      message: 'Folder not found'
+    })
+  })
+
+  it('should not add a file if folder is deleted', async () => {
+    mockGetFolderByIdRepository.getById = jest.fn().mockResolvedValueOnce(getFolderByIdMock()).mockResolvedValueOnce({
+      ...getFolderByIdMock(),
+      isDeleted: true
+    })
+
+    const result = await sut.add(payload)
+
+    expect(result).toEqual({
+      ok: false,
+      message: 'Folder not found'
+    })
+  })
+
+  it('should not add a file if main folder does not exist', async () => {
+    mockGetFolderByIdRepository.getById = jest.fn().mockResolvedValueOnce(null)
+
+    const result = await sut.add(payload)
+
+    expect(result).toEqual({
+      ok: false,
+      message: 'Main folder not found'
+    })
+  })
+
+  it('should not add a file if main folder is deleted', async () => {
+    mockGetFolderByIdRepository.getById = jest.fn().mockResolvedValueOnce({
+      ...getFolderByIdMock(),
+      isDeleted: true
+    })
+
+    const result = await sut.add(payload)
+
+    expect(result).toEqual({
+      ok: false,
+      message: 'Main folder not found'
     })
   })
 
@@ -102,8 +154,9 @@ describe('Add New File Use Case', () => {
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'txt',
-      directoryPath: 'all',
-      userId: 'user-id'
+      userId: 'user-id',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id'
     }
 
     const result = await sut.add(payload)
@@ -120,8 +173,9 @@ describe('Add New File Use Case', () => {
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'js',
-      directoryPath: 'all',
-      userId: 'user-id'
+      userId: 'user-id',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id'
     }
 
     const result = await sut.add(payload)
@@ -138,8 +192,9 @@ describe('Add New File Use Case', () => {
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'txt',
-      directoryPath: 'all',
-      userId: 'user-id'
+      userId: 'user-id',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id'
     }
 
     const result = await sut.add(payload)
@@ -158,8 +213,9 @@ describe('Add New File Use Case', () => {
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'txt',
-      directoryPath: 'all',
-      userId: 'user-id'
+      userId: 'user-id',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id'
     }
 
     const result = await sut.add(payload)
@@ -178,8 +234,9 @@ describe('Add New File Use Case', () => {
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'txt',
-      directoryPath: 'all',
-      userId: 'user-id'
+      userId: 'user-id',
+      folderId: 'folder-id',
+      mainFolderId: 'main-folder-id'
     }
 
     const result = sut.add(payload)

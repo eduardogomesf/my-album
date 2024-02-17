@@ -10,7 +10,7 @@ export class S3FileStorage implements SaveFileStorageService {
   }
 
   async save (params: SaveFileStorageServiceDTO): Promise<{ url: string }> {
-    const key = `${params.userId}/${params.directoryPath}/${params.name}`
+    const key = `${params.userId}/${params.name}`
 
     const command = new PutObjectCommand({
       Bucket: ENVS.S3.BUCKET_NAME,

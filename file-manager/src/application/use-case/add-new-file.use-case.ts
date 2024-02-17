@@ -5,10 +5,12 @@ import {
   type GetCurrentStorageUsageRepository,
   type SaveFileRepository
 } from '../protocol/files'
+import { type GetFolderByIdRepository } from '../protocol'
 
 export interface AddNewFileParams {
   name: string
-  directoryPath: string
+  folderId: string
+  mainFolderId: string
   size: number
   encoding: string
   type: string
@@ -21,24 +23,42 @@ export class AddNewFileUseCase {
   constructor(
     private readonly getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository,
     private readonly saveFileStorageService: SaveFileStorageService,
-    private readonly saveFileRepository: SaveFileRepository
+    private readonly saveFileRepository: SaveFileRepository,
+    private readonly getFolderByIdRepository: GetFolderByIdRepository
   ) {}
 
   async add(params: AddNewFileParams): Promise<UseCaseResponse> {
     try {
-      const { name, directoryPath, size, extension, userId, encoding, type, content } = params
+      const mainFolder = await this.getFolderByIdRepository.getById(params.mainFolderId)
+
+      if (!mainFolder || mainFolder.isDeleted) {
+        return {
+          ok: false,
+          message: 'Main folder not found'
+        }
+      }
+
+      const folder = await this.getFolderByIdRepository.getById(params.folderId)
+
+      if (!folder || folder.isDeleted) {
+        return {
+          ok: false,
+          message: 'Folder not found'
+        }
+      }
 
       const file = new File({
-        name,
-        directoryPath,
-        size,
-        encoding,
-        type,
-        extension,
-        userId
+        name: params.name,
+        folderId: params.folderId,
+        mainFolderId: params.mainFolderId,
+        size: params.size,
+        encoding: params.encoding,
+        type: params.type,
+        extension: params.extension,
+        userId: params.userId
       })
 
-      const isValidExtension = this.validateExtension(extension)
+      const isValidExtension = this.validateExtension(file.extension)
 
       if (!isValidExtension) {
         return {
@@ -47,7 +67,7 @@ export class AddNewFileUseCase {
         }
       }
 
-      const isValidSize = this.validateSize(size)
+      const isValidSize = this.validateSize(file.size)
 
       if (!isValidSize) {
         return {
@@ -56,7 +76,7 @@ export class AddNewFileUseCase {
         }
       }
 
-      const canAddMoreFilesValidation = await this.canAddMoreFiles(userId, size)
+      const canAddMoreFilesValidation = await this.canAddMoreFiles(file.userId, file.size)
 
       if (!canAddMoreFilesValidation.canAdd) {
         return {
@@ -66,12 +86,11 @@ export class AddNewFileUseCase {
       }
 
       const { url } = await this.saveFileStorageService.save({
-        name,
-        directoryPath,
-        content,
-        encoding,
-        type,
-        userId
+        name: file.name,
+        content: params.content,
+        encoding: file.encoding,
+        type: file.type,
+        userId: file.userId
       })
 
       file.url = url
