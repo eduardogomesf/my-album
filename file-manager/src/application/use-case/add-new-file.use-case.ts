@@ -110,7 +110,7 @@ export class AddNewFileUseCase {
   private validateExtension(extension: string): boolean {
     const allowedExtensions = [
       'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt',
-      'pptx', 'txt', 'mp3', 'mp4', 'avi', 'mkv', 'zip', 'rar', '7z', 'tar'
+      'pptx', 'txt', 'zip', 'rar', 'tar'
     ]
 
     return allowedExtensions.includes(extension)
