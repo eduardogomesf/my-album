@@ -1,6 +1,7 @@
 import { type Request, type Response } from 'express'
 import { type AddNewFileUseCase } from '@/application/use-case'
 import { Logger } from '@/shared'
+import { getFileExtension } from '../helper'
 
 const logger = new Logger('UserController')
 
@@ -20,44 +21,31 @@ export class FileController {
       const { size, mimetype, encoding, originalname, buffer } = request?.file
       const { directoryPath } = request.body
 
-      const extension = this.getFileExtension(originalname)
+      const extension = getFileExtension(originalname) as string
 
-      console.log({
+      const createUserResult = await this.addNewFileUseCase.add({
         size,
-        mimetype,
         encoding,
-        originalname,
-        buffer,
+        type: mimetype,
+        content: buffer,
         directoryPath,
-        extension
+        name: originalname,
+        extension,
+        userId: 'ec920c48-7705-4f32-a3ab-5b98e85ca151'
       })
 
-      // const createUserResult = await this.addNewFileUseCase.add({
-      //   size,
-      //   encoding,
-      //   type: mimetype,
-      //   content: buffer,
-      //   directoryPath
-
-      // })
-
-      // if (!createUserResult.ok) {
-      //   return response.status(400).json({
-      //     message: createUserResult.message
-      //   })
-      // }
+      if (!createUserResult.ok) {
+        return response.status(400).json({
+          message: createUserResult.message
+        })
+      }
 
       return response.status(201).send()
     } catch (error) {
       logger.error('Error uploading file')
       logger.error(error)
+      logger.error(error.stack)
       return response.status(500).send()
     }
-  }
-
-  private getFileExtension(filename: string): string | null {
-    const regex = /\.([0-9a-z]+)(?:[?#]|$)/i
-    const matches = filename.match(regex)
-    return matches ? matches[1] : null
   }
 }
