@@ -11,10 +11,26 @@ export class FileController {
 
   async add(request: Request, response: Response): Promise<Response> {
     try {
-      console.log(request.file)
-      console.log(request.body)
-      // const { size, mimetype, encoding, originalname, buffer } = request?.file
-      // const { directoryPath } = request.body
+      if (!request?.file) {
+        return response.status(400).json({
+          message: 'File not found'
+        })
+      }
+
+      const { size, mimetype, encoding, originalname, buffer } = request?.file
+      const { directoryPath } = request.body
+
+      const extension = this.getFileExtension(originalname)
+
+      console.log({
+        size,
+        mimetype,
+        encoding,
+        originalname,
+        buffer,
+        directoryPath,
+        extension
+      })
 
       // const createUserResult = await this.addNewFileUseCase.add({
       //   size,
@@ -37,5 +53,11 @@ export class FileController {
       logger.error(error)
       return response.status(500).send()
     }
+  }
+
+  private getFileExtension(filename: string): string | null {
+    const regex = /\.([0-9a-z]+)(?:[?#]|$)/i
+    const matches = filename.match(regex)
+    return matches ? matches[1] : null
   }
 }
