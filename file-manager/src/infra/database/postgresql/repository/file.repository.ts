@@ -17,7 +17,8 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
           encoding: file.encoding,
           extension: file.extension,
           url: file.url as string,
-          userId: file.userId
+          albumId: file.albumId,
+          isDeleted: file.isDeleted ?? false
         }
       })
     } catch (error) {
@@ -27,22 +28,8 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
   }
 
   async getUsage (userId: string): Promise<GetCurrentStorageUsageRepositoryResponse> {
-    try {
-      const result = await prisma.file.groupBy({
-        by: 'userId',
-        where: {
-          userId
-        },
-        _sum: {
-          size: true
-        }
-      })
-      return {
-        usage: result && result.length > 0 ? Number(result[0]._sum.size) : 0
-      }
-    } catch (error) {
-      logger.error(error.message)
-      throw new Error(error)
+    return {
+      usage: 0
     }
   }
 }
