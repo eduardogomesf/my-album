@@ -19,19 +19,19 @@ export class FileController {
       }
 
       const { size, mimetype, encoding, originalname, buffer } = request?.file
-      const { directoryPath } = request.body
+      const { albumId } = request.body
 
-      const extension = getFileExtension(originalname) as string
+      const extension = getFileExtension(originalname)
 
       const createUserResult = await this.addNewFileUseCase.add({
         size,
         encoding,
         type: mimetype,
         content: buffer,
-        directoryPath,
         name: originalname,
         extension,
-        userId: 'ec920c48-7705-4f32-a3ab-5b98e85ca151'
+        userId: 'ec920c48-7705-4f32-a3ab-5b98e85ca151',
+        albumId
       })
 
       if (!createUserResult.ok) {

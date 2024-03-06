@@ -1,5 +1,5 @@
 import { type UseCases } from '@/presentation/interface/injections'
-import { generateFileRepository, generateUserRepository } from '../factory/repository'
+import { generateAlbumRepository, generateFileRepository, generateUserRepository } from '../factory/repository'
 import { generateAddNewFileUseCase, generateAddNewUserUseCase } from '../factory/use-case'
 import { generateSaveFileStorageService } from '../factory/object-storage'
 
@@ -9,8 +9,14 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
 
   const fileRepository = generateFileRepository()
   const saveFileStorage = generateSaveFileStorageService()
+  const albumRepository = generateAlbumRepository()
 
-  const addNewFileUseCase = generateAddNewFileUseCase(fileRepository, saveFileStorage, fileRepository)
+  const addNewFileUseCase = generateAddNewFileUseCase(
+    fileRepository,
+    saveFileStorage,
+    fileRepository,
+    albumRepository
+  )
 
   return {
     addNewUserUseCase,

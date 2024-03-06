@@ -3,7 +3,7 @@ import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
 
-export const logger = new Logger('PrismaFileRepository')
+const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository {
   async save (file: File): Promise<void> {

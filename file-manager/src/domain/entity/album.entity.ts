@@ -8,8 +8,8 @@ interface CreateAlbumDto {
   userId: string
   isMain: boolean
   isDeleted: boolean
-  createdAt?: string
-  updatedAt?: string
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export class Album extends BaseEntity {
@@ -17,8 +17,8 @@ export class Album extends BaseEntity {
   userId: string
   isMain: boolean
   isDeleted: boolean
-  createdAt?: string | null
-  updatedAt?: string | null
+  createdAt?: Date | null
+  updatedAt?: Date | null
 
   constructor(data: CreateAlbumDto) {
     super(data.id)
