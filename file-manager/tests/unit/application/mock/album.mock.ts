@@ -1,7 +1,7 @@
-export const getFolderByIdMock = () => ({
+export const getAlbumByIdMock = () => ({
   id: 'any-id',
   name: 'any-name',
-  parentId: null,
+  isMain: true,
   isDeleted: false,
   createdAt: new Date().toString(),
   updatedAt: new Date().toString(),

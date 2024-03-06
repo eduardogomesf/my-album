@@ -12,7 +12,6 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
         data: {
           id: file.id,
           name: file.name,
-          directoryPath: file.directoryPath,
           size: file.size,
           type: file.type,
           encoding: file.encoding,

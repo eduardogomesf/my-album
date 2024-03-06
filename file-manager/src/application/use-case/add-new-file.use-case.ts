@@ -5,12 +5,11 @@ import {
   type GetCurrentStorageUsageRepository,
   type SaveFileRepository
 } from '../protocol/files'
-import { type GetFolderByIdRepository } from '../protocol'
+import { type GetAlbumByIdRepository } from '../protocol'
 
 export interface AddNewFileParams {
   name: string
-  folderId: string
-  mainFolderId: string
+  albumId: string
   size: number
   encoding: string
   type: string
@@ -24,33 +23,23 @@ export class AddNewFileUseCase {
     private readonly getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository,
     private readonly saveFileStorageService: SaveFileStorageService,
     private readonly saveFileRepository: SaveFileRepository,
-    private readonly getFolderByIdRepository: GetFolderByIdRepository
+    private readonly getAlbumByIdRepository: GetAlbumByIdRepository
   ) {}
 
   async add(params: AddNewFileParams): Promise<UseCaseResponse> {
     try {
-      const mainFolder = await this.getFolderByIdRepository.getById(params.mainFolderId)
+      const album = await this.getAlbumByIdRepository.getById(params.albumId)
 
-      if (!mainFolder || mainFolder.isDeleted) {
+      if (!album || album.isDeleted) {
         return {
           ok: false,
-          message: 'Main folder not found'
-        }
-      }
-
-      const folder = await this.getFolderByIdRepository.getById(params.folderId)
-
-      if (!folder || folder.isDeleted) {
-        return {
-          ok: false,
-          message: 'Folder not found'
+          message: 'Album not found'
         }
       }
 
       const file = new File({
         name: params.name,
-        folderId: params.folderId,
-        mainFolderId: params.mainFolderId,
+        albumId: params.albumId,
         size: params.size,
         encoding: params.encoding,
         type: params.type,

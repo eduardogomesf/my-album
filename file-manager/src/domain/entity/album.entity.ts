@@ -2,29 +2,29 @@ import { MissingFieldsHelper } from '@/shared/helper'
 import { BaseEntity } from './base.entity'
 import { DomainError } from './domain-error.entity'
 
-interface CreateFolderDto {
+interface CreateAlbumDto {
   id?: string
   name: string
-  parentId: string | null
   userId: string
+  isMain: boolean
   isDeleted: boolean
   createdAt?: string
   updatedAt?: string
 }
 
-export class Folder extends BaseEntity {
+export class Album extends BaseEntity {
   name: string
-  parentId: string | null
   userId: string
+  isMain: boolean
   isDeleted: boolean
   createdAt?: string | null
   updatedAt?: string | null
 
-  constructor(data: CreateFolderDto) {
+  constructor(data: CreateAlbumDto) {
     super(data.id)
     this.name = data.name
-    this.parentId = data.parentId
     this.userId = data.userId
+    this.isMain = data.isMain ?? false
     this.isDeleted = data.isDeleted ?? false
     this.createdAt = data.createdAt ?? null
     this.updatedAt = data.updatedAt ?? null
@@ -34,7 +34,7 @@ export class Folder extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'parentId', 'userId', 'isDeleted'],
+      ['name', 'userId', 'isDeleted'],
       this
     )
 

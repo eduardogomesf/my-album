@@ -10,8 +10,7 @@ interface CreateFileDTO {
   type: string
   extension: string
   userId: string
-  folderId: string
-  mainFolderId: string
+  albumId: string
   url?: string
   isDeleted?: boolean
   createdAt?: string
@@ -25,8 +24,7 @@ export class File extends BaseEntity {
   type: string
   extension: string
   userId: string
-  folderId: string
-  mainFolderId: string
+  albumId: string
   isDeleted?: boolean
   url?: string | null
   createdAt: string | null
@@ -42,8 +40,7 @@ export class File extends BaseEntity {
     this.userId = data.userId
     this.url = data.url ?? null
     this.isDeleted = data.isDeleted ?? false
-    this.folderId = data.folderId
-    this.mainFolderId = data.mainFolderId
+    this.albumId = data.albumId
     this.createdAt = data.createdAt ?? null
     this.updatedAt = data.updatedAt ?? null
 
@@ -52,7 +49,7 @@ export class File extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'size', 'extension', 'userId', 'type', 'encoding', 'folderId', 'mainFolderId'],
+      ['name', 'size', 'extension', 'userId', 'type', 'encoding', 'albumId'],
       this
     )
 
