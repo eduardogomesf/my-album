@@ -9,8 +9,7 @@ describe('File Entity', () => {
       userId: 'user-id',
       encoding: 'utf-8',
       type: 'text/plain',
-      folderId: 'folder-id',
-      mainFolderId: 'main-folder-id',
+      albumId: 'album-id',
       isDeleted: true,
       createdAt: '2021-01-01T00:00:00.000Z',
       updatedAt: '2021-01-01T00:00:00.000Z'
@@ -18,8 +17,7 @@ describe('File Entity', () => {
 
     expect(file.id).toBeDefined()
     expect(file.name).toBe('file.txt')
-    expect(file.folderId).toBe('folder-id')
-    expect(file.mainFolderId).toBe('main-folder-id')
+    expect(file.albumId).toBe('album-id')
     expect(file.isDeleted).toBe(true)
     expect(file.size).toBe(1024)
     expect(file.extension).toBe('txt')
@@ -34,6 +32,6 @@ describe('File Entity', () => {
         createdAt: '2021-01-01T00:00:00.000Z',
         updatedAt: '2021-01-01T00:00:00.000Z'
       } as any)
-    }).toThrow(new DomainError('fields name, size, extension, userId, type, encoding, folderId, mainFolderId can not be empty'))
+    }).toThrow(new DomainError('fields name, size, extension, userId, type, encoding, albumId can not be empty'))
   })
 })
