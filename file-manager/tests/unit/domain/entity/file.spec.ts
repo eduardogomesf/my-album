@@ -6,7 +6,6 @@ describe('File Entity', () => {
       name: 'file.txt',
       size: 1024,
       extension: 'txt',
-      userId: 'user-id',
       encoding: 'utf-8',
       type: 'text/plain',
       albumId: 'album-id',
@@ -21,7 +20,6 @@ describe('File Entity', () => {
     expect(file.isDeleted).toBe(true)
     expect(file.size).toBe(1024)
     expect(file.extension).toBe('txt')
-    expect(file.userId).toBe('user-id')
     expect(file.createdAt).toBe('2021-01-01T00:00:00.000Z')
     expect(file.updatedAt).toBe('2021-01-01T00:00:00.000Z')
   })
@@ -32,6 +30,6 @@ describe('File Entity', () => {
         createdAt: '2021-01-01T00:00:00.000Z',
         updatedAt: '2021-01-01T00:00:00.000Z'
       } as any)
-    }).toThrow(new DomainError('fields name, size, extension, userId, type, encoding, albumId can not be empty'))
+    }).toThrow(new DomainError('fields name, size, extension, type, encoding, albumId can not be empty'))
   })
 })

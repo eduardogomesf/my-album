@@ -9,7 +9,6 @@ interface CreateFileDTO {
   encoding: string
   type: string
   extension: string
-  userId: string
   albumId: string
   url?: string
   isDeleted?: boolean
@@ -23,7 +22,6 @@ export class File extends BaseEntity {
   encoding: string
   type: string
   extension: string
-  userId: string
   albumId: string
   isDeleted?: boolean
   url?: string | null
@@ -37,7 +35,6 @@ export class File extends BaseEntity {
     this.encoding = data.encoding
     this.type = data.type
     this.extension = data.extension
-    this.userId = data.userId
     this.url = data.url ?? null
     this.isDeleted = data.isDeleted ?? false
     this.albumId = data.albumId
@@ -49,7 +46,7 @@ export class File extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'size', 'extension', 'userId', 'type', 'encoding', 'albumId'],
+      ['name', 'size', 'extension', 'type', 'encoding', 'albumId'],
       this
     )
 

@@ -52,7 +52,6 @@ describe('Add New File Use Case', () => {
       type: payload.type,
       encoding: payload.encoding,
       extension: payload.extension,
-      userId: payload.userId,
       url: 'any-path',
       albumId: 'album-id',
       isDeleted: false,
@@ -87,7 +86,6 @@ describe('Add New File Use Case', () => {
       extension: payload.extension,
       albumId: 'album-id',
       isDeleted: false,
-      userId: payload.userId,
       url: 'any-path',
       createdAt: null,
       updatedAt: null

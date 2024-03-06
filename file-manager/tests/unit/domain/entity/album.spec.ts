@@ -7,8 +7,8 @@ describe('Album Entity', () => {
       isMain: true,
       userId: 'user-id',
       isDeleted: true,
-      createdAt: '2021-01-01T00:00:00.000Z',
-      updatedAt: '2021-01-01T00:00:00.000Z'
+      createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
+      updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
     })
 
     expect(album.id).toBeDefined()

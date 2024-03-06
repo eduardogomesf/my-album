@@ -43,8 +43,7 @@ export class AddNewFileUseCase {
         size: params.size,
         encoding: params.encoding,
         type: params.type,
-        extension: params.extension,
-        userId: params.userId
+        extension: params.extension
       })
 
       const isValidExtension = this.validateExtension(file.extension)
@@ -65,7 +64,7 @@ export class AddNewFileUseCase {
         }
       }
 
-      const canAddMoreFilesValidation = await this.canAddMoreFiles(file.userId, file.size)
+      const canAddMoreFilesValidation = await this.canAddMoreFiles(params.userId, file.size)
 
       if (!canAddMoreFilesValidation.canAdd) {
         return {
@@ -79,7 +78,7 @@ export class AddNewFileUseCase {
         content: params.content,
         encoding: file.encoding,
         type: file.type,
-        userId: file.userId
+        userId: params.userId
       })
 
       file.url = url
