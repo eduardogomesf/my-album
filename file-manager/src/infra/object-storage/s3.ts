@@ -1,5 +1,11 @@
 import { type SaveFileStorageServiceDTO, type SaveFileStorageService } from '@/application/protocol/files'
-import { type ObjectCannedACL, PutObjectCommand, S3Client, type StorageClass } from '@aws-sdk/client-s3'
+import {
+  type ObjectCannedACL,
+  PutObjectCommand,
+  S3Client,
+  type StorageClass,
+  CreateBucketCommand
+} from '@aws-sdk/client-s3'
 import { ENVS } from '@/shared'
 
 export class S3FileStorage implements SaveFileStorageService {
@@ -18,6 +24,8 @@ export class S3FileStorage implements SaveFileStorageService {
   }
 
   async save (params: SaveFileStorageServiceDTO): Promise<{ url: string }> {
+    await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
+
     const key = `${params.userId}/${params.name}`
 
     const command = new PutObjectCommand({
