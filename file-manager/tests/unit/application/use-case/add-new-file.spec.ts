@@ -35,7 +35,7 @@ describe('Add New File Use Case', () => {
       type: 'text/plain',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
-      extension: 'txt',
+      extension: 'png',
       userId: 'user-id',
       albumId: 'album-id'
     }
@@ -123,7 +123,7 @@ describe('Add New File Use Case', () => {
       type: 'text/plain',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
-      extension: 'txt',
+      extension: 'png',
       userId: 'user-id',
       albumId: 'album-id'
     }
@@ -159,7 +159,7 @@ describe('Add New File Use Case', () => {
       type: 'text/plain',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
-      extension: 'txt',
+      extension: 'png',
       userId: 'user-id',
       albumId: 'album-id'
     }
@@ -179,7 +179,7 @@ describe('Add New File Use Case', () => {
       type: 'text/plain',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
-      extension: 'txt',
+      extension: 'png',
       userId: 'user-id',
       albumId: 'album-id'
     }
@@ -199,7 +199,7 @@ describe('Add New File Use Case', () => {
       type: 'text/plain',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
-      extension: 'txt',
+      extension: 'png',
       userId: 'user-id',
       albumId: 'album-id'
     }
