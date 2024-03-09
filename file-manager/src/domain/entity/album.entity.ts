@@ -42,8 +42,8 @@ export class Album extends BaseEntity {
       throw new DomainError(missingFieldsValidation.message)
     }
 
-    if (this.name.length < 5 || this.name.length > 50) {
-      throw new DomainError('Name must be between 5 and 50 characters')
+    if (this.name.length < 2 || this.name.length > 50) {
+      throw new DomainError('Name must be between 2 and 50 characters')
     }
   }
 }
