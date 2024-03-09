@@ -7,7 +7,7 @@ export class MissingFieldsHelper {
 
     fields.forEach(field => {
       const value = payload[field]
-      if (!value) {
+      if (value === null || value === undefined || value === '') {
         missingFields.push(field)
       }
     })
