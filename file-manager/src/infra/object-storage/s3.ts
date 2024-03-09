@@ -8,6 +8,8 @@ export class S3FileStorage implements SaveFileStorageService {
   constructor() {
     this.client = new S3Client({
       region: ENVS.S3.REGION,
+      endpoint: ENVS.S3.URL,
+      forcePathStyle: true,
       credentials: {
         accessKeyId: ENVS.S3.ACCESS_KEY_ID,
         secretAccessKey: ENVS.S3.SECRET_ACCESS_KEY
