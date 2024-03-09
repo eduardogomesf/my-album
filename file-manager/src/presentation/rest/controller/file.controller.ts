@@ -1,11 +1,12 @@
 import { type Request, type Response } from 'express'
+import * as fs from 'node:fs/promises'
 import { type AddNewFileUseCase } from '@/application/use-case'
 import { Logger } from '@/shared'
 import { getFileExtension } from '../helper'
 
-const logger = new Logger('UserController')
-
 export class FileController {
+  private readonly logger = new Logger('FileController')
+
   constructor(
     private readonly addNewFileUseCase: AddNewFileUseCase
   ) {}
@@ -18,19 +19,21 @@ export class FileController {
         })
       }
 
-      const { size, mimetype, encoding, originalname, buffer } = request?.file
+      const { size, mimetype, encoding, originalname, path } = request?.file
       const { albumId } = request.body
 
       const extension = getFileExtension(originalname)
+
+      const file = await fs.readFile(path)
 
       const createUserResult = await this.addNewFileUseCase.add({
         size,
         encoding,
         type: mimetype,
-        content: buffer,
+        content: file,
         name: originalname,
         extension,
-        userId: 'ec920c48-7705-4f32-a3ab-5b98e85ca151',
+        userId: '27935bcc-0e00-4fc3-b174-9f9162615d8b',
         albumId
       })
 
@@ -42,9 +45,9 @@ export class FileController {
 
       return response.status(201).send()
     } catch (error) {
-      logger.error('Error uploading file')
-      logger.error(error)
-      logger.error(error.stack)
+      this.logger.error('Error uploading file')
+      this.logger.error(error)
+      this.logger.error(error.stack)
       return response.status(500).send()
     }
   }
