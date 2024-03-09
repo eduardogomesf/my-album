@@ -12,6 +12,8 @@ export class FileController {
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
+    let fullPath = ''
+
     try {
       if (!request?.file) {
         return response.status(400).json({
@@ -21,6 +23,7 @@ export class FileController {
 
       const { size, mimetype, encoding, originalname, path } = request?.file
       const { albumId } = request.body
+      fullPath = path
 
       const extension = getFileExtension(originalname)
 
@@ -49,6 +52,8 @@ export class FileController {
       this.logger.error(error)
       this.logger.error(error.stack)
       return response.status(500).send()
+    } finally {
+      await fs.rm(fullPath, { force: true })
     }
   }
 }
