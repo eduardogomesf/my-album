@@ -6,7 +6,13 @@ export class S3FileStorage implements SaveFileStorageService {
   private readonly client: S3Client
 
   constructor() {
-    this.client = new S3Client({ region: ENVS.S3.REGION })
+    this.client = new S3Client({
+      region: ENVS.S3.REGION,
+      credentials: {
+        accessKeyId: ENVS.S3.ACCESS_KEY_ID,
+        secretAccessKey: ENVS.S3.SECRET_ACCESS_KEY
+      }
+    })
   }
 
   async save (params: SaveFileStorageServiceDTO): Promise<{ url: string }> {
