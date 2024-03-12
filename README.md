@@ -1,8 +1,8 @@
 # Project Overview
-**File Management Sys** is a backend system that allow users to store and manage their files in an easy and secure way.
+**My album** is a backend system that allow users to store and manage their albums, photos and videos in an easy and secure way.
 
 ## Description
-**File Management Sys** follows a microservice event-driven architecture where all the communication between the services works in asynchronous way through a distributed streaming platform (Apache Kafka).
+**My album** follows a microservice event-driven architecture where all the communication between the services works in asynchronous way through a distributed streaming platform (Apache Kafka).
 
 The architecture is composed by three main services: User Management Service, File Manager Service and Notification Service.
 
