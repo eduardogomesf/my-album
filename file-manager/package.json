@@ -13,7 +13,7 @@
     "test": "jest",
     "build": "rm -rf dist && npx tsc --project tsconfig-build.json && npx tsc-alias -p tsconfig-build.json",
     "lint": "npx eslint . --ext .ts",
-    "dev": "ts-node-dev -r tsconfig-paths/register ./src/main/server.ts --respawn --transpile-only --ignore-watch node_modules",
+    "dev": "ts-node-dev --files -r tsconfig-paths/register ./src/main/server.ts --respawn --transpile-only --ignore-watch node_modules",
     "start": "npm run build && node -r tsconfig-paths/register dist/main/server.js",
     "up": "docker compose up -d",
     "down": "docker compose down"
