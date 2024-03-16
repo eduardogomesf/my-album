@@ -6,6 +6,10 @@
 
 The architecture is composed by three main services: User Management Service, File Manager Service and Notification Service.
 
+## High-level System Design
+
+![System Design](./@docs/high-level-system-design.svg "File Management System")
+
 ## Services
 The **User Management Service** is responsible for handling the management and authentication of users within the system. This service uses a MongoDB database to save all required information and communicates with other services in an asynchronous way by using Kafka Topics to send messages.
 
@@ -29,9 +33,7 @@ You can find more details in the **[High-Level System Design](#high-level-system
 [Docker Compose](https://docs.docker.com/compose/)  
 [Jest](https://jestjs.io/pt-BR/)  
 
-## High-level System Design
 
-![System Design](./@docs/high-level-system-design.svg "File Management System")
 
 ---
-🛠️ Created by [eduardogomesf](https://github.com/eduardogomesf)
+🛠️ Created by [eduardogomesf](https://eduardogomesf.dev)
