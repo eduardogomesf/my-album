@@ -14,6 +14,40 @@ model User {
   email     String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  albums    Album[]
 
   @@map("users")
+}
+
+model Album {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  userId    String   @map("user_id")
+  isMain    Boolean  @map("is_main")
+  isDeleted Boolean  @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User   @relation(fields: [userId], references: [id])
+  files File[]
+
+  @@map("albums")
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  size      BigInt
+  encoding  String
+  type      String
+  extension String
+  url       String
+  isDeleted Boolean  @map("is_deleted")
+  albumId   String   @map("album_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  album Album @relation(fields: [albumId], references: [id])
+
+  @@map("files")
 }

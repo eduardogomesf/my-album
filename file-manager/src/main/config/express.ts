@@ -3,6 +3,7 @@ import * as cors from 'cors'
 
 import { ENVS, Logger } from '@/shared'
 import { type UseCases } from '@/presentation/interface/injections'
+import { getFileRouter } from '@/presentation/rest/route'
 
 function setDefaultMiddlewares(app: express.Express) {
   app.use(express.json())
@@ -17,6 +18,9 @@ function setDefaultRoutes(app: express.Express) {
 }
 
 function setRoutes(app: express.Express, useCases: UseCases) {
+  const fileRouter = getFileRouter(useCases)
+
+  app.use(fileRouter)
 }
 
 export function bootstrapExpressServer(useCases: UseCases) {
