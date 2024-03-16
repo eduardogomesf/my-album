@@ -4,12 +4,13 @@ import * as multer from 'multer'
 import { FileController } from '../controller/file.controller'
 import { type UseCases } from '../../interface/injections'
 import { getFileExtension } from '../helper'
+import { getAuthInfoFromHeaders } from '../middleware'
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function(req, file, cb) {
     cb(null, 'tmp/')
   },
-  filename: function (req, file, cb) {
+  filename: function(req, file, cb) {
     const formattedName = file.originalname.replace('.', '-')
     const extension = getFileExtension(file.originalname)
     const filename = formattedName + '-' + Date.now() + '.' + extension
@@ -28,7 +29,12 @@ export function getFileRouter(useCases: UseCases): Router {
 
   const fileController = new FileController(useCases.addNewFileUseCase)
 
-  router.post('/files', upload.single('file'), fileController.add.bind(fileController))
+  router.post(
+    '/files',
+    upload.single('file'),
+    getAuthInfoFromHeaders,
+    fileController.add.bind(fileController)
+  )
 
   return router
 }

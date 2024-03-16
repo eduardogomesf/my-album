@@ -23,6 +23,8 @@ export class FileController {
 
       const { size, mimetype, encoding, originalname, path } = request?.file
       const { albumId } = request.body
+      const { userId } = request.auth
+
       fullPath = path
 
       const extension = getFileExtension(originalname)
@@ -36,7 +38,7 @@ export class FileController {
         content: file,
         name: originalname,
         extension,
-        userId: '27935bcc-0e00-4fc3-b174-9f9162615d8b',
+        userId,
         albumId
       })
 

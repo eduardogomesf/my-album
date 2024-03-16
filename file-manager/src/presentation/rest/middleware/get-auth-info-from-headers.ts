@@ -18,7 +18,7 @@ export function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFu
     return res.status(HTTP_CODES.UNAUTHORIZED.code).send(HTTP_CODES.UNAUTHORIZED.message)
   }
 
-  req.auth.userId = userId
+  req.auth = { userId }
 
   next()
 }
