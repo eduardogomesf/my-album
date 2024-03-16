@@ -26,19 +26,19 @@ describe('Album Entity', () => {
         createdAt: '2021-01-01T00:00:00.000Z',
         updatedAt: '2021-01-01T00:00:00.000Z'
       } as any)
-    }).toThrow(new DomainError('fields name, userId, isDeleted can not be empty'))
+    }).toThrow(new DomainError('fields name, userId can not be empty'))
   })
 
   it('should not be able to create a album with an invalid length name', () => {
     expect(() => {
       new Album({
-        name: 'AAA',
+        name: 'A',
         isMain: false,
         userId: 'user-id',
         isDeleted: true,
         createdAt: '2021-01-01T00:00:00.000Z',
         updatedAt: '2021-01-01T00:00:00.000Z'
       } as any)
-    }).toThrow(new DomainError('Name must be between 5 and 50 characters'))
+    }).toThrow(new DomainError('Name must be between 2 and 50 characters'))
   })
 })
