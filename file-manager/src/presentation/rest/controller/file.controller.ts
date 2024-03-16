@@ -48,14 +48,15 @@ export class FileController {
         })
       }
 
+      await fs.rm(fullPath, { force: true }).catch(() => { this.logger.error('Error removing file') })
+
       return response.status(201).send()
     } catch (error) {
+      await fs.rm(fullPath, { force: true }).catch(() => { this.logger.error('Error removing file') })
       this.logger.error('Error uploading file')
       this.logger.error(error)
       this.logger.error(error.stack)
       return response.status(500).send()
-    } finally {
-      await fs.rm(fullPath, { force: true })
     }
   }
 }
