@@ -22,7 +22,7 @@ export class AddNewAlbumUseCase implements UseCase {
     const user = await this.getUserByIdRepository.getById(params.userId)
 
     if (!user) {
-      this.logger.error(`User not found with id: ${params.userId}`)
+      this.logger.verbose(`User not found with id: ${params.userId}`)
       return {
         ok: false,
         message: ERROR_MESSAGES.USER.NOT_FOUND
