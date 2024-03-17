@@ -63,6 +63,9 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
         where: {
           userId,
           isDeleted: false
+        },
+        orderBy: {
+          updatedAt: 'desc'
         }
       })
       return albums.map(album => new Album(album))
