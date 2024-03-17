@@ -68,7 +68,7 @@ describe('Add New File Use Case', () => {
 
     await sut.add(payload)
 
-    expect(getAlbumByIdSpy).toHaveBeenCalledTimes(1)
+    expect(getAlbumByIdSpy).toHaveBeenCalledWith(payload.albumId, payload.userId)
     expect(getUsageSpy).toHaveBeenCalledWith(payload.userId)
     expect(saveFileSpy).toHaveBeenCalledWith({
       name: payload.name,
