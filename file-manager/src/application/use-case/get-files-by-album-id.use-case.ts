@@ -1,5 +1,6 @@
 import { Logger } from '../../shared'
 import { ERROR_MESSAGES } from '../constant'
+import { hideUrl } from '../helper'
 import { type UseCase, type UseCaseResponse } from '../interface'
 import { type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../protocol'
 
@@ -30,9 +31,11 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
     const files = await this.getFilesByAlbumIdRepository.getManyById(params.albumId, params.userId)
 
+    const filesWithHiddenURL = files.map((file) => hideUrl(file))
+
     return {
       ok: true,
-      data: files
+      data: filesWithHiddenURL
     }
   }
 }
