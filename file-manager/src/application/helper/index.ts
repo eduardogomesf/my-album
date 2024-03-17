@@ -1,1 +1,1 @@
-export * from './hide-url'
+export * from './hide-file-url'

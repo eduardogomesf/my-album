@@ -1,6 +1,6 @@
 import { Logger } from '../../shared'
 import { ERROR_MESSAGES } from '../constant'
-import { hideUrl } from '../helper'
+import { hideFileUrl } from '../helper'
 import { type UseCase, type UseCaseResponse } from '../interface'
 import { type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../protocol'
 
@@ -31,7 +31,19 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
     const files = await this.getFilesByAlbumIdRepository.getManyById(params.albumId, params.userId)
 
-    const filesWithHiddenURL = files.map((file) => hideUrl(file))
+    const filesWithHiddenURL = files.map((file) => ({
+      id: file.id,
+      name: file.name,
+      size: file.size,
+      encoding: file.encoding,
+      type: file.type,
+      extension: file.extension,
+      url: hideFileUrl({
+        url: file.url ?? '',
+        fileId: file.id,
+        albumId: params.albumId
+      })
+    }))
 
     return {
       ok: true,
