@@ -7,7 +7,7 @@ interface CreateAlbumDto {
   name: string
   userId: string
   isMain: boolean
-  isDeleted: boolean
+  isDeleted?: boolean
   createdAt?: Date
   updatedAt?: Date
 }
@@ -34,7 +34,7 @@ export class Album extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'userId', 'isDeleted'],
+      ['name', 'userId', 'isMain'],
       this
     )
 
