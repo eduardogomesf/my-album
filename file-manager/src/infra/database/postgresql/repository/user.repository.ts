@@ -1,4 +1,8 @@
-import { type GetUserByEmailRepository, type CreateUserRepository, type GetUserByIdRepository } from '@/application/protocol'
+import {
+  type GetUserByEmailRepository,
+  type CreateUserRepository,
+  type GetUserByIdRepository
+} from '@/application/protocol'
 import { Logger } from '@/shared'
 import { User } from '@/domain/entity'
 import { prisma } from '../client'
