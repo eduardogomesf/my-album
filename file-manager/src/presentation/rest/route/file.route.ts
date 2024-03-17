@@ -27,13 +27,21 @@ const upload = multer({ storage, limits })
 export function getFileRouter(useCases: UseCases): Router {
   const router = Router()
 
-  const fileController = new FileController(useCases.addNewFileUseCase)
+  const fileController = new FileController(
+    useCases.addNewFileUseCase,
+    useCases.getFilesByAlbumIdUseCase
+  )
 
   router.post(
     '/files',
     upload.single('file'),
     getAuthInfoFromHeaders,
     fileController.add.bind(fileController)
+  )
+  router.get(
+    '/albums/:albumId/files',
+    getAuthInfoFromHeaders,
+    fileController.getFilesByAlbumId.bind(fileController)
   )
 
   return router

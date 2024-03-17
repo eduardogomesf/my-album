@@ -8,7 +8,7 @@ export class AlbumController {
 
   constructor(
     private readonly addNewAlbumUseCase: AddNewAlbumUseCase,
-    private readonly getAlbumsRepository: GetAlbumsUseCase
+    private readonly getAlbumsUseCase: GetAlbumsUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -42,7 +42,7 @@ export class AlbumController {
     try {
       const { userId } = request.auth
 
-      const getAlbumsResult = await this.getAlbumsRepository.execute(userId)
+      const getAlbumsResult = await this.getAlbumsUseCase.execute(userId)
 
       return response.status(HTTP_CODES.OK.code).json({
         albums: getAlbumsResult.data
