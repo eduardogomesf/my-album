@@ -61,7 +61,8 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
     try {
       const albums = await prisma.album.findMany({
         where: {
-          userId
+          userId,
+          isDeleted: false
         }
       })
       return albums.map(album => new Album(album))
