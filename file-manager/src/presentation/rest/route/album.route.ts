@@ -1,0 +1,14 @@
+import { Router } from 'express'
+import { AlbumController } from '../controller'
+import { type UseCases } from '../../interface/injections'
+import { getAuthInfoFromHeaders } from '../middleware'
+
+export function getAlbumRouter(useCases: UseCases): Router {
+  const router = Router()
+
+  const albumController = new AlbumController(useCases.addNewAlbumUseCase)
+
+  router.post('/albums', getAuthInfoFromHeaders, albumController.add.bind(albumController))
+
+  return router
+}
