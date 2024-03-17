@@ -18,5 +18,9 @@ export const HTTP_CODES = {
   BAD_REQUEST: {
     code: 400,
     message: 'Bad Request'
+  },
+  OK: {
+    code: 200,
+    message: 'OK'
   }
 } as const
