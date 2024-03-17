@@ -1,17 +1,14 @@
 import { type Request, type Response } from 'express'
 import * as fs from 'node:fs/promises'
-import { type GetFilesByAlbumIdUseCase, type AddNewFileUseCase } from '@/application/use-case'
+import { type AddNewFileUseCase } from '@/application/use-case'
 import { Logger } from '@/shared'
 import { getFileExtension } from '../helper'
-import { HTTP_CODES } from '../constant'
-import { ERROR_MESSAGES } from '@/application/constant'
 
 export class FileController {
   private readonly logger = new Logger('FileController')
 
   constructor(
-    private readonly addNewFileUseCase: AddNewFileUseCase,
-    private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
+    private readonly addNewFileUseCase: AddNewFileUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -60,35 +57,6 @@ export class FileController {
       this.logger.error(error)
       this.logger.error(error.stack)
       return response.status(500).send()
-    }
-  }
-
-  async getFilesByAlbumId(request: Request, response: Response): Promise<Response> {
-    try {
-      const { userId } = request.auth
-      const { albumId } = request.params
-
-      const getFilesByAlbumIdResult = await this.getFilesByAlbumIdUseCase.execute({
-        albumId,
-        userId
-      })
-
-      if (!getFilesByAlbumIdResult.ok && getFilesByAlbumIdResult.message === ERROR_MESSAGES.ALBUM.NOT_FOUND) {
-        return response.status(HTTP_CODES.NOT_FOUND.code).json({
-          message: getFilesByAlbumIdResult.message ?? HTTP_CODES.NOT_FOUND.message
-        })
-      }
-
-      return response.status(HTTP_CODES.OK.code).json({
-        files: getFilesByAlbumIdResult.data
-      })
-    } catch (error) {
-      this.logger.error('Error retrieving files by album id')
-      this.logger.error(error)
-      this.logger.error(error.stack)
-      return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
-      })
     }
   }
 }

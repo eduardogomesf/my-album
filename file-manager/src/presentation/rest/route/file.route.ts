@@ -28,8 +28,7 @@ export function getFileRouter(useCases: UseCases): Router {
   const router = Router()
 
   const fileController = new FileController(
-    useCases.addNewFileUseCase,
-    useCases.getFilesByAlbumIdUseCase
+    useCases.addNewFileUseCase
   )
 
   router.post(
@@ -37,11 +36,6 @@ export function getFileRouter(useCases: UseCases): Router {
     upload.single('file'),
     getAuthInfoFromHeaders,
     fileController.add.bind(fileController)
-  )
-  router.get(
-    '/albums/:albumId/files',
-    getAuthInfoFromHeaders,
-    fileController.getFilesByAlbumId.bind(fileController)
   )
 
   return router
