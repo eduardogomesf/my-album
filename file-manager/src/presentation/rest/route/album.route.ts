@@ -8,11 +8,17 @@ export function getAlbumRouter(useCases: UseCases): Router {
 
   const albumController = new AlbumController(
     useCases.addNewAlbumUseCase,
-    useCases.getAlbumsUseCase
+    useCases.getAlbumsUseCase,
+    useCases.getFilesByAlbumIdUseCase
   )
 
   router.post('/albums', getAuthInfoFromHeaders, albumController.add.bind(albumController))
   router.get('/albums', getAuthInfoFromHeaders, albumController.getAll.bind(albumController))
+  router.get(
+    '/albums/:albumId/files',
+    getAuthInfoFromHeaders,
+    albumController.getFilesByAlbumId.bind(albumController)
+  )
 
   return router
 }
