@@ -12,8 +12,8 @@ interface CreateFileDTO {
   albumId: string
   url?: string
   isDeleted?: boolean
-  createdAt?: string
-  updatedAt?: string
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export class File extends BaseEntity {
@@ -25,8 +25,8 @@ export class File extends BaseEntity {
   albumId: string
   isDeleted?: boolean
   url?: string | null
-  createdAt: string | null
-  updatedAt: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 
   constructor(data: CreateFileDTO) {
     super(data.id)

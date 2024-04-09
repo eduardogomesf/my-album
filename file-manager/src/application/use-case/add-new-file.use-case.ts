@@ -28,7 +28,7 @@ export class AddNewFileUseCase {
 
   async add(params: AddNewFileParams): Promise<UseCaseResponse> {
     try {
-      const album = await this.getAlbumByIdRepository.getById(params.albumId)
+      const album = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 
       if (!album || album.isDeleted) {
         return {

@@ -27,7 +27,9 @@ const upload = multer({ storage, limits })
 export function getFileRouter(useCases: UseCases): Router {
   const router = Router()
 
-  const fileController = new FileController(useCases.addNewFileUseCase)
+  const fileController = new FileController(
+    useCases.addNewFileUseCase
+  )
 
   router.post(
     '/files',

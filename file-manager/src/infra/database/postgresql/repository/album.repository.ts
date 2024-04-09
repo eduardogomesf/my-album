@@ -11,11 +11,12 @@ import {
 const logger = new Logger('PrismaAlbumRepository')
 
 export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsRepository {
-  async getById(id: string): Promise<Album | null> {
+  async getById(id: string, userId: string): Promise<Album | null> {
     try {
       const rawAlbum = await prisma.album.findUnique({
         where: {
-          id
+          id,
+          userId
         }
       })
       return rawAlbum ? new Album(rawAlbum) : null
@@ -57,7 +58,7 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
     }
   }
 
-  async getAll (userId: string): Promise<Album[]> {
+  async getAll(userId: string): Promise<Album[]> {
     try {
       const albums = await prisma.album.findMany({
         where: {

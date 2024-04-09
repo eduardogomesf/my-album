@@ -5,7 +5,8 @@ dotenv.config()
 export const ENVS = {
   APP: {
     PORT: process.env.PORT ?? 3001,
-    ID: process.env.APP_ID ?? 'file-manager-service'
+    ID: process.env.ID ?? 'file-manager-service',
+    URL: process.env.URL ?? 'http://localhost:3002'
   },
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
