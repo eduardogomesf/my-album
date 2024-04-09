@@ -10,7 +10,6 @@ interface CreateFileDTO {
   type: string
   extension: string
   albumId: string
-  url?: string
   isDeleted?: boolean
   createdAt?: Date
   updatedAt?: Date
@@ -24,7 +23,6 @@ export class File extends BaseEntity {
   extension: string
   albumId: string
   isDeleted?: boolean
-  url?: string | null
   createdAt: Date | null
   updatedAt: Date | null
 
@@ -35,7 +33,6 @@ export class File extends BaseEntity {
     this.encoding = data.encoding
     this.type = data.type
     this.extension = data.extension
-    this.url = data.url ?? null
     this.isDeleted = data.isDeleted ?? false
     this.albumId = data.albumId
     this.createdAt = data.createdAt ?? null

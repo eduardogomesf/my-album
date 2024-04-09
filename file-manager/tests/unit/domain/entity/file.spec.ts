@@ -10,8 +10,8 @@ describe('File Entity', () => {
       type: 'text/plain',
       albumId: 'album-id',
       isDeleted: true,
-      createdAt: '2021-01-01T00:00:00.000Z',
-      updatedAt: '2021-01-01T00:00:00.000Z'
+      createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
+      updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
     })
 
     expect(file.id).toBeDefined()
