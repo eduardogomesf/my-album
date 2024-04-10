@@ -1,6 +1,5 @@
 import { type SaveFileStorageServiceDTO, type SaveFileStorageService } from '@/application/protocol/files'
 import {
-  type ObjectCannedACL,
   PutObjectCommand,
   S3Client,
   type StorageClass,
@@ -23,7 +22,7 @@ export class S3FileStorage implements SaveFileStorageService {
     })
   }
 
-  async save (params: SaveFileStorageServiceDTO): Promise<{ url: string }> {
+  async save(params: SaveFileStorageServiceDTO): Promise<null> {
     await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
 
     const key = `${params.userId}/${params.name}`
@@ -34,14 +33,12 @@ export class S3FileStorage implements SaveFileStorageService {
       Body: params.content,
       ContentType: params.type,
       ContentEncoding: params.encoding,
-      ACL: ENVS.S3.DEFAULT_ACL as ObjectCannedACL,
+      ACL: 'private',
       StorageClass: ENVS.S3.STORAGE_CLASS as StorageClass
     })
 
     await this.client.send(command)
 
-    return {
-      url: `${ENVS.S3.URL}/${ENVS.S3.BUCKET_NAME}/${key}`
-    }
+    return null
   }
 }
