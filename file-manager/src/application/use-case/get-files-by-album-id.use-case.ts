@@ -1,6 +1,5 @@
 import { Logger } from '../../shared'
 import { ERROR_MESSAGES } from '../constant'
-import { hideFileUrl } from '../helper'
 import { type UseCase, type UseCaseResponse } from '../interface'
 import { type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../protocol'
 
@@ -37,12 +36,7 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
       size: file.size,
       encoding: file.encoding,
       type: file.type,
-      extension: file.extension,
-      url: hideFileUrl({
-        url: file.url ?? '',
-        fileId: file.id,
-        albumId: params.albumId
-      })
+      extension: file.extension
     }))
 
     return {
