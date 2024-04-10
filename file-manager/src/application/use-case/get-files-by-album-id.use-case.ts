@@ -1,7 +1,7 @@
 import { Logger } from '../../shared'
 import { ERROR_MESSAGES } from '../constant'
 import { type UseCase, type UseCaseResponse } from '../interface'
-import { type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../protocol'
+import { type GetFilesUrlsService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../protocol'
 
 interface GetFilesByAlbumIdUseCaseParams {
   albumId: string
@@ -13,7 +13,8 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
   constructor(
     private readonly getFilesByAlbumIdRepository: GetFilesByAlbumIdRepository,
-    private readonly getAlbumByIdRepository: GetAlbumByIdRepository
+    private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
+    private readonly getFilesUrlsService: GetFilesUrlsService
   ) {}
 
   async execute(params: GetFilesByAlbumIdUseCaseParams): Promise<UseCaseResponse> {
@@ -30,18 +31,11 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
     const files = await this.getFilesByAlbumIdRepository.getManyById(params.albumId, params.userId)
 
-    const filesWithHiddenURL = files.map((file) => ({
-      id: file.id,
-      name: file.name,
-      size: file.size,
-      encoding: file.encoding,
-      type: file.type,
-      extension: file.extension
-    }))
+    const filesWithUrls = await this.getFilesUrlsService.getFilesUrls(files)
 
     return {
       ok: true,
-      data: filesWithHiddenURL
+      data: filesWithUrls
     }
   }
 }
