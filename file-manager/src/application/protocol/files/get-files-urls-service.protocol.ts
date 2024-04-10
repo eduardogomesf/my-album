@@ -1,6 +1,6 @@
 import { type File } from '@/domain/entity'
 
-interface FileWithUrl {
+export interface FileWithUrl {
   id: string
   name: string
   size: number
@@ -11,5 +11,5 @@ interface FileWithUrl {
 }
 
 export interface GetFilesUrlsService {
-  getFilesUrls: (files: File[]) => Promise<FileWithUrl[]>
+  getFilesUrls: (files: File[], userId: string) => Promise<FileWithUrl[]>
 }

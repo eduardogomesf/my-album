@@ -31,7 +31,7 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
     const files = await this.getFilesByAlbumIdRepository.getManyById(params.albumId, params.userId)
 
-    const filesWithUrls = await this.getFilesUrlsService.getFilesUrls(files)
+    const filesWithUrls = await this.getFilesUrlsService.getFilesUrls(files, params.userId)
 
     return {
       ok: true,

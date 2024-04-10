@@ -27,6 +27,7 @@ export const ENVS = {
     URL: process.env.S3_URL ?? 'http://localhost:4566',
     STORAGE_CLASS: process.env.S3_STORAGE_CLASS ?? 'STANDARD',
     ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID ?? 'test',
-    SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY ?? 'test'
+    SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY ?? 'test',
+    URL_EXPIRATION: process.env.S3_URL_EXPIRATION ? Number(process.env.S3_URL_EXPIRATION) : 1
   }
 } as const
