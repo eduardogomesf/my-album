@@ -18,7 +18,7 @@ describe('Add New File Use Case', () => {
 
   beforeEach(() => {
     mockGetCurrentStorageUsageRepository = { getUsage: jest.fn().mockResolvedValue({ usage: 0 }) }
-    mockGetFileStorageService = { save: jest.fn().mockResolvedValue({ url: 'any-path' }) }
+    mockGetFileStorageService = { save: jest.fn().mockResolvedValue(null) }
     mockSaveFileRepository = { save: jest.fn().mockResolvedValue(null) }
     mockGetAlbumByIdRepository = { getById: jest.fn().mockResolvedValue(getAlbumByIdMock()) }
 
@@ -52,7 +52,6 @@ describe('Add New File Use Case', () => {
       type: payload.type,
       encoding: payload.encoding,
       extension: payload.extension,
-      url: 'any-path',
       albumId: 'album-id',
       isDeleted: false,
       createdAt: null,
@@ -86,7 +85,6 @@ describe('Add New File Use Case', () => {
       extension: payload.extension,
       albumId: 'album-id',
       isDeleted: false,
-      url: 'any-path',
       createdAt: null,
       updatedAt: null
     })

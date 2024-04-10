@@ -73,15 +73,13 @@ export class AddNewFileUseCase {
         }
       }
 
-      const { url } = await this.saveFileStorageService.save({
+      await this.saveFileStorageService.save({
         name: file.name,
         content: params.content,
         encoding: file.encoding,
         type: file.type,
         userId: params.userId
       })
-
-      file.url = url
 
       await this.saveFileRepository.save(file)
 
