@@ -7,5 +7,5 @@ export interface SaveFileStorageServiceDTO {
 }
 
 export interface SaveFileStorageService {
-  save: (params: SaveFileStorageServiceDTO) => Promise<{ url: string }>
+  save: (params: SaveFileStorageServiceDTO) => Promise<null>
 }

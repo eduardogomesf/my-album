@@ -22,7 +22,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   )
   const addNewAlbumUseCase = generateAddNewAlbumUseCase(userRepository, albumRepository, albumRepository)
   const getAlbumsUseCase = generateGetAlbumsUseCase(albumRepository)
-  const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository)
+  const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository, saveFileStorage)
 
   return {
     addNewUserUseCase,

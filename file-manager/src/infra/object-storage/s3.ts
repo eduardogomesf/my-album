@@ -1,14 +1,22 @@
-import { type SaveFileStorageServiceDTO, type SaveFileStorageService } from '@/application/protocol/files'
 import {
-  type ObjectCannedACL,
+  type SaveFileStorageServiceDTO,
+  type SaveFileStorageService,
+  type GetFilesUrlsService,
+  type FileWithUrl
+} from '@/application/protocol/files'
+import {
   PutObjectCommand,
   S3Client,
   type StorageClass,
-  CreateBucketCommand
+  CreateBucketCommand,
+  GetObjectCommand,
+  type GetObjectCommandInput
 } from '@aws-sdk/client-s3'
+import { type File } from '@/domain/entity'
 import { ENVS } from '@/shared'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-export class S3FileStorage implements SaveFileStorageService {
+export class S3FileStorage implements SaveFileStorageService, GetFilesUrlsService {
   private readonly client: S3Client
 
   constructor() {
@@ -23,7 +31,7 @@ export class S3FileStorage implements SaveFileStorageService {
     })
   }
 
-  async save (params: SaveFileStorageServiceDTO): Promise<{ url: string }> {
+  async save(params: SaveFileStorageServiceDTO): Promise<null> {
     await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
 
     const key = `${params.userId}/${params.name}`
@@ -34,14 +42,36 @@ export class S3FileStorage implements SaveFileStorageService {
       Body: params.content,
       ContentType: params.type,
       ContentEncoding: params.encoding,
-      ACL: ENVS.S3.DEFAULT_ACL as ObjectCannedACL,
+      ACL: 'private',
       StorageClass: ENVS.S3.STORAGE_CLASS as StorageClass
     })
 
     await this.client.send(command)
 
-    return {
-      url: `${ENVS.S3.URL}/${ENVS.S3.BUCKET_NAME}/${key}`
-    }
+    return null
+  }
+
+  async getFilesUrls(files: File[], userId: string): Promise<FileWithUrl[]> {
+    const expiration = 60 * 60 * ENVS.S3.URL_EXPIRATION
+
+    const filesWithUrl = await Promise.all(files.map(async file => {
+      const payload: GetObjectCommandInput = {
+        Bucket: ENVS.S3.BUCKET_NAME,
+        Key: `${userId}/${file.name}`
+      }
+
+      const url = await getSignedUrl(
+        this.client,
+        new GetObjectCommand(payload),
+        { expiresIn: expiration }
+      )
+
+      return {
+        ...file,
+        url
+      }
+    }))
+
+    return filesWithUrl
   }
 }

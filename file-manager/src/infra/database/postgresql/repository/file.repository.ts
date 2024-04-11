@@ -6,7 +6,7 @@ import { prisma } from '../client'
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository {
-  async getManyById (albumId: string): Promise<File[]> {
+  async getManyById(albumId: string): Promise<File[]> {
     try {
       const files = await prisma.file.findMany({
         where: {
@@ -26,7 +26,7 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
     }
   }
 
-  async save (file: File): Promise<void> {
+  async save(file: File): Promise<void> {
     try {
       await prisma.file.create({
         data: {
@@ -36,7 +36,6 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
           type: file.type,
           encoding: file.encoding,
           extension: file.extension,
-          url: file.url as string,
           albumId: file.albumId,
           isDeleted: file.isDeleted ?? false
         }
@@ -47,7 +46,7 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
     }
   }
 
-  async getUsage (userId: string): Promise<GetCurrentStorageUsageRepositoryResponse> {
+  async getUsage(userId: string): Promise<GetCurrentStorageUsageRepositoryResponse> {
     return {
       usage: 0
     }
