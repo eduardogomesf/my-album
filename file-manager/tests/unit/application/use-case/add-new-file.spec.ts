@@ -74,7 +74,8 @@ describe('Add New File Use Case', () => {
       content: payload.content,
       encoding: payload.encoding,
       type: payload.type,
-      userId: payload.userId
+      userId: payload.userId,
+      fileId: 'any-id'
     })
     expect(saveSpy).toHaveBeenCalledWith({
       id: 'any-id',
