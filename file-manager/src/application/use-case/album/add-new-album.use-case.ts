@@ -1,8 +1,8 @@
 import { Album } from '@/domain/entity'
-import { type UseCaseResponse, type UseCase } from '../interface'
-import { type SaveAlbumRepository, type GetAlbumByNameRepository, type GetUserByIdRepository } from '../protocol'
+import { type UseCaseResponse, type UseCase } from '../../interface'
+import { type SaveAlbumRepository, type GetAlbumByNameRepository, type GetUserByIdRepository } from '../../protocol'
 import { Logger } from '@/shared'
-import { ERROR_MESSAGES } from '../constant'
+import { ERROR_MESSAGES } from '../../constant'
 
 interface AddNewAlbumUseCaseParams {
   userId: string

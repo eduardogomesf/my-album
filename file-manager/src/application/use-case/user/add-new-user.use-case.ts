@@ -1,6 +1,6 @@
 import { User } from '@/domain/entity'
-import { type UseCaseResponse } from '../interface'
-import { type CreateUserRepository, type GetUserByEmailRepository } from '../protocol'
+import { type UseCaseResponse } from '../../interface'
+import { type CreateUserRepository, type GetUserByEmailRepository } from '../../protocol'
 
 interface AddNewUserDTO {
   id?: string
