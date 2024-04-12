@@ -1,7 +1,7 @@
-import { Logger } from '../../shared'
-import { ERROR_MESSAGES } from '../constant'
-import { type UseCase, type UseCaseResponse } from '../interface'
-import { type GetFilesUrlsService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../protocol'
+import { Logger } from '../../../shared'
+import { ERROR_MESSAGES } from '../../constant'
+import { type UseCase, type UseCaseResponse } from '../../interface'
+import { type GetFilesUrlsService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../../protocol'
 
 interface GetFilesByAlbumIdUseCaseParams {
   albumId: string

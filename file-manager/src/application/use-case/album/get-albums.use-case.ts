@@ -1,5 +1,5 @@
-import { type UseCaseResponse } from '../interface'
-import { type GetAlbumsRepository } from '../protocol'
+import { type UseCaseResponse } from '../../interface'
+import { type GetAlbumsRepository } from '../../protocol'
 
 export class GetAlbumsUseCase {
   constructor(

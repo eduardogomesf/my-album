@@ -1,11 +1,11 @@
 import { DomainError, File } from '@/domain/entity'
-import { type UseCaseResponse } from '../interface'
+import { type UseCaseResponse } from '../../interface'
 import {
   type SaveFileStorageService,
   type GetCurrentStorageUsageRepository,
   type SaveFileRepository
-} from '../protocol/files'
-import { type GetAlbumByIdRepository } from '../protocol'
+} from '../../protocol/files'
+import { type GetAlbumByIdRepository } from '../../protocol'
 
 export interface AddNewFileParams {
   name: string
