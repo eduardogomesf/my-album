@@ -34,7 +34,7 @@ export class S3FileStorage implements SaveFileStorageService, GetFilesUrlsServic
   async save(params: SaveFileStorageServiceDTO): Promise<null> {
     await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
 
-    const key = `${params.userId}/${params.name}`
+    const key = `${params.userId}/${params.fileId}`
 
     const command = new PutObjectCommand({
       Bucket: ENVS.S3.BUCKET_NAME,
@@ -57,7 +57,7 @@ export class S3FileStorage implements SaveFileStorageService, GetFilesUrlsServic
     const filesWithUrl = await Promise.all(files.map(async file => {
       const payload: GetObjectCommandInput = {
         Bucket: ENVS.S3.BUCKET_NAME,
-        Key: `${userId}/${file.name}`
+        Key: `${userId}/${file.id}`
       }
 
       const url = await getSignedUrl(

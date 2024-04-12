@@ -1,4 +1,5 @@
 export interface SaveFileStorageServiceDTO {
+  fileId: string
   content: Buffer
   name: string
   encoding: string

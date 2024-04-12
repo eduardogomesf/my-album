@@ -74,6 +74,7 @@ export class AddNewFileUseCase {
       }
 
       await this.saveFileStorageService.save({
+        fileId: file.id,
         name: file.name,
         content: params.content,
         encoding: file.encoding,
