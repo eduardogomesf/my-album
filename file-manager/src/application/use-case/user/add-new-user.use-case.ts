@@ -1,5 +1,5 @@
 import { User } from '@/domain/entity'
-import { type UseCaseResponse } from '../../interface'
+import { type UseCase, type UseCaseResponse } from '../../interface'
 import { type CreateUserRepository, type GetUserByEmailRepository } from '../../protocol'
 
 interface AddNewUserDTO {
@@ -9,7 +9,7 @@ interface AddNewUserDTO {
   email: string
 }
 
-export class AddNewUserUseCase {
+export class AddNewUserUseCase implements UseCase {
   constructor(
     private readonly getUserByEmailRepository: GetUserByEmailRepository,
     private readonly createUserRepository: CreateUserRepository
