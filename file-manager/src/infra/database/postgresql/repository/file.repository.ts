@@ -47,8 +47,12 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
   }
 
   async getUsage(userId: string): Promise<GetCurrentStorageUsageRepositoryResponse> {
+    const usage = await prisma.$executeRaw`
+      SELECT SUM(size) as usage FROM "files" WHERE "album_id" IN (SELECT id FROM "albums" WHERE "user_id" = ${userId})
+    `
+
     return {
-      usage: 0
+      usage: usage || 0
     }
   }
 }
