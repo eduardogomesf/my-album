@@ -157,13 +157,21 @@ services:
   localstack-s3:
     image: localstack/localstack
     ports:
-      - "4566:4566" 
+      - "4566:4566"
     environment:
       - SERVICES=s3
       - DEFAULT_REGION=us-east-1
       - DATA_DIR=/tmp/localstack/data
     volumes:
-      - "localstack-s3:/tmp/localstack-s3" 
+      - "localstack-s3:/tmp/localstack-s3"
+
+  file-manager-redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass redis
+    volumes:
+      - redis-data:/data
 
 volumes:
   mongodb_data:
@@ -173,3 +181,4 @@ volumes:
   zookeeper-log:
   file-manager-postgres:
   localstack-s3:
+  redis-data:

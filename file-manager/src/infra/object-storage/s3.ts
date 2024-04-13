@@ -1,8 +1,7 @@
 import {
   type SaveFileStorageServiceDTO,
   type SaveFileStorageService,
-  type GetFilesUrlsService,
-  type FileWithUrl
+  type GetFileUrlService
 } from '@/application/protocol/files'
 import {
   PutObjectCommand,
@@ -16,7 +15,7 @@ import { type File } from '@/domain/entity'
 import { ENVS } from '@/shared'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-export class S3FileStorage implements SaveFileStorageService, GetFilesUrlsService {
+export class S3FileStorage implements SaveFileStorageService, GetFileUrlService {
   private readonly client: S3Client
 
   constructor() {
@@ -51,27 +50,20 @@ export class S3FileStorage implements SaveFileStorageService, GetFilesUrlsServic
     return null
   }
 
-  async getFilesUrls(files: File[], userId: string): Promise<FileWithUrl[]> {
+  async getFileUrl(file: File, userId: string): Promise<string> {
     const expiration = 60 * 60 * ENVS.S3.URL_EXPIRATION
 
-    const filesWithUrl = await Promise.all(files.map(async file => {
-      const payload: GetObjectCommandInput = {
-        Bucket: ENVS.S3.BUCKET_NAME,
-        Key: `${userId}/${file.id}`
-      }
+    const payload: GetObjectCommandInput = {
+      Bucket: ENVS.S3.BUCKET_NAME,
+      Key: `${userId}/${file.id}`
+    }
 
-      const url = await getSignedUrl(
-        this.client,
-        new GetObjectCommand(payload),
-        { expiresIn: expiration }
-      )
+    const url = await getSignedUrl(
+      this.client,
+      new GetObjectCommand(payload),
+      { expiresIn: expiration }
+    )
 
-      return {
-        ...file,
-        url
-      }
-    }))
-
-    return filesWithUrl
+    return url ?? ''
   }
 }
