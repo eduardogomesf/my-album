@@ -1,12 +1,12 @@
 import { GetFilesByAlbumIdUseCase } from '@/application/use-case'
-import { type GetFilesUrlsService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '@/application/protocol'
+import { type GetFileUrlService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '@/application/protocol'
 import { getAlbumByIdMock, getFileMock } from '../mock'
 
 describe('Get Files By Album Id Use Case', () => {
   let sut: GetFilesByAlbumIdUseCase
   let mockGetFilesByAlbumIdRepository: GetFilesByAlbumIdRepository
   let mockGetAlbumByIdRepository: GetAlbumByIdRepository
-  let mockGetFilesUrlsService: GetFilesUrlsService
+  let mockGetFileUrlService: GetFileUrlService
 
   beforeEach(() => {
     mockGetFilesByAlbumIdRepository = {
@@ -16,8 +16,8 @@ describe('Get Files By Album Id Use Case', () => {
       ])
     }
     mockGetAlbumByIdRepository = { getById: jest.fn().mockResolvedValue(getAlbumByIdMock()) }
-    mockGetFilesUrlsService = {
-      getFilesUrls: jest.fn().mockResolvedValue([
+    mockGetFileUrlService = {
+      getFileUrl: jest.fn().mockResolvedValue([
         {
           ...getFileMock(),
           url: 'any-url'
@@ -32,7 +32,7 @@ describe('Get Files By Album Id Use Case', () => {
     sut = new GetFilesByAlbumIdUseCase(
       mockGetFilesByAlbumIdRepository,
       mockGetAlbumByIdRepository,
-      mockGetFilesUrlsService
+      mockGetFileUrlService
     )
   })
 
@@ -53,7 +53,7 @@ describe('Get Files By Album Id Use Case', () => {
   it('should call dependencies with right params ', async () => {
     const getByIdSpy = jest.spyOn(mockGetAlbumByIdRepository, 'getById')
     const getManyWithFiltersSpy = jest.spyOn(mockGetFilesByAlbumIdRepository, 'getManyWithFilters')
-    const getFilesUrlsSpy = jest.spyOn(mockGetFilesUrlsService, 'getFilesUrls')
+    const getFileUrlSpy = jest.spyOn(mockGetFileUrlService, 'getFileUrl')
 
     await sut.execute({
       albumId: 'any-album-id',
@@ -66,7 +66,7 @@ describe('Get Files By Album Id Use Case', () => {
 
     expect(getByIdSpy).toHaveBeenCalledWith('any-album-id', 'user-id')
     expect(getManyWithFiltersSpy).toHaveBeenCalledWith('any-album-id', { limit: 10, page: 1 })
-    expect(getFilesUrlsSpy).toHaveBeenCalledTimes(1)
+    expect(getFileUrlSpy).toHaveBeenCalledTimes(2)
   })
 
   it('should pass along any unknown error', async () => {

@@ -1,7 +1,7 @@
 import { Logger } from '@/shared'
 import { ERROR_MESSAGES } from '../../constant'
 import { type UseCase, type UseCaseResponse } from '../../interface'
-import { type GetFilesUrlsService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../../protocol'
+import { type GetFileUrlService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../../protocol'
 
 export interface GetFilesFilters {
   page: number
@@ -19,7 +19,7 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
   constructor(
     private readonly getFilesByAlbumIdRepository: GetFilesByAlbumIdRepository,
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
-    private readonly getFilesUrlsService: GetFilesUrlsService
+    private readonly getFileUrlService: GetFileUrlService
   ) {}
 
   async execute(params: GetFilesByAlbumIdUseCaseParams): Promise<UseCaseResponse> {
@@ -41,7 +41,14 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
       filters
     )
 
-    const filesWithUrls = await this.getFilesUrlsService.getFilesUrls(files, params.userId)
+    const filesWithUrls = await Promise.all(files.map(async (file) => {
+      const url = await this.getFileUrlService.getFileUrl(file, params.userId)
+
+      return {
+        ...file,
+        url
+      }
+    }))
 
     return {
       ok: true,
