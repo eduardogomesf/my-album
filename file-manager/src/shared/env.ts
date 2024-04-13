@@ -34,6 +34,7 @@ export const ENVS = {
     CLIENT_NAME: process.env.REDIS_CLIENT_NAME ?? 'file-manager-redis',
     HOST: process.env.REDIS_HOST ?? 'localhost',
     PORT: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
+    USERNAME: process.env.REDIS_USERNAME ?? 'default',
     PASSWORD: process.env.REDIS_PASSWORD ?? 'redis'
   }
 } as const

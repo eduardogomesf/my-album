@@ -8,7 +8,7 @@ export class RedisCache implements CacheService {
 
   constructor(params: NewCacheServiceParams) {
     this.client = createClient({
-      url: `redis://${params.password}@${params.host}:${params.port}`,
+      url: `redis://${params.username}:${params.password}@${params.host}:${params.port}`,
       name: params.clientName
     })
 

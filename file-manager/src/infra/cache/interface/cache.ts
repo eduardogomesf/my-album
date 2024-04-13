@@ -5,6 +5,7 @@ export interface CacheSetOptions {
 export interface NewCacheServiceParams {
   host: string
   port: number
+  username: string
   password: string
   clientName: string
 }
