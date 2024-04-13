@@ -42,7 +42,7 @@ describe('Add New File Use Case', () => {
   })
 
   it('should create a new file successfully', async () => {
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(true)
     expect(result.data).toEqual({
@@ -65,7 +65,7 @@ describe('Add New File Use Case', () => {
     const saveFileSpy = jest.spyOn(mockGetFileStorageService, 'save')
     const saveSpy = jest.spyOn(mockSaveFileRepository, 'save')
 
-    await sut.add(payload)
+    await sut.execute(payload)
 
     expect(getAlbumByIdSpy).toHaveBeenCalledWith(payload.albumId, payload.userId)
     expect(getUsageSpy).toHaveBeenCalledWith(payload.userId)
@@ -94,7 +94,7 @@ describe('Add New File Use Case', () => {
   it('should not add a file if album does not exist', async () => {
     mockGetAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce(null)
 
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result).toEqual({
       ok: false,
@@ -108,7 +108,7 @@ describe('Add New File Use Case', () => {
       isDeleted: true
     })
 
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result).toEqual({
       ok: false,
@@ -127,7 +127,7 @@ describe('Add New File Use Case', () => {
       albumId: 'album-id'
     }
 
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(false)
     expect(result.message).toBe('fields name can not be empty')
@@ -145,7 +145,7 @@ describe('Add New File Use Case', () => {
       albumId: 'album-id'
     }
 
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(false)
     expect(result.message).toBe('Invalid extension')
@@ -163,7 +163,7 @@ describe('Add New File Use Case', () => {
       albumId: 'album-id'
     }
 
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(false)
     expect(result.message).toBe('The file is too large. Max 10MB')
@@ -183,7 +183,7 @@ describe('Add New File Use Case', () => {
       albumId: 'album-id'
     }
 
-    const result = await sut.add(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(false)
     expect(result.message).toBe(`You don't have enough space. Free space: ${1048576} bytes`)
@@ -203,7 +203,7 @@ describe('Add New File Use Case', () => {
       albumId: 'album-id'
     }
 
-    const result = sut.add(payload)
+    const result = sut.execute(payload)
 
     await expect(result).rejects.toThrow('any-error')
   })

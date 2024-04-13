@@ -1,5 +1,5 @@
 import { DomainError, File } from '@/domain/entity'
-import { type UseCaseResponse } from '../../interface'
+import { type UseCase, type UseCaseResponse } from '../../interface'
 import {
   type SaveFileStorageService,
   type GetCurrentStorageUsageRepository,
@@ -18,7 +18,7 @@ export interface AddNewFileParams {
   content: Buffer
 }
 
-export class AddNewFileUseCase {
+export class AddNewFileUseCase implements UseCase {
   constructor(
     private readonly getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository,
     private readonly saveFileStorageService: SaveFileStorageService,
@@ -26,7 +26,7 @@ export class AddNewFileUseCase {
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository
   ) {}
 
-  async add(params: AddNewFileParams): Promise<UseCaseResponse> {
+  async execute(params: AddNewFileParams): Promise<UseCaseResponse> {
     try {
       const album = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 

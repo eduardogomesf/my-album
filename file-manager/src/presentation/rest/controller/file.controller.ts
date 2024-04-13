@@ -31,7 +31,7 @@ export class FileController {
 
       const file = await fs.readFile(path)
 
-      const createUserResult = await this.addNewFileUseCase.add({
+      const createUserResult = await this.addNewFileUseCase.execute({
         size,
         encoding,
         type: mimetype,

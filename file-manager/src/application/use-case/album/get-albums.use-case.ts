@@ -1,7 +1,7 @@
-import { type UseCaseResponse } from '../../interface'
+import { type UseCase, type UseCaseResponse } from '../../interface'
 import { type GetAlbumsRepository } from '../../protocol'
 
-export class GetAlbumsUseCase {
+export class GetAlbumsUseCase implements UseCase {
   constructor(
     private readonly getAlbumsRepository: GetAlbumsRepository
   ) {}
