@@ -32,13 +32,6 @@ export class AddNewAlbumUseCase implements UseCase {
     const albumByName = await this.getAlbumByNameRepository.getByName(params.name, params.userId)
 
     if (albumByName) {
-      if (albumByName.isDeleted) {
-        return {
-          ok: false,
-          message: ERROR_MESSAGES.ALBUM.SHOULD_BE_DELETED
-        }
-      }
-
       return {
         ok: false,
         message: ERROR_MESSAGES.ALBUM.ALREADY_EXISTS
@@ -47,8 +40,7 @@ export class AddNewAlbumUseCase implements UseCase {
 
     const album = new Album({
       name: params.name,
-      userId: user.id,
-      isMain: false
+      userId: user.id
     })
 
     await this.saveAlbumRepository.save(album)
