@@ -29,5 +29,11 @@ export const ENVS = {
     ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID ?? 'test',
     SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY ?? 'test',
     URL_EXPIRATION: process.env.S3_URL_EXPIRATION ? Number(process.env.S3_URL_EXPIRATION) : 1
+  },
+  REDIS: {
+    CLIENT_NAME: process.env.REDIS_CLIENT_NAME ?? 'file-manager-redis',
+    HOST: process.env.REDIS_HOST ?? 'localhost',
+    PORT: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
+    PASSWORD: process.env.REDIS_PASSWORD ?? 'redis'
   }
 } as const
