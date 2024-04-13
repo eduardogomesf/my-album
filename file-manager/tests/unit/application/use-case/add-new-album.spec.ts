@@ -49,8 +49,6 @@ describe('Add New Album Use Case', () => {
       id: 'any-id',
       name: 'any-name',
       userId: 'user-id',
-      isMain: false,
-      isDeleted: false,
       createdAt: null,
       updatedAt: null
     })
@@ -83,23 +81,6 @@ describe('Add New Album Use Case', () => {
     expect(result).toEqual({
       ok: false,
       message: 'Album already exists'
-    })
-  })
-
-  it('should not add an album if album is deleted', async () => {
-    mockGetAlbumByNameRepository.getByName = jest.fn().mockResolvedValueOnce({
-      ...getAlbumByIdMock(),
-      isDeleted: true
-    })
-
-    const result = await sut.execute({
-      name: 'any-name',
-      userId: 'user-id'
-    })
-
-    expect(result).toEqual({
-      ok: false,
-      message: 'There is an album with the same name that should be deleted first. Please check the deleted albums.'
     })
   })
 

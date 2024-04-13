@@ -4,18 +4,14 @@ describe('Album Entity', () => {
   it('should create a new album', () => {
     const album = new Album({
       name: 'photos',
-      isMain: true,
       userId: 'user-id',
-      isDeleted: true,
       createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
       updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
     })
 
     expect(album.id).toBeDefined()
     expect(album.name).toBe('photos')
-    expect(album.isMain).toBe(true)
     expect(album.userId).toBe('user-id')
-    expect(album.isDeleted).toBe(true)
     expect(album.createdAt).toBe('2021-01-01T00:00:00.000Z')
     expect(album.updatedAt).toBe('2021-01-01T00:00:00.000Z')
   })
