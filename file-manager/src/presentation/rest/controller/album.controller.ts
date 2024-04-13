@@ -64,10 +64,15 @@ export class AlbumController {
     try {
       const { userId } = request.auth
       const { albumId } = request.params
+      const { page = 1, limit = 20 } = request.query
 
       const getFilesByAlbumIdResult = await this.getFilesByAlbumIdUseCase.execute({
         albumId,
-        userId
+        userId,
+        filters: {
+          page: Number(page),
+          limit: Number(limit)
+        }
       })
 
       if (!getFilesByAlbumIdResult.ok && getFilesByAlbumIdResult.message === ERROR_MESSAGES.ALBUM.NOT_FOUND) {
