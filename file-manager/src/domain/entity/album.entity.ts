@@ -6,8 +6,6 @@ interface CreateAlbumDto {
   id?: string
   name: string
   userId: string
-  isMain: boolean
-  isDeleted?: boolean
   createdAt?: Date
   updatedAt?: Date
 }
@@ -15,8 +13,6 @@ interface CreateAlbumDto {
 export class Album extends BaseEntity {
   name: string
   userId: string
-  isMain: boolean
-  isDeleted: boolean
   createdAt?: Date | null
   updatedAt?: Date | null
 
@@ -24,8 +20,6 @@ export class Album extends BaseEntity {
     super(data.id)
     this.name = data.name
     this.userId = data.userId
-    this.isMain = data.isMain ?? false
-    this.isDeleted = data.isDeleted ?? false
     this.createdAt = data.createdAt ?? null
     this.updatedAt = data.updatedAt ?? null
 
@@ -34,7 +28,7 @@ export class Album extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'userId', 'isMain'],
+      ['name', 'userId'],
       this
     )
 

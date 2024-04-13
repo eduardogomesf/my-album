@@ -102,20 +102,6 @@ describe('Add New File Use Case', () => {
     })
   })
 
-  it('should not add a file if album is deleted', async () => {
-    mockGetAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce({
-      ...getAlbumByIdMock(),
-      isDeleted: true
-    })
-
-    const result = await sut.execute(payload)
-
-    expect(result).toEqual({
-      ok: false,
-      message: 'Album not found'
-    })
-  })
-
   it('should return nok if a domain error is thrown', async () => {
     const payload: any = {
       size: 1000,

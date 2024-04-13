@@ -23,8 +23,6 @@ model Album {
   id        String   @id @default(uuid())
   name      String   @unique
   userId    String   @map("user_id")
-  isMain    Boolean  @map("is_main")
-  isDeleted Boolean  @map("is_deleted")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

@@ -11,8 +11,7 @@ export class GetAlbumsUseCase implements UseCase {
 
     const formattedAlbums = albums.map(album => ({
       id: album.id,
-      name: album.name,
-      isMain: album.isMain
+      name: album.name
     }))
 
     return {

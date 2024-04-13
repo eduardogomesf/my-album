@@ -30,7 +30,7 @@ export class AddNewFileUseCase implements UseCase {
     try {
       const album = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 
-      if (!album || album.isDeleted) {
+      if (!album) {
         return {
           ok: false,
           message: 'Album not found'

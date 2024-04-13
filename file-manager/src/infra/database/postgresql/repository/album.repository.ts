@@ -46,10 +46,7 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
         data: {
           id: album.id,
           name: album.name,
-          userId: album.userId,
-          isMain: album.isMain ?? false,
-          isDeleted: album.isDeleted ?? false
-
+          userId: album.userId
         }
       })
     } catch (error) {
@@ -58,12 +55,11 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
     }
   }
 
-  async getAll (userId: string): Promise<Album[]> {
+  async getAll(userId: string): Promise<Album[]> {
     try {
       const albums = await prisma.album.findMany({
         where: {
-          userId,
-          isDeleted: false
+          userId
         },
         orderBy: {
           updatedAt: 'desc'
