@@ -3,9 +3,14 @@ import { ERROR_MESSAGES } from '../../constant'
 import { type UseCase, type UseCaseResponse } from '../../interface'
 import { type GetFilesUrlsService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../../protocol'
 
+export interface GetFilesFilters {
+  page: number
+  limit: number
+}
 interface GetFilesByAlbumIdUseCaseParams {
   albumId: string
   userId: string
+  filters: GetFilesFilters
 }
 
 export class GetFilesByAlbumIdUseCase implements UseCase {
@@ -29,13 +34,25 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
       }
     }
 
-    const files = await this.getFilesByAlbumIdRepository.getManyById(params.albumId, params.userId)
+    const filters = this.handleFilters(params.filters)
+
+    const files = await this.getFilesByAlbumIdRepository.getManyWithFilters(
+      params.albumId,
+      filters
+    )
 
     const filesWithUrls = await this.getFilesUrlsService.getFilesUrls(files, params.userId)
 
     return {
       ok: true,
       data: filesWithUrls
+    }
+  }
+
+  private handleFilters(rawFilters: GetFilesFilters): GetFilesFilters {
+    return {
+      limit: rawFilters?.limit ? rawFilters?.limit : 20,
+      page: rawFilters?.page ? rawFilters?.page : 1
     }
   }
 }

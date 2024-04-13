@@ -2,16 +2,25 @@ import { type GetFilesByAlbumIdRepository, type GetCurrentStorageUsageRepository
 import { File } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
+import { type GetFilesFilters } from '@/application/use-case'
 
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository {
-  async getManyById(albumId: string): Promise<File[]> {
+  async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
+    const limit = filters.limit
+    const offset = (filters.page - 1) * filters.limit
+
     try {
       const files = await prisma.file.findMany({
         where: {
           albumId,
           isDeleted: false
+        },
+        skip: offset,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc'
         }
       })
       return files

@@ -1,5 +1,9 @@
 import { type File } from '@/domain/entity'
+import { type GetFilesFilters } from '../../use-case'
 
 export interface GetFilesByAlbumIdRepository {
-  getManyById: (albumId: string, userId: string) => Promise<File[]>
+  getManyWithFilters: (
+    albumId: string,
+    filters: GetFilesFilters
+  ) => Promise<File[]>
 }
