@@ -13,7 +13,8 @@ export const ENVS = {
     DB_NAME: process.env.MONGO_DB_NAME ?? 'user-service-mongo'
   },
   ACCESS_TOKEN: {
-    SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY ?? ''
+    SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY ?? '',
+    EXPIRATION_TIME: process.env.ACCESS_TOKEN_EXPIRATION_TIME ?? '1h'
   },
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
