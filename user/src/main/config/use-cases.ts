@@ -3,7 +3,7 @@ import { ENVS } from '@/shared'
 import { generateCreateNewUserUseCase, generateUserLoginUseCase } from '../factory/use-case'
 import { generateKafkaProducer } from '../factory/messaging'
 import { generateMongoUserRepository } from '../factory/repository'
-import { generateBcrypPasswordValidator, generateBcryptHashPassword, generateJwtTokenGenerator, generateSendEmailNotificationUtil } from '../factory/util'
+import { generateBcryptPasswordValidator, generateBcryptHashPassword, generateJwtTokenGenerator, generateSendEmailNotificationUtil } from '../factory/util'
 
 export const getApplicationUseCases = async (): Promise<UseCases> => {
   // Repositories
@@ -11,7 +11,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
 
   // Utils
   const hashPassword = generateBcryptHashPassword()
-  const passwordValidator = generateBcrypPasswordValidator()
+  const passwordValidator = generateBcryptPasswordValidator()
   const jwtTokenGenerator = generateJwtTokenGenerator()
 
   // Message senders
