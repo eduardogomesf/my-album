@@ -2,12 +2,18 @@ import { type UseCases } from '@/presentation/interface/use-cases'
 import { ENVS } from '@/shared'
 import { generateCreateNewUserUseCase, generateUserLoginUseCase } from '../factory/use-case'
 import { generateKafkaProducer } from '../factory/messaging'
-import { generateMongoUserRepository } from '../factory/repository'
-import { generateBcryptPasswordValidator, generateBcryptHashPassword, generateJwtTokenGenerator, generateSendEmailNotificationUtil } from '../factory/util'
+import { generateMongoUnpublishedMessagesRepository, generateMongoUserRepository } from '../factory/repository'
+import {
+  generateBcryptPasswordValidator,
+  generateBcryptHashPassword,
+  generateJwtTokenGenerator,
+  generateSendEmailNotificationUtil
+} from '../factory/util'
 
 export const getApplicationUseCases = async (): Promise<UseCases> => {
   // Repositories
   const userRepository = generateMongoUserRepository()
+  const unpublishedMessagesRepository = generateMongoUnpublishedMessagesRepository()
 
   // Utils
   const hashPassword = generateBcryptHashPassword()
@@ -15,8 +21,13 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const jwtTokenGenerator = generateJwtTokenGenerator()
 
   // Message senders
-  const newUserCreatedSender = await generateKafkaProducer(ENVS.KAFKA.TOPICS.USER.CREATED)
-  const sendWelcomeNotification = await generateSendEmailNotificationUtil()
+  const newUserCreatedSender = await generateKafkaProducer(
+    ENVS.KAFKA.TOPICS.USER.CREATED,
+    unpublishedMessagesRepository
+  )
+  const sendWelcomeNotification = await generateSendEmailNotificationUtil(
+    unpublishedMessagesRepository
+  )
 
   // Use cases
   const createNewUser = generateCreateNewUserUseCase(
