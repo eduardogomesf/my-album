@@ -4,6 +4,7 @@ services:
   # User Management Service
   user-service-mongodb:
     image: mongo:latest
+    container_name: user-service-mongodb
     restart: always
     ports:
       - "27017:27017"
@@ -32,6 +33,7 @@ services:
   # Kafka
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -43,6 +45,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: kafka
     ports:
       - "9092:9092"
     environment:
@@ -62,6 +65,7 @@ services:
   # Kong API Gateway
   kong-database:
     image: postgres:9.6
+    container_name: kong-database
     environment:
       POSTGRES_USER: kong
       POSTGRES_PASSWORD: kong
@@ -71,6 +75,7 @@ services:
 
   kong-migration:
     image: kong:latest
+    container_name: kong-migration
     command: kong migrations bootstrap
     environment:
       KONG_PG_HOST: kong-database
@@ -83,6 +88,7 @@ services:
 
   kong:
     image: kong:latest
+    container_name: kong
     restart: always
     environment:
       KONG_PG_HOST: kong-database
@@ -106,6 +112,7 @@ services:
 
   konga:
     image: pantsel/konga:latest
+    container_name: konga
     restart: always
     environment:
       - NODE_ENV=development
@@ -138,6 +145,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog
+    container_name: mailhog
     ports:
       - "1025:1025"
       - "8025:8025"
@@ -145,6 +153,7 @@ services:
   # File Manager Service
   file-manager-postgres:
     image: postgres:9.6
+    container_name: file-manager-postgres
     environment:
       POSTGRES_USER: filemanager
       POSTGRES_PASSWORD: filemanager
@@ -154,8 +163,9 @@ services:
     volumes:
       - file-manager-postgres:/var/lib/postgresql/data
 
-  localstack-s3:
+  s3:
     image: localstack/localstack
+    container_name: s3
     ports:
       - "4566:4566"
     environment:
@@ -167,6 +177,7 @@ services:
 
   file-manager-redis:
     image: redis:latest
+    container_name: file-manager-redis
     ports:
       - "6379:6379"
     command: redis-server --requirepass redis
