@@ -1,5 +1,5 @@
 import { User } from '@/domain/entity/user.entity'
-import { type UseCaseResponse } from '../interface'
+import { type UseCase, type UseCaseResponse } from '../interface'
 import {
   type HashPassword,
   type FindUserByEmailRepository,
@@ -16,7 +16,7 @@ interface CreateNewUserUseCaseDTO {
   password: string
 }
 
-export class CreateNewUserUseCase {
+export class CreateNewUserUseCase implements UseCase {
   constructor(
     private readonly findUserByEmailRepository: FindUserByEmailRepository,
     private readonly hashPassword: HashPassword,
@@ -25,7 +25,7 @@ export class CreateNewUserUseCase {
     private readonly sendEmailNotification: SendEmailNotification
   ) {}
 
-  async create(payload: CreateNewUserUseCaseDTO): Promise<UseCaseResponse> {
+  async execute(payload: CreateNewUserUseCaseDTO): Promise<UseCaseResponse> {
     const userByEmail = await this.findUserByEmailRepository.findByEmail(payload.email)
 
     if (userByEmail) {

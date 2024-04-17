@@ -26,7 +26,7 @@ export class UserController {
 
       const { firstName, lastName, email, password, cellphone } = request.body
 
-      const createUserResult = await this.createNewUserUseCase.create({
+      const createUserResult = await this.createNewUserUseCase.execute({
         firstName, lastName, email, password, cellphone
       })
 
@@ -59,12 +59,12 @@ export class UserController {
 
       const { email, password } = request.body
 
-      const loginResult = await this.userLoginUseCase.login({
+      const loginResult = await this.userLoginUseCase.execute({
         email, password
       })
 
       if (!loginResult.ok) {
-        if (loginResult.message && loginResult.message.includes('given credentials')) {
+        if (loginResult.message?.includes('given credentials')) {
           return response.status(401).json({
             message: loginResult.message
           })

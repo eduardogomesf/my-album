@@ -1,11 +1,11 @@
-import { CreateNewUserUseCase } from '../../../../src/application/use-case'
+import { CreateNewUserUseCase } from '@/application/use-case'
 import {
   type MessageSender,
   type CreateUserRepository,
   type FindUserByEmailRepository,
   type HashPassword,
   type SendEmailNotification
-} from '../../../../src/application/protocol'
+} from '@/application/protocol'
 
 jest.mock('uuid', () => ({
   v4: () => 'any-id'
@@ -44,7 +44,7 @@ describe('Create New User Use Case', () => {
       cellphone: '11999999999'
     }
 
-    const result = await sut.create(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(true)
   })
@@ -64,7 +64,7 @@ describe('Create New User Use Case', () => {
     const newUserCreatedSpy = jest.spyOn(newUserCreatedSender, 'send')
     const sendWelcomeNotificationSpy = jest.spyOn(sendWelcomeNotification, 'send')
 
-    await sut.create(payload)
+    await sut.execute(payload)
 
     expect(findByEmailSpy).toHaveBeenCalledWith(payload.email)
     expect(hashSpy).toHaveBeenCalledWith(payload.password)
@@ -108,7 +108,7 @@ describe('Create New User Use Case', () => {
       cellphone: '11999999999'
     }
 
-    const result = await sut.create(payload)
+    const result = await sut.execute(payload)
 
     expect(result.ok).toBe(false)
     expect(result.message).toBe('E-mail already in use')
@@ -125,7 +125,7 @@ describe('Create New User Use Case', () => {
       cellphone: '11999999999'
     }
 
-    const result = sut.create(payload)
+    const result = sut.execute(payload)
 
     await expect(result).rejects.toThrow(new Error('any-error'))
   })
@@ -141,7 +141,7 @@ describe('Create New User Use Case', () => {
       cellphone: '11999999999'
     }
 
-    const result = sut.create(payload)
+    const result = sut.execute(payload)
 
     await expect(result).rejects.toThrow(new Error('hash-error'))
   })
@@ -157,7 +157,7 @@ describe('Create New User Use Case', () => {
       cellphone: '11999999999'
     }
 
-    const result = sut.create(payload)
+    const result = sut.execute(payload)
 
     await expect(result).rejects.toThrow(new Error('create-user-error'))
   })
