@@ -1,6 +1,5 @@
 import { CreateNewUserUseCase } from '@/application/use-case'
 import {
-  type MessageSender,
   type CreateUserRepository,
   type FindUserByEmailRepository,
   type HashPassword,
@@ -16,21 +15,18 @@ describe('Create New User Use Case', () => {
   let mockFindUserByEmailRepository: FindUserByEmailRepository
   let mockHashPassword: HashPassword
   let mockCreateUserRepository: CreateUserRepository
-  let newUserCreatedSender: MessageSender
   let sendWelcomeNotification: SendEmailNotification
 
   beforeEach(() => {
     mockFindUserByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
     mockHashPassword = { hash: jest.fn().mockResolvedValue('hashed-password') }
     mockCreateUserRepository = { create: jest.fn().mockResolvedValue(null) }
-    newUserCreatedSender = { send: jest.fn().mockResolvedValue(true) }
     sendWelcomeNotification = { send: jest.fn().mockResolvedValue(true) }
 
     sut = new CreateNewUserUseCase(
       mockFindUserByEmailRepository,
       mockHashPassword,
       mockCreateUserRepository,
-      newUserCreatedSender,
       sendWelcomeNotification
     )
   })
@@ -61,7 +57,6 @@ describe('Create New User Use Case', () => {
     const findByEmailSpy = jest.spyOn(mockFindUserByEmailRepository, 'findByEmail')
     const hashSpy = jest.spyOn(mockHashPassword, 'hash')
     const createSpy = jest.spyOn(mockCreateUserRepository, 'create')
-    const newUserCreatedSpy = jest.spyOn(newUserCreatedSender, 'send')
     const sendWelcomeNotificationSpy = jest.spyOn(sendWelcomeNotification, 'send')
 
     await sut.execute(payload)
@@ -75,13 +70,6 @@ describe('Create New User Use Case', () => {
       email: payload.email,
       cellphone: payload.cellphone,
       password: 'hashed-password'
-    })
-    expect(newUserCreatedSpy).toHaveBeenCalledWith({
-      id: 'any-id',
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      email: payload.email,
-      cellphone: payload.cellphone
     })
     expect(sendWelcomeNotificationSpy).toHaveBeenCalledWith({
       sourceEmail: 'test@test.com',

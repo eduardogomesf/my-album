@@ -9,6 +9,7 @@ import {
   generateJwtTokenGenerator,
   generateSendEmailNotificationUtil
 } from '../factory/util'
+import { Subscriber } from '@/application/interface'
 
 export const getApplicationUseCases = async (): Promise<UseCases> => {
   // Repositories
@@ -34,7 +35,6 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     userRepository,
     hashPassword,
     userRepository,
-    newUserCreatedSender,
     sendWelcomeNotification
   )
   const userLogin = generateUserLoginUseCase(
@@ -42,6 +42,15 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     passwordValidator,
     jwtTokenGenerator
   )
+
+  // Subscribers
+  // Subscribers
+  const newUserCreatedSenderSubscriber = new Subscriber(
+    'NewUserCreatedSendeer',
+    newUserCreatedSender.send.bind(newUserCreatedSender)
+  )
+
+  createNewUser.addSubscriber(newUserCreatedSenderSubscriber)
 
   return {
     createNewUser,
