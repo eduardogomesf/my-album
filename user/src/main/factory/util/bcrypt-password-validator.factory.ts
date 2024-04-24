@@ -1,5 +1,5 @@
 import { BcryptPasswordValidator } from '@/infra/util'
 
-export function generateBcrypPasswordValidator() {
+export function generateBcryptPasswordValidator() {
   return new BcryptPasswordValidator()
 }

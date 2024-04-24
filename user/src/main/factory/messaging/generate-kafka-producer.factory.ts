@@ -1,11 +1,12 @@
 import { generateKafkaClient, createNewKafkaProducer, KafkaProducer } from '@/infra/messaging/kafka'
-import { MongoUnpublishedMessagesRepository } from '@/infra/database/mongodb'
+import { type MongoUnpublishedMessagesRepository } from '@/infra/database/mongodb'
 
-export async function generateKafkaProducer(topicName: string) {
+export async function generateKafkaProducer(
+  topicName: string,
+  unpublishedMessagesRepository: MongoUnpublishedMessagesRepository
+) {
   const kafkaClient = generateKafkaClient()
   const kafkaProducer = await createNewKafkaProducer(kafkaClient)
-
-  const unpublishedMessagesRepository = new MongoUnpublishedMessagesRepository()
 
   return new KafkaProducer(
     { client: kafkaClient, producer: kafkaProducer },
