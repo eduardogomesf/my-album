@@ -31,7 +31,7 @@ describe('User Login Use Case', () => {
   })
 
   it('should successfully login a user', async () => {
-    const result = await sut.login({
+    const result = await sut.execute({
       email: 'any-email',
       password: 'any-password'
     })
@@ -47,7 +47,7 @@ describe('User Login Use Case', () => {
   it('should not allow a user to login if email is invalid', async () => {
     jest.spyOn(findUserByEmailRepository, 'findByEmail').mockResolvedValueOnce(null)
 
-    const result = await sut.login({
+    const result = await sut.execute({
       email: 'any-email',
       password: 'any-password'
     })
@@ -61,7 +61,7 @@ describe('User Login Use Case', () => {
   it('should not allow a user to login if password is invalid', async () => {
     jest.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false)
 
-    const result = await sut.login({
+    const result = await sut.execute({
       email: 'any-email',
       password: 'any-password'
     })
@@ -75,7 +75,7 @@ describe('User Login Use Case', () => {
   it('should pass along any error thrown when trying to find a user by email', async () => {
     jest.spyOn(findUserByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('find-by-email-error'))
 
-    const result = sut.login({
+    const result = sut.execute({
       email: 'any-email',
       password: 'any-password'
     })
@@ -86,7 +86,7 @@ describe('User Login Use Case', () => {
   it('should pass along any error thrown when trying to validate password', async () => {
     jest.spyOn(findUserByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('validate-password-error'))
 
-    const result = sut.login({
+    const result = sut.execute({
       email: 'any-email',
       password: 'any-password'
     })
@@ -97,7 +97,7 @@ describe('User Login Use Case', () => {
   it('should pass along any error thrown when trying to generate token', async () => {
     jest.spyOn(findUserByEmailRepository, 'findByEmail').mockRejectedValueOnce(new Error('generate-token-error'))
 
-    const result = sut.login({
+    const result = sut.execute({
       email: 'any-email',
       password: 'any-password'
     })

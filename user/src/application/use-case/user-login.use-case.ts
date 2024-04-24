@@ -1,4 +1,4 @@
-import { type UseCaseResponse } from '../interface'
+import { type UseCase, type UseCaseResponse } from '../interface'
 import { type TokenGenerator, type FindUserByEmailRepository, type PasswordValidator } from '../protocol'
 
 interface UserLoginUseCaseDTO {
@@ -6,14 +6,14 @@ interface UserLoginUseCaseDTO {
   password: string
 }
 
-export class UserLoginUseCase {
+export class UserLoginUseCase implements UseCase {
   constructor(
     private readonly findUserByEmailRepository: FindUserByEmailRepository,
     private readonly passwordValidator: PasswordValidator,
     private readonly tokenGenerator: TokenGenerator
   ) {}
 
-  async login(payload: UserLoginUseCaseDTO): Promise<UseCaseResponse> {
+  async execute(payload: UserLoginUseCaseDTO): Promise<UseCaseResponse> {
     const userByEmail = await this.findUserByEmailRepository.findByEmail(payload.email)
 
     const notValidCredentialsMessage = 'No user found with the given credentials'
