@@ -1,5 +1,6 @@
 import { UserLoginUseCase } from '@/application/use-case'
 import {
+  type SaveRefreshTokenRepository,
   type FindUserByEmailRepository,
   type PasswordValidator,
   type TokenGenerator
@@ -8,11 +9,15 @@ import {
 export const generateUserLoginUseCase = (
   findUserByEmailRepository: FindUserByEmailRepository,
   passwordValidator: PasswordValidator,
-  tokenGenerator: TokenGenerator
+  tokenGenerator: TokenGenerator,
+  refreshTokenGenerator: TokenGenerator,
+  saveRefreshTokenRepository: SaveRefreshTokenRepository
 ) => {
   return new UserLoginUseCase(
     findUserByEmailRepository,
     passwordValidator,
-    tokenGenerator
+    tokenGenerator,
+    refreshTokenGenerator,
+    saveRefreshTokenRepository
   )
 }

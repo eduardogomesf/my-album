@@ -16,6 +16,10 @@ export const ENVS = {
     SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY ?? '',
     EXPIRATION_TIME: process.env.ACCESS_TOKEN_EXPIRATION_TIME ?? '1h'
   },
+  REFRESH_TOKEN: {
+    SECRET_KEY: process.env.REFRESH_TOKEN_SECRET_KEY ?? '',
+    EXPIRATION_TIME: process.env.REFRESH_TOKEN_EXPIRATION_TIME ?? '1d'
+  },
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
     TOPICS: {
