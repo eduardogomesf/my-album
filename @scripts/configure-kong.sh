@@ -28,7 +28,7 @@ curl -s -X POST $KONG_ADMIN_URL/services \
 # Create the 'user-login' route for the 'user-service'
 curl -s -X POST $KONG_ADMIN_URL/services/user-service/routes \
     -d name=user-login \
-    -d paths[]=/users/login \
+    -d paths[]=/login \
     -d methods[]=POST \
     -d https_redirect_status_code=426 \
     -d regex_priority=0 \
@@ -43,6 +43,20 @@ curl -s -X POST $KONG_ADMIN_URL/services/user-service/routes \
 curl -s -X POST $KONG_ADMIN_URL/services/user-service/routes \
     -d name=create-new-user \
     -d paths[]=/users \
+    -d methods[]=POST \
+    -d https_redirect_status_code=426 \
+    -d regex_priority=0 \
+    -d strip_path=false \
+    -d path_handling=v1 \
+    -d request_buffering=true \
+    -d response_buffering=true \
+    -d preserve_host=false \
+    -d tags[]=user-service > /dev/null 2>&1
+
+# Create the 'refresh-token' route for the 'user-service'
+curl -s -X POST $KONG_ADMIN_URL/services/user-service/routes \
+    -d name=refresh-token \
+    -d paths[]=/refresh-token \
     -d methods[]=POST \
     -d https_redirect_status_code=426 \
     -d regex_priority=0 \
