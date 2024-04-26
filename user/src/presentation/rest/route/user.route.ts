@@ -14,7 +14,7 @@ export function getUserRouter(useCases: UseCases): Router {
 
   router.post('/users', userController.create.bind(userController))
 
-  router.post('/users/login', userController.login.bind(userController))
+  router.post('/login', userController.login.bind(userController))
 
   router.post('/refresh-token', userController.refresh.bind(userController))
 
