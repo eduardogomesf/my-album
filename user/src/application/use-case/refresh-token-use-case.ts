@@ -15,6 +15,11 @@ interface RefreshTokenUseCaseParams {
   userId: string
 }
 
+interface RefreshTokenUseCaseResponse {
+  accessToken: string
+  refreshToken: string
+}
+
 export class RefreshTokenUseCase implements UseCase {
   constructor(
     private readonly userExistsRepository: UserExistsRepository,
@@ -26,7 +31,7 @@ export class RefreshTokenUseCase implements UseCase {
     private readonly saveRefreshToken: SaveRefreshTokenRepository
   ) {}
 
-  async execute (params: RefreshTokenUseCaseParams): Promise<UseCaseResponse> {
+  async execute (params: RefreshTokenUseCaseParams): Promise<UseCaseResponse<RefreshTokenUseCaseResponse>> {
     const userExists = await this.userExistsRepository.exists(params.userId)
 
     if (!userExists) {
