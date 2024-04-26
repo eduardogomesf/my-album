@@ -1,11 +1,18 @@
-import { type PasswordValidator, type FindUserByEmailRepository, type TokenGenerator } from '../../../../src/application/protocol'
-import { UserLoginUseCase } from '../../../../src/application/use-case'
+import {
+  type PasswordValidator,
+  type FindUserByEmailRepository,
+  type TokenGenerator,
+  type SaveRefreshTokenRepository
+} from '@/application/protocol'
+import { UserLoginUseCase } from '@/application/use-case'
 
 describe('User Login Use Case', () => {
   let sut: UserLoginUseCase
   let findUserByEmailRepository: FindUserByEmailRepository
   let passwordValidator: PasswordValidator
   let tokenGenerator: TokenGenerator
+  let refreshTokenGenerator: TokenGenerator
+  let saveRefreshTokenRepository: SaveRefreshTokenRepository
 
   beforeEach(() => {
     findUserByEmailRepository = {
@@ -22,11 +29,19 @@ describe('User Login Use Case', () => {
     tokenGenerator = {
       generate: jest.fn().mockResolvedValue('any-token')
     }
+    refreshTokenGenerator = {
+      generate: jest.fn().mockResolvedValue('any-token')
+    }
+    saveRefreshTokenRepository = {
+      save: jest.fn().mockResolvedValue(null)
+    }
 
     sut = new UserLoginUseCase(
       findUserByEmailRepository,
       passwordValidator,
-      tokenGenerator
+      tokenGenerator,
+      refreshTokenGenerator,
+      saveRefreshTokenRepository
     )
   })
 
@@ -39,7 +54,8 @@ describe('User Login Use Case', () => {
     expect(result).toEqual({
       ok: true,
       data: {
-        token: 'any-token'
+        accessToken: 'any-token',
+        refreshToken: 'any-token'
       }
     })
   })

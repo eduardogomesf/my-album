@@ -1,5 +1,9 @@
 import { type Request, type Response } from 'express'
-import { type UserLoginUseCase, type CreateNewUserUseCase } from '@/application/use-case'
+import {
+  type UserLoginUseCase,
+  type CreateNewUserUseCase,
+  type RefreshTokenUseCase
+} from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
 
@@ -8,7 +12,8 @@ const logger = new Logger('UserController')
 export class UserController {
   constructor(
     private readonly createNewUserUseCase: CreateNewUserUseCase,
-    private readonly userLoginUseCase: UserLoginUseCase
+    private readonly userLoginUseCase: UserLoginUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase
   ) {}
 
   async create(request: Request, response: Response): Promise<Response> {
@@ -76,12 +81,50 @@ export class UserController {
       }
 
       const responseBody = {
-        token: loginResult?.data.token
+        accessToken: loginResult?.data?.accessToken,
+        refreshToken: loginResult?.data?.refreshToken
       }
 
       return response.status(200).json(responseBody)
     } catch (error) {
       logger.error('Error creating user')
+      logger.error(error)
+      return response.status(500).send()
+    }
+  }
+
+  async refresh(request: Request, response: Response): Promise<Response> {
+    try {
+      const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
+        ['refreshToken', 'userId'],
+        request.body
+      )
+
+      if (missingFieldsValidation.isMissing) {
+        return response.status(400).json({
+          message: `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`
+        })
+      }
+
+      const { refreshToken, userId } = request.body
+
+      const refreshResult = await this.refreshTokenUseCase.execute({
+        refreshToken,
+        userId
+      })
+
+      if (!refreshResult.ok) {
+        return response.status(400).json({
+          message: refreshResult.message
+        })
+      }
+
+      return response.status(200).json({
+        accessToken: refreshResult.data?.accessToken,
+        refreshToken: refreshResult.data?.refreshToken
+      })
+    } catch (error) {
+      logger.error('Error refreshing token')
       logger.error(error)
       return response.status(500).send()
     }
