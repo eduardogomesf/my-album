@@ -47,7 +47,7 @@ export class MongoUserRepository implements FindUserByEmailRepository, CreateUse
 
   async exists(userId: string): Promise<boolean> {
     try {
-      const user = await UserModel.findOne<User>({ userId })
+      const user = await UserModel.findOne<User>({ _id: userId })
       return !!user
     } catch (error) {
       logger.error('Error finding user by user id')
