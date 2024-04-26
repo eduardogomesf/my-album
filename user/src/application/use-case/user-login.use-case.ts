@@ -12,6 +12,11 @@ interface UserLoginUseCaseDTO {
   password: string
 }
 
+interface UserLoginUseCaseResponse {
+  accessToken: string
+  refreshToken: string
+}
+
 export class UserLoginUseCase implements UseCase {
   constructor(
     private readonly findUserByEmailRepository: FindUserByEmailRepository,
@@ -21,7 +26,7 @@ export class UserLoginUseCase implements UseCase {
     private readonly saveRefreshToken: SaveRefreshTokenRepository
   ) {}
 
-  async execute(payload: UserLoginUseCaseDTO): Promise<UseCaseResponse> {
+  async execute(payload: UserLoginUseCaseDTO): Promise<UseCaseResponse<UserLoginUseCaseResponse>> {
     const userByEmail = await this.findUserByEmailRepository.findByEmail(payload.email)
 
     const notValidCredentialsMessage = 'No user found with the given credentials'

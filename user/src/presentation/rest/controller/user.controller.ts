@@ -81,7 +81,8 @@ export class UserController {
       }
 
       const responseBody = {
-        token: loginResult?.data.token
+        accessToken: loginResult?.data?.accessToken,
+        refreshToken: loginResult?.data?.refreshToken
       }
 
       return response.status(200).json(responseBody)
