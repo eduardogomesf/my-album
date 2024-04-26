@@ -1,5 +1,5 @@
 import { Kafka } from 'kafkajs'
-import { ENVS, Logger } from '../../../shared'
+import { ENVS, Logger } from '@/shared'
 
 let kafkaClient: Kafka = null as any
 

@@ -6,7 +6,7 @@ import {
   type DeleteRefreshTokenByIdRepository,
   type TokenValidator,
   type SaveRefreshTokenRepository
-} from '../../../application/protocol'
+} from '@/application/protocol'
 
 export const generateRefreshTokenUseCase = (
   userExistsRepository: UserExistsRepository,

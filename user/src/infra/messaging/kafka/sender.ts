@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid'
 
 import { type KafkaResources } from './resources'
-import { type MessageSender } from '@/application/protocol/message-sender.protocol'
+import { type MessageSender } from '@/application/protocol'
 import { type MongoUnpublishedMessagesRepository } from '../../database/mongodb/unpublished-messages'
 import { Logger } from '@/shared'
 
