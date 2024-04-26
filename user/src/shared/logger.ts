@@ -24,47 +24,48 @@ export class Logger {
     }
   }
 
-  private formatMessage(message: string) {
+  private formatMessage(message: string, correlationId?: string) {
     const now = DateTime.now().setZone(this.timezone).toFormat('yyyy-MM-dd HH:mm:ss')
-    return `[${now}][${this.logSource}] ${message}`
+    const correlation = correlationId ? `[correlation-id:${correlationId}]` : ''
+    return `[${now}][${this.logSource}]${correlation} ${message}`
   }
 
-  verbose(message: string) {
+  verbose(message: string, correlationId?: string) {
     console.debug(
       chalk.cyan(
-        this.formatMessage(message)
+        this.formatMessage(message, correlationId)
       )
     )
   }
 
-  warn(message: string) {
+  warn(message: string, correlationId?: string) {
     console.warn(
       chalk.yellow(
-        this.formatMessage(message)
+        this.formatMessage(message, correlationId)
       )
     )
   }
 
-  info(message: string) {
+  info(message: string, correlationId?: string) {
     console.info(
       chalk.green(
-        this.formatMessage(message)
+        this.formatMessage(message, correlationId)
       )
     )
   }
 
-  error(message: any) {
+  error(message: any, correlationId?: string) {
     console.error(
       chalk.red(
-        this.formatMessage(message)
+        this.formatMessage(message, correlationId)
       )
     )
   }
 
-  fatal(message: any) {
+  fatal(message: any, correlationId?: string) {
     console.error(
       chalk.bgRed(
-        this.formatMessage(message)
+        this.formatMessage(message, correlationId)
       )
     )
   }
