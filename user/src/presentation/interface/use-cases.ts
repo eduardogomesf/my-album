@@ -1,4 +1,8 @@
-import { type UserLoginUseCase, type CreateNewUserUseCase, type RefreshTokenUseCase } from '../../application/use-case'
+import {
+  type UserLoginUseCase,
+  type CreateNewUserUseCase,
+  type RefreshTokenUseCase
+} from '@/application/use-case'
 
 export interface UseCases {
   createNewUser: CreateNewUserUseCase
