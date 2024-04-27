@@ -3,6 +3,7 @@ import { type UseCaseResponse, type UseCase } from '../../interface'
 import { type SaveAlbumRepository, type GetAlbumByNameRepository, type GetUserByIdRepository } from '../../protocol'
 import { Logger } from '@/shared'
 import { ERROR_MESSAGES } from '../../constant'
+import { AlbumStatus } from '@/domain/enum'
 
 interface AddNewAlbumUseCaseParams {
   userId: string
@@ -40,7 +41,8 @@ export class AddNewAlbumUseCase implements UseCase {
 
     const album = new Album({
       name: params.name,
-      userId: user.id
+      userId: user.id,
+      status: AlbumStatus.ACTIVE
     })
 
     await this.saveAlbumRepository.save(album)

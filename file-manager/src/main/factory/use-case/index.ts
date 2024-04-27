@@ -1,5 +1,5 @@
 export * from './add-new-user-use-case.factory'
 export * from './add-new-file-use-case.factory'
 export * from './add-new-album-use-case.factory'
-export * from './get-albums-use-case.factory'
+export * from './get-active-albums-use-case.factory'
 export * from './get-files-by-album-id-use-case.factory'

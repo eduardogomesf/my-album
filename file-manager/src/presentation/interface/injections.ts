@@ -1,9 +1,9 @@
 import {
-  type GetAlbumsUseCase,
   type AddNewAlbumUseCase,
   type AddNewFileUseCase,
   type AddNewUserUseCase,
-  type GetFilesByAlbumIdUseCase
+  type GetFilesByAlbumIdUseCase,
+  type GetActiveAlbumsUseCase
 } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 
@@ -11,7 +11,7 @@ export interface UseCases {
   addNewUserUseCase: AddNewUserUseCase
   addNewFileUseCase: AddNewFileUseCase
   addNewAlbumUseCase: AddNewAlbumUseCase
-  getAlbumsUseCase: GetAlbumsUseCase
+  getAlbumsUseCase: GetActiveAlbumsUseCase
   getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
 }
 

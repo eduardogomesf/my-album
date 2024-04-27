@@ -1,7 +1,7 @@
 import { Logger } from '@/shared'
 import { type Request, type Response } from 'express'
 import { HTTP_CODES } from '../constant'
-import { type GetAlbumsUseCase, type AddNewAlbumUseCase, type GetFilesByAlbumIdUseCase } from '@/application/use-case'
+import { type AddNewAlbumUseCase, type GetFilesByAlbumIdUseCase, type GetActiveAlbumsUseCase } from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
 
 export class AlbumController {
@@ -9,7 +9,7 @@ export class AlbumController {
 
   constructor(
     private readonly addNewAlbumUseCase: AddNewAlbumUseCase,
-    private readonly getAlbumsUseCase: GetAlbumsUseCase,
+    private readonly getActiveAlbumsUseCase: GetActiveAlbumsUseCase,
     private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
 
   ) {}
@@ -41,11 +41,11 @@ export class AlbumController {
     }
   }
 
-  async getAll(request: Request, response: Response): Promise<Response> {
+  async getAllActive(request: Request, response: Response): Promise<Response> {
     try {
       const { userId } = request.auth
 
-      const getAlbumsResult = await this.getAlbumsUseCase.execute(userId)
+      const getAlbumsResult = await this.getActiveAlbumsUseCase.execute(userId)
 
       return response.status(HTTP_CODES.OK.code).json({
         albums: getAlbumsResult.data
