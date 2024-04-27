@@ -1,4 +1,5 @@
 import { Logger } from '@/shared'
+import { FileStatus } from '@/domain/enum'
 import { ERROR_MESSAGES } from '../../constant'
 import { type UseCase, type UseCaseResponse } from '../../interface'
 import { type GetFileUrlService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../../protocol'
@@ -6,6 +7,7 @@ import { type GetFileUrlService, type GetAlbumByIdRepository, type GetFilesByAlb
 export interface GetFilesFilters {
   page: number
   limit: number
+  status?: FileStatus | null
 }
 interface GetFilesByAlbumIdUseCaseParams {
   albumId: string
@@ -56,10 +58,11 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
     }
   }
 
-  private handleFilters(rawFilters: GetFilesFilters): GetFilesFilters {
+  private handleFilters(rawFilters: GetFilesFilters, isAlbumActive = true): GetFilesFilters {
     return {
       limit: rawFilters?.limit ? rawFilters?.limit : 20,
-      page: rawFilters?.page ? rawFilters?.page : 1
+      page: rawFilters?.page ? rawFilters?.page : 1,
+      status: isAlbumActive ? FileStatus.ACTIVE : null
     }
   }
 }

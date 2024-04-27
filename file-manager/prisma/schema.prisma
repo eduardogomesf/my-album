@@ -33,18 +33,24 @@ model Album {
 }
 
 model File {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
   size      BigInt
   encoding  String
   type      String
   extension String
-  isDeleted Boolean  @map("is_deleted")
-  albumId   String   @map("album_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  status    FileStatus @default(ACTIVE)
+  albumId   String     @map("album_id")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
 
   album Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
 
   @@map("files")
+}
+
+enum FileStatus {
+  ACTIVE
+  DIRECTLY_DELETED
+  INDIRECTLY_DELETED
 }

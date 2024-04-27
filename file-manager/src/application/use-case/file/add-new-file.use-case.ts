@@ -1,4 +1,5 @@
 import { DomainError, File } from '@/domain/entity'
+import { FileStatus } from '@/domain/enum'
 import { type UseCase, type UseCaseResponse } from '../../interface'
 import {
   type SaveFileStorageService,
@@ -39,6 +40,7 @@ export class AddNewFileUseCase implements UseCase {
 
       const file = new File({
         name: params.name,
+        status: FileStatus.ACTIVE,
         albumId: params.albumId,
         size: params.size,
         encoding: params.encoding,

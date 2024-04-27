@@ -1,8 +1,14 @@
-import { type GetFilesByAlbumIdRepository, type GetCurrentStorageUsageRepository, type GetCurrentStorageUsageRepositoryResponse, type SaveFileRepository } from '@/application/protocol/files'
+import {
+  type GetFilesByAlbumIdRepository,
+  type GetCurrentStorageUsageRepository,
+  type GetCurrentStorageUsageRepositoryResponse,
+  type SaveFileRepository
+} from '@/application/protocol/files'
 import { File } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
 import { type GetFilesFilters } from '@/application/use-case'
+import { type FileStatus } from '@/domain/enum'
 
 const logger = new Logger('PrismaFileRepository')
 
@@ -11,12 +17,17 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
     const limit = filters.limit
     const offset = (filters.page - 1) * filters.limit
 
+    const where: any = {
+      albumId
+    }
+
+    if (filters.status) {
+      where.status = filters.status
+    }
+
     try {
       const files = await prisma.file.findMany({
-        where: {
-          albumId,
-          isDeleted: false
-        },
+        where,
         skip: offset,
         take: limit,
         orderBy: {
@@ -26,7 +37,8 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
       return files
         ? files.map(file => new File({
           ...file,
-          size: Number(file.size)
+          size: Number(file.size),
+          status: file.status as FileStatus
         }))
         : []
     } catch (error) {
@@ -46,7 +58,7 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
           encoding: file.encoding,
           extension: file.extension,
           albumId: file.albumId,
-          isDeleted: file.isDeleted ?? false
+          status: file.status
         }
       })
     } catch (error) {

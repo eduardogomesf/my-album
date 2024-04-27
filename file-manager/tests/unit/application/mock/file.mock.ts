@@ -7,7 +7,7 @@ export const getFileMock = () => ({
   extension: 'jpeg',
   albumId: 'any-album-id',
   url: 'www.any-url.com',
-  isDeleted: false,
+  status: 'ACTIVE',
   createdAt: new Date().toString(),
   updatedAt: new Date().toString()
 })
