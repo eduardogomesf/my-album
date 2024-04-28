@@ -9,6 +9,7 @@ import {
   generateAddNewFileUseCase,
   generateAddNewUserUseCase,
   generateGetActiveAlbumsUseCase,
+  generateGetDeletedAlbumsUseCase,
   generateGetFilesByAlbumIdUseCase
 } from '../factory/use-case'
 import { generateSaveFileStorageService } from '../factory/object-storage'
@@ -46,12 +47,14 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const addNewAlbumUseCase = generateAddNewAlbumUseCase(userRepository, albumRepository, albumRepository)
   const getActiveAlbumsUseCase = generateGetActiveAlbumsUseCase(albumRepository)
   const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository, getFileUrlDecorator)
+  const getDeletedAlbumsUseCase = generateGetDeletedAlbumsUseCase(albumRepository)
 
   return {
     addNewUserUseCase,
     addNewFileUseCase,
     addNewAlbumUseCase,
     getActiveAlbumsUseCase,
-    getFilesByAlbumIdUseCase
+    getFilesByAlbumIdUseCase,
+    getDeletedAlbumsUseCase
   }
 }

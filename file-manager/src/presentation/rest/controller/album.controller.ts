@@ -1,7 +1,7 @@
 import { Logger } from '@/shared'
 import { type Request, type Response } from 'express'
 import { HTTP_CODES } from '../constant'
-import { type AddNewAlbumUseCase, type GetFilesByAlbumIdUseCase, type GetActiveAlbumsUseCase } from '@/application/use-case'
+import { type AddNewAlbumUseCase, type GetFilesByAlbumIdUseCase, type GetActiveAlbumsUseCase, type GetDeletedAlbumsUseCase } from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
 
 export class AlbumController {
@@ -10,8 +10,8 @@ export class AlbumController {
   constructor(
     private readonly addNewAlbumUseCase: AddNewAlbumUseCase,
     private readonly getActiveAlbumsUseCase: GetActiveAlbumsUseCase,
-    private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
-
+    private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase,
+    private readonly getDeletedAlbumsUseCase: GetDeletedAlbumsUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -51,7 +51,28 @@ export class AlbumController {
         albums: getAlbumsResult.data
       })
     } catch (error) {
-      this.logger.error('Error retrieving albums')
+      this.logger.error('Error retrieving active albums')
+      this.logger.error(error)
+      this.logger.error(error.stack)
+      return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+      })
+    }
+  }
+
+  async getAllDeleted(request: Request, response: Response): Promise<Response> {
+    try {
+      const { userId } = request.auth
+
+      const getAlbumsResult = await this.getDeletedAlbumsUseCase.execute({
+        userId
+      })
+
+      return response.status(HTTP_CODES.OK.code).json({
+        albums: getAlbumsResult.data
+      })
+    } catch (error) {
+      this.logger.error('Error retrieving deleted albums')
       this.logger.error(error)
       this.logger.error(error.stack)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
