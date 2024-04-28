@@ -19,7 +19,7 @@ export class AddNewAlbumUseCase implements UseCase {
     private readonly saveAlbumRepository: SaveAlbumRepository
   ) {}
 
-  async execute(params: AddNewAlbumUseCaseParams): Promise<UseCaseResponse> {
+  async execute(params: AddNewAlbumUseCaseParams): Promise<UseCaseResponse<null>> {
     const user = await this.getUserByIdRepository.getById(params.userId)
 
     if (!user) {

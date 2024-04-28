@@ -28,7 +28,7 @@ export class AddNewFileUseCase implements UseCase {
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository
   ) {}
 
-  async execute(params: AddNewFileParams): Promise<UseCaseResponse> {
+  async execute(params: AddNewFileParams): Promise<UseCaseResponse<File>> {
     try {
       const album = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 

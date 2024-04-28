@@ -15,7 +15,7 @@ export class AddNewUserUseCase implements UseCase {
     private readonly createUserRepository: CreateUserRepository
   ) {}
 
-  async execute(userDto: AddNewUserDTO): Promise<UseCaseResponse> {
+  async execute(userDto: AddNewUserDTO): Promise<UseCaseResponse<User>> {
     const userAlreadyExists = await this.getUserByEmailRepository.getByEmail(userDto.email)
 
     if (userAlreadyExists) {
