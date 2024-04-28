@@ -2,13 +2,20 @@ import { AlbumStatus } from '@/domain/enum'
 import { type UseCase, type UseCaseResponse } from '../../interface'
 import { type GetAlbumsByStatusRepository } from '../../protocol'
 
-export class GetActiveAlbumsUseCase implements UseCase {
+interface GetDeletedAlbumsUseCaseParams {
+  userId: string
+}
+
+export class GetDeletedAlbumsUseCase implements UseCase {
   constructor(
     private readonly getAlbumsByStatusRepository: GetAlbumsByStatusRepository
   ) {}
 
-  async execute(userId: string): Promise<UseCaseResponse> {
-    const albums = await this.getAlbumsByStatusRepository.getManyByStatus(userId, AlbumStatus.ACTIVE)
+  async execute (params: GetDeletedAlbumsUseCaseParams): Promise<UseCaseResponse> {
+    const albums = await this.getAlbumsByStatusRepository.getManyByStatus(
+      params.userId,
+      AlbumStatus.DELETED
+    )
 
     const formattedAlbums = albums.map(album => ({
       id: album.id,
