@@ -1,16 +1,19 @@
-import { Album } from '@/domain/entity'
+import { type AlbumStatus as AlbumStatusPrisma } from '@prisma/client'
+import { type Album } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
 import {
   type GetAlbumByNameRepository,
   type GetAlbumByIdRepository,
   type SaveAlbumRepository,
-  type GetAlbumsRepository
+  type GetAlbumsByStatusRepository
 } from '@/application/protocol'
+import { type AlbumStatus } from '@/domain/enum'
+import { AlbumMapper } from '../mapper'
 
 const logger = new Logger('PrismaAlbumRepository')
 
-export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsRepository {
+export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsByStatusRepository {
   async getById(id: string, userId: string): Promise<Album | null> {
     try {
       const rawAlbum = await prisma.album.findUnique({
@@ -19,7 +22,7 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
           userId
         }
       })
-      return rawAlbum ? new Album(rawAlbum) : null
+      return AlbumMapper.toDomain(rawAlbum)
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
@@ -33,7 +36,7 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
           name
         }
       })
-      return rawAlbum ? new Album(rawAlbum) : null
+      return AlbumMapper.toDomain(rawAlbum)
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
@@ -55,17 +58,19 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
     }
   }
 
-  async getAll(userId: string): Promise<Album[]> {
+  async getManyByStatus(userId: string, status: AlbumStatus): Promise<Album[]> {
     try {
       const albums = await prisma.album.findMany({
         where: {
-          userId
+          userId,
+          status: status as AlbumStatusPrisma
         },
         orderBy: {
           updatedAt: 'desc'
         }
       })
-      return albums.map(album => new Album(album))
+
+      return albums.map(album => AlbumMapper.toDomain(album)) as Album[]
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)

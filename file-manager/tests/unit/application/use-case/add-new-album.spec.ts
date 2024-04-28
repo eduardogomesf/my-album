@@ -49,6 +49,7 @@ describe('Add New Album Use Case', () => {
       id: 'any-id',
       name: 'any-name',
       userId: 'user-id',
+      status: 'ACTIVE',
       createdAt: null,
       updatedAt: null
     })

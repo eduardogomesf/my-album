@@ -65,7 +65,7 @@ describe('Get Files By Album Id Use Case', () => {
     })
 
     expect(getByIdSpy).toHaveBeenCalledWith('any-album-id', 'user-id')
-    expect(getManyWithFiltersSpy).toHaveBeenCalledWith('any-album-id', { limit: 10, page: 1 })
+    expect(getManyWithFiltersSpy).toHaveBeenCalledWith('any-album-id', { limit: 10, page: 1, status: 'ACTIVE' })
     expect(getFileUrlSpy).toHaveBeenCalledTimes(2)
   })
 
