@@ -8,7 +8,7 @@ export function getAlbumRouter(useCases: UseCases): Router {
 
   const albumController = new AlbumController(
     useCases.addNewAlbumUseCase,
-    useCases.getAlbumsUseCase,
+    useCases.getActiveAlbumsUseCase,
     useCases.getFilesByAlbumIdUseCase
   )
 

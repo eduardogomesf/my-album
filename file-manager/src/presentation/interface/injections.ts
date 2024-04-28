@@ -11,7 +11,7 @@ export interface UseCases {
   addNewUserUseCase: AddNewUserUseCase
   addNewFileUseCase: AddNewFileUseCase
   addNewAlbumUseCase: AddNewAlbumUseCase
-  getAlbumsUseCase: GetActiveAlbumsUseCase
+  getActiveAlbumsUseCase: GetActiveAlbumsUseCase
   getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
 }
 
