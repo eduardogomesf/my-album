@@ -85,6 +85,23 @@ describe('Add New Album Use Case', () => {
     })
   })
 
+  it('should not add an album if there is a deleted album with the same name', async () => {
+    mockGetAlbumByNameRepository.getByName = jest.fn().mockResolvedValueOnce({
+      ...getAlbumByIdMock(),
+      status: 'DELETED'
+    })
+
+    const result = await sut.execute({
+      name: 'any-name',
+      userId: 'user-id'
+    })
+
+    expect(result).toEqual({
+      ok: false,
+      message: 'Please delete the album with the same name first'
+    })
+  })
+
   it('should pass along any unknown error', async () => {
     mockGetAlbumByNameRepository.getByName = jest.fn().mockRejectedValueOnce(new Error('any-error'))
 

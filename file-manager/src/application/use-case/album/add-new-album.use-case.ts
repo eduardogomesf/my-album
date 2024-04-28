@@ -32,7 +32,12 @@ export class AddNewAlbumUseCase implements UseCase {
 
     const albumByName = await this.getAlbumByNameRepository.getByName(params.name, params.userId)
 
-    if (albumByName) {
+    if (albumByName && albumByName.status !== AlbumStatus.ACTIVE) {
+      return {
+        ok: false,
+        message: ERROR_MESSAGES.ALBUM.DELETED_ALBUM_WITH_SAME_NAME
+      }
+    } else if (albumByName) {
       return {
         ok: false,
         message: ERROR_MESSAGES.ALBUM.ALREADY_EXISTS
