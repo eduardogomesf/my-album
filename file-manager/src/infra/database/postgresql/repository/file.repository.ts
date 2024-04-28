@@ -2,45 +2,36 @@ import {
   type GetFilesByAlbumIdRepository,
   type GetCurrentStorageUsageRepository,
   type GetCurrentStorageUsageRepositoryResponse,
-  type SaveFileRepository
+  type SaveFileRepository,
+  type GetFilesFilters
 } from '@/application/protocol/files'
-import { File } from '@/domain/entity'
+import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
-import { type GetFilesFilters } from '@/application/use-case'
-import { type FileStatus } from '@/domain/enum'
+import { PrismaQueryHelper } from '../helper'
+import { FileMapper } from '../mapper/file.mapper'
 
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository {
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
-    const limit = filters.limit
-    const offset = (filters.page - 1) * filters.limit
-
-    const where: any = {
-      albumId
-    }
-
-    if (filters.status) {
-      where.status = filters.status
-    }
+    const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
     try {
       const files = await prisma.file.findMany({
-        where,
+        where: {
+          albumId,
+          status: {
+            in: filters.statuses
+          }
+        },
         skip: offset,
         take: limit,
         orderBy: {
-          createdAt: 'desc'
+          updatedAt: 'desc'
         }
       })
-      return files
-        ? files.map(file => new File({
-          ...file,
-          size: Number(file.size),
-          status: file.status as FileStatus
-        }))
-        : []
+      return files.map(file => FileMapper.toEntity(file))
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
