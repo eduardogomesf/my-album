@@ -1,5 +1,5 @@
 import { DomainError, File } from '@/domain/entity'
-import { FileStatus } from '@/domain/enum'
+import { AlbumStatus, FileStatus } from '@/domain/enum'
 import { type UseCase, type UseCaseResponse } from '../../interface'
 import {
   type SaveFileStorageService,
@@ -7,6 +7,7 @@ import {
   type SaveFileRepository
 } from '../../protocol/files'
 import { type GetAlbumByIdRepository } from '../../protocol'
+import { ERROR_MESSAGES } from '../../constant'
 
 export interface AddNewFileParams {
   name: string
@@ -34,7 +35,14 @@ export class AddNewFileUseCase implements UseCase {
       if (!album) {
         return {
           ok: false,
-          message: 'Album not found'
+          message: ERROR_MESSAGES.ALBUM.NOT_FOUND
+        }
+      }
+
+      if (album.status !== AlbumStatus.ACTIVE) {
+        return {
+          ok: false,
+          message: ERROR_MESSAGES.ALBUM.DELETED_PLEASE_RESTORE
         }
       }
 
