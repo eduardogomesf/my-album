@@ -1,32 +1,26 @@
-import { Logger } from '@/shared'
-import { FileStatus } from '@/domain/enum'
+import { AlbumStatus, FileStatus } from '@/domain/enum'
 import { ERROR_MESSAGES } from '../../constant'
-import { type UseCase, type UseCaseResponse } from '../../interface'
-import { type GetFileUrlService, type GetAlbumByIdRepository, type GetFilesByAlbumIdRepository } from '../../protocol'
-
-export interface GetFilesFilters {
-  page: number
-  limit: number
-  status?: FileStatus | null
-}
-interface GetFilesByAlbumIdUseCaseParams {
-  albumId: string
-  userId: string
-  filters: GetFilesFilters
-}
+import {
+  type GetFilesByAlbumIdUseCaseResponse,
+  type GetFilesByAlbumIdUseCaseParams,
+  type UseCase,
+  type UseCaseResponse,
+  type GetFilesByAlbumIdFilters
+} from '../../interface'
+import {
+  type GetFileUrlService,
+  type GetAlbumByIdRepository,
+  type GetFilesByAlbumIdRepository
+} from '../../protocol'
 
 export class GetFilesByAlbumIdUseCase implements UseCase {
-  private readonly logger = new Logger(GetFilesByAlbumIdUseCase.name)
-
   constructor(
     private readonly getFilesByAlbumIdRepository: GetFilesByAlbumIdRepository,
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
     private readonly getFileUrlService: GetFileUrlService
   ) {}
 
-  async execute(params: GetFilesByAlbumIdUseCaseParams): Promise<UseCaseResponse> {
-    this.logger.verbose(`Getting files by album id: ${params.albumId} and user id: ${params.userId}`)
-
+  async execute(params: GetFilesByAlbumIdUseCaseParams): Promise<UseCaseResponse<GetFilesByAlbumIdUseCaseResponse[]>> {
     const albumById = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 
     if (!albumById) {
@@ -36,19 +30,28 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
       }
     }
 
-    const filters = this.handleFilters(params.filters)
+    const filters = this.handleFilters(params.filters, albumById.status === AlbumStatus.ACTIVE)
 
     const files = await this.getFilesByAlbumIdRepository.getManyWithFilters(
       params.albumId,
       filters
     )
 
-    const filesWithUrls = await Promise.all(files.map(async (file) => {
+    const filesWithUrls: GetFilesByAlbumIdUseCaseResponse[] = await Promise.all(files.map(async (file) => {
       const url = await this.getFileUrlService.getFileUrl(file, params.userId)
 
       return {
-        ...file,
-        url
+        id: file.id,
+        name: file.name,
+        size: file.size,
+        encoding: file.encoding,
+        type: file.type,
+        extension: file.extension,
+        albumId: file.albumId,
+        url,
+        isDeleted: file.status !== FileStatus.ACTIVE,
+        directDeleted: file.status === FileStatus.DIRECTLY_DELETED,
+        updatedAt: file.updatedAt ? new Date(file.updatedAt).toISOString() : ''
       }
     }))
 
@@ -58,11 +61,11 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
     }
   }
 
-  private handleFilters(rawFilters: GetFilesFilters, isAlbumActive = true): GetFilesFilters {
+  private handleFilters(rawFilters: GetFilesByAlbumIdFilters, isAlbumActive = true) {
     return {
       limit: rawFilters?.limit ? rawFilters?.limit : 20,
       page: rawFilters?.page ? rawFilters?.page : 1,
-      status: isAlbumActive ? FileStatus.ACTIVE : null
+      statuses: isAlbumActive ? [FileStatus.ACTIVE] : [FileStatus.INDIRECTLY_DELETED, FileStatus.DIRECTLY_DELETED]
     }
   }
 }

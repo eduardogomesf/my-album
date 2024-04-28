@@ -1,7 +1,7 @@
-export interface UseCaseResponse {
+export interface UseCaseResponse<T = any> {
   ok: boolean
   message?: string
-  data?: any
+  data?: T
 }
 
 export interface UseCase {
