@@ -8,5 +8,8 @@ export const ERROR_MESSAGES = {
     DELETED_ALBUM_WITH_SAME_NAME: 'Please delete the album with the same name first',
     DELETED_PLEASE_RESTORE: 'Album is deleted. Please restore it first',
     MOVE_TO_DELETED_ALBUM: 'Cannot move files to a deleted album'
+  },
+  PERMISSION: {
+    NOT_ALLOWED: 'You do not have permission to perform this action'
   }
 } as const

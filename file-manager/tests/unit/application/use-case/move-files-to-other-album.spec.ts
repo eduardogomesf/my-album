@@ -1,7 +1,8 @@
 import { MoveFilesToOtherAlbum } from '@/application/use-case'
 import {
   type MoveFilesToAlbumByFilesIdsRepository,
-  type GetAlbumByIdRepository
+  type GetAlbumByIdRepository,
+  type GetFilesByIdsRepository
 } from '@/application/protocol'
 import { getAlbumByIdMock } from '../mock'
 
@@ -9,14 +10,22 @@ describe('Moves file to other album Use Case', () => {
   let sut: MoveFilesToOtherAlbum
   let mockGetAlbumByIdRepository: GetAlbumByIdRepository
   let moveFilesByFilesIdsRepository: MoveFilesToAlbumByFilesIdsRepository
+  let getFilesByIdsRepository: GetFilesByIdsRepository
 
   beforeEach(() => {
     mockGetAlbumByIdRepository = { getById: jest.fn().mockResolvedValueOnce(getAlbumByIdMock()) }
     moveFilesByFilesIdsRepository = { moveFiles: jest.fn().mockResolvedValue(null) }
+    getFilesByIdsRepository = {
+      getByIds: jest.fn().mockResolvedValue([{
+        ...getAlbumByIdMock(),
+        album: getAlbumByIdMock()
+      }])
+    }
 
     sut = new MoveFilesToOtherAlbum(
       mockGetAlbumByIdRepository,
-      moveFilesByFilesIdsRepository
+      moveFilesByFilesIdsRepository,
+      getFilesByIdsRepository
     )
   })
 
@@ -33,6 +42,7 @@ describe('Moves file to other album Use Case', () => {
   it('should calls dependencies with correct input', async () => {
     const getAlbumByIdSpy = jest.spyOn(mockGetAlbumByIdRepository, 'getById')
     const moveFilesSpy = jest.spyOn(moveFilesByFilesIdsRepository, 'moveFiles')
+    const getFilesByIdsSpy = jest.spyOn(getFilesByIdsRepository, 'getByIds')
 
     await sut.execute({
       userId: 'user-id',
@@ -46,6 +56,7 @@ describe('Moves file to other album Use Case', () => {
       filesIds: ['file-id', 'file-id-2'],
       userId: 'user-id'
     })
+    expect(getFilesByIdsSpy).toHaveBeenCalledWith(['file-id', 'file-id-2'], 'user-id')
   })
 
   it('should not move files if target album does not exist', async () => {
@@ -78,6 +89,24 @@ describe('Moves file to other album Use Case', () => {
     expect(result).toEqual({
       ok: false,
       message: 'Cannot move files to a deleted album'
+    })
+  })
+
+  it('should not move files if user does not have permission', async () => {
+    getFilesByIdsRepository.getByIds = jest.fn().mockResolvedValueOnce([{
+      ...getAlbumByIdMock(),
+      album: { ...getAlbumByIdMock(), userId: 'another-user-id' }
+    }])
+
+    const result = await sut.execute({
+      targetAlbumId: 'album-id',
+      filesIds: ['file-id', 'file-id-2'],
+      userId: 'user-id'
+    })
+
+    expect(result).toEqual({
+      ok: false,
+      message: 'You do not have permission to perform this action'
     })
   })
 
