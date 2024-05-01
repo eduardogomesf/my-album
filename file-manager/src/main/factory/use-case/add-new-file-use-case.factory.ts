@@ -1,6 +1,5 @@
-import { type GetCurrentStorageUsageRepository, type SaveFileStorageService, type SaveFileRepository } from '@/application/protocol/files'
+import { type GetCurrentStorageUsageRepository, type SaveFileStorageService, type SaveFileRepository, type GetAlbumByIdRepository } from '@/application/protocol'
 import { AddNewFileUseCase } from '@/application/use-case'
-import { type GetAlbumByIdRepository } from '@/application/protocol'
 
 export const generateAddNewFileUseCase = (
   getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository,

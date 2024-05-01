@@ -2,7 +2,7 @@ import {
   type SaveFileStorageServiceDTO,
   type SaveFileStorageService,
   type GetFileUrlService
-} from '@/application/protocol/files'
+} from '@/application/protocol'
 import {
   PutObjectCommand,
   S3Client,

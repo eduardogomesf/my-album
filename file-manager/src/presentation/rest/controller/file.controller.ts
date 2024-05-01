@@ -67,7 +67,7 @@ export class FileController {
       const { targetAlbumId, filesIds } = request.body
       const { userId } = request.auth
 
-      const missingFieldsResult = MissingFieldsHelper.hasMissingFields(['targetAlbumId', 'files'], request.body)
+      const missingFieldsResult = MissingFieldsHelper.hasMissingFields(['targetAlbumId', 'filesIds'], request.body)
 
       if (missingFieldsResult.isMissing) {
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
