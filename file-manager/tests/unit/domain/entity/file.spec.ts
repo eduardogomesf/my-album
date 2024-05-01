@@ -4,7 +4,6 @@ describe('File Entity', () => {
   it('should create a new file', () => {
     const file = new File({
       name: 'file.txt',
-      status: 'ACTIVE' as any,
       size: 1024,
       extension: 'txt',
       encoding: 'utf-8',
@@ -15,7 +14,6 @@ describe('File Entity', () => {
     })
 
     expect(file.id).toBeDefined()
-    expect(file.status).toBe('ACTIVE')
     expect(file.name).toBe('file.txt')
     expect(file.albumId).toBe('album-id')
     expect(file.size).toBe(1024)

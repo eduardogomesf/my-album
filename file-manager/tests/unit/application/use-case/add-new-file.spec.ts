@@ -53,7 +53,6 @@ describe('Add New File Use Case', () => {
       encoding: payload.encoding,
       extension: payload.extension,
       albumId: 'album-id',
-      status: 'ACTIVE',
       createdAt: null,
       updatedAt: null
     })
@@ -85,7 +84,6 @@ describe('Add New File Use Case', () => {
       encoding: payload.encoding,
       extension: payload.extension,
       albumId: 'album-id',
-      status: 'ACTIVE',
       createdAt: null,
       updatedAt: null
     })

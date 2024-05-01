@@ -19,7 +19,5 @@ export interface GetFilesByAlbumIdUseCaseResponse {
   extension: string
   albumId: string
   url: string
-  isDeleted: boolean
-  directDeleted?: boolean
   updatedAt: string
 }

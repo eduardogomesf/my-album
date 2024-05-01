@@ -1,4 +1,4 @@
-import { AlbumStatus, FileStatus } from '@/domain/enum'
+import { AlbumStatus } from '@/domain/enum'
 import { ERROR_MESSAGES } from '../../constant'
 import {
   type GetFilesByAlbumIdUseCaseResponse,
@@ -49,8 +49,6 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
         extension: file.extension,
         albumId: file.albumId,
         url,
-        isDeleted: file.status !== FileStatus.ACTIVE,
-        directDeleted: file.status === FileStatus.DIRECTLY_DELETED,
         updatedAt: file.updatedAt ? new Date(file.updatedAt).toISOString() : ''
       }
     }))
@@ -64,8 +62,7 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
   private handleFilters(rawFilters: GetFilesByAlbumIdFilters, isAlbumActive = true) {
     return {
       limit: rawFilters?.limit ? rawFilters?.limit : 20,
-      page: rawFilters?.page ? rawFilters?.page : 1,
-      statuses: isAlbumActive ? [FileStatus.ACTIVE] : [FileStatus.INDIRECTLY_DELETED, FileStatus.DIRECTLY_DELETED]
+      page: rawFilters?.page ? rawFilters?.page : 1
     }
   }
 }

@@ -20,10 +20,7 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
     try {
       const files = await prisma.file.findMany({
         where: {
-          albumId,
-          status: {
-            in: filters.statuses
-          }
+          albumId
         },
         skip: offset,
         take: limit,
@@ -48,8 +45,7 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
           type: file.type,
           encoding: file.encoding,
           extension: file.extension,
-          albumId: file.albumId,
-          status: file.status
+          albumId: file.albumId
         }
       })
     } catch (error) {

@@ -1,11 +1,9 @@
 import { MissingFieldsHelper } from '@/shared/helper'
 import { BaseEntity } from './base.entity'
 import { DomainError } from './domain-error.entity'
-import { FileStatus } from '../enum'
 
 interface CreateFileDTO {
   id?: string
-  status: FileStatus
   name: string
   size: number
   encoding: string
@@ -18,7 +16,6 @@ interface CreateFileDTO {
 
 export class File extends BaseEntity {
   name: string
-  status: FileStatus
   size: number
   encoding: string
   type: string
@@ -29,7 +26,6 @@ export class File extends BaseEntity {
 
   constructor(data: CreateFileDTO) {
     super(data.id)
-    this.status = data.status ?? FileStatus.ACTIVE
     this.name = data.name
     this.size = data.size
     this.encoding = data.encoding
