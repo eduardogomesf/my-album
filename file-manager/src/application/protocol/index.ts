@@ -1,3 +1,3 @@
 export * from './files'
-export * from './album'
+export * from './album-repository.interface'
 export * from './user'
