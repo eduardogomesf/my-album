@@ -1,10 +1,11 @@
 import {
   type GetFilesByAlbumIdRepository,
   type GetCurrentStorageUsageRepository,
-  type GetCurrentStorageUsageRepositoryResponse,
   type SaveFileRepository,
-  type GetFilesFilters
-} from '@/application/protocol/files'
+  type GetFilesFilters,
+  type MoveFilesToAlbumByFilesIdsRepository,
+  type MoveFilesRepositoryParams
+} from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
@@ -13,7 +14,7 @@ import { FileMapper } from '../mapper/file.mapper'
 
 const logger = new Logger('PrismaFileRepository')
 
-export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository {
+export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository, MoveFilesToAlbumByFilesIdsRepository {
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
     const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
@@ -54,13 +55,35 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
     }
   }
 
-  async getUsage(userId: string): Promise<GetCurrentStorageUsageRepositoryResponse> {
-    const usage = await prisma.$executeRaw`
-      SELECT SUM(size) as usage FROM "files" WHERE "album_id" IN (SELECT id FROM "albums" WHERE "user_id" = ${userId})
-    `
+  async getUsage(userId: string): Promise<{ usage: number }> {
+    try {
+      const usage = await prisma.$executeRaw`
+        SELECT SUM(size) as usage FROM "files" WHERE "album_id" IN (SELECT id FROM "albums" WHERE "user_id" = ${userId})
+      `
+      return {
+        usage: usage || 0
+      }
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
 
-    return {
-      usage: usage || 0
+  async moveFiles (payload: MoveFilesRepositoryParams): Promise<void> {
+    try {
+      await prisma.file.updateMany({
+        where: {
+          id: {
+            in: payload.filesIds
+          }
+        },
+        data: {
+          albumId: payload.targetAlbumId
+        }
+      })
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
     }
   }
 }
