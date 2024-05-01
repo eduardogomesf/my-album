@@ -1,4 +1,4 @@
-import { MoveFilesToOtherAlbum } from '@/application/use-case'
+import { MoveFilesToOtherAlbumUseCase } from '@/application/use-case'
 import {
   type MoveFilesToAlbumByFilesIdsRepository,
   type GetAlbumByIdRepository,
@@ -7,7 +7,7 @@ import {
 import { getAlbumByIdMock } from '../mock'
 
 describe('Moves file to other album Use Case', () => {
-  let sut: MoveFilesToOtherAlbum
+  let sut: MoveFilesToOtherAlbumUseCase
   let mockGetAlbumByIdRepository: GetAlbumByIdRepository
   let moveFilesByFilesIdsRepository: MoveFilesToAlbumByFilesIdsRepository
   let getFilesByIdsRepository: GetFilesByIdsRepository
@@ -22,7 +22,7 @@ describe('Moves file to other album Use Case', () => {
       }])
     }
 
-    sut = new MoveFilesToOtherAlbum(
+    sut = new MoveFilesToOtherAlbumUseCase(
       mockGetAlbumByIdRepository,
       moveFilesByFilesIdsRepository,
       getFilesByIdsRepository

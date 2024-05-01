@@ -1,6 +1,7 @@
 import { bootstrapExpressServer } from './config/express'
 import { Logger } from '@/shared'
 import { getApplicationUseCases } from './config/use-cases'
+import { startConsumers } from './consumers'
 
 const logger = new Logger('bootstrap')
 
@@ -9,7 +10,7 @@ export async function bootstrap() {
 
   const useCases = await getApplicationUseCases()
 
-  // await startConsumers()
+  await startConsumers()
 
   bootstrapExpressServer(useCases)
 }

@@ -16,7 +16,7 @@ interface MoveFilesToOtherAlbumParams {
   filesIds: string[]
 }
 
-export class MoveFilesToOtherAlbum implements UseCase {
+export class MoveFilesToOtherAlbumUseCase implements UseCase {
   constructor(
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
     private readonly moveFilesToAlbumByFilesIdsRepository: MoveFilesToAlbumByFilesIdsRepository,

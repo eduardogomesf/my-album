@@ -1,5 +1,14 @@
+export interface HasMissingFieldsResponse {
+  isMissing: boolean
+  missingFields: string[]
+  missingFieldsMessage: string
+}
+
 export class MissingFieldsHelper {
-  static hasMissingFields(fields: string[], payload: Record<string, unknown>): { isMissing: boolean, missingFields: string[] } {
+  static hasMissingFields(
+    fields: string[],
+    payload: Record<string, unknown>
+  ): HasMissingFieldsResponse {
     const missingFields: string[] = []
 
     fields.forEach(field => {
@@ -11,7 +20,8 @@ export class MissingFieldsHelper {
 
     return {
       isMissing: missingFields.length > 0,
-      missingFields
+      missingFields,
+      missingFieldsMessage: `Missing fields: ${missingFields.join(', ')}`
     }
   }
 }

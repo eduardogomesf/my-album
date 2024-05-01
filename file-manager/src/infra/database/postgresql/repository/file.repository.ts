@@ -4,17 +4,21 @@ import {
   type SaveFileRepository,
   type GetFilesFilters,
   type MoveFilesToAlbumByFilesIdsRepository,
-  type MoveFilesRepositoryParams
+  type MoveFilesRepositoryParams,
+  type GetFilesByIdsRepository,
+  type GetFilesByIdsRepositoryResponse
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
 import { PrismaQueryHelper } from '../helper'
 import { FileMapper } from '../mapper/file.mapper'
+import { AlbumMapper } from '../mapper'
 
 const logger = new Logger('PrismaFileRepository')
 
-export class PrismaFileRepository implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository, MoveFilesToAlbumByFilesIdsRepository {
+export class PrismaFileRepository
+implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository, MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository {
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
     const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
@@ -80,6 +84,31 @@ export class PrismaFileRepository implements SaveFileRepository, GetCurrentStora
         data: {
           albumId: payload.targetAlbumId
         }
+      })
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async getByIds (filesIds: string[]): Promise<GetFilesByIdsRepositoryResponse> {
+    try {
+      const files = await prisma.file.findMany({
+        where: {
+          id: {
+            in: filesIds
+          }
+        },
+        include: {
+          album: true
+        }
+      })
+      return files.map((rawFile) => {
+        const file = FileMapper.toEntity(rawFile)
+        return {
+          ...file,
+          album: AlbumMapper.toDomain(rawFile.album)
+        } as any
       })
     } catch (error) {
       logger.error(error.message)
