@@ -21,3 +21,13 @@ export interface GetFilesByAlbumIdRepository {
 export interface SaveFileRepository {
   save: (file: File) => Promise<void>
 }
+
+export interface MoveFilesRepositoryParams {
+  targetAlbumId: string
+  filesIds: string[]
+  userId: string
+}
+
+export interface MoveFilesToAlbumByFilesIdsRepository {
+  moveFiles: (payload: MoveFilesRepositoryParams) => Promise<void>
+}

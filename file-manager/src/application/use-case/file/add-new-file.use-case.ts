@@ -4,9 +4,9 @@ import { type UseCase, type UseCaseResponse } from '../../interface'
 import {
   type SaveFileStorageService,
   type GetCurrentStorageUsageRepository,
-  type SaveFileRepository
-} from '../../protocol/files'
-import { type GetAlbumByIdRepository } from '../../protocol'
+  type SaveFileRepository,
+  type GetAlbumByIdRepository
+} from '../../protocol'
 import { ERROR_MESSAGES } from '../../constant'
 
 export interface AddNewFileParams {

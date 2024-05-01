@@ -6,6 +6,7 @@ export const ERROR_MESSAGES = {
     ALREADY_EXISTS: 'Album already exists',
     NOT_FOUND: 'Album not found',
     DELETED_ALBUM_WITH_SAME_NAME: 'Please delete the album with the same name first',
-    DELETED_PLEASE_RESTORE: 'Album is deleted. Please restore it first'
+    DELETED_PLEASE_RESTORE: 'Album is deleted. Please restore it first',
+    MOVE_TO_DELETED_ALBUM: 'Cannot move files to a deleted album'
   }
 } as const

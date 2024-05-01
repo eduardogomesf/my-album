@@ -1,6 +1,5 @@
 import { type AddNewFileParams, AddNewFileUseCase } from '@/application/use-case'
-import { type GetCurrentStorageUsageRepository, type SaveFileStorageService, type SaveFileRepository } from '@/application/protocol/files'
-import { type GetAlbumByIdRepository } from '@/application/protocol'
+import { type GetCurrentStorageUsageRepository, type SaveFileStorageService, type SaveFileRepository, type GetAlbumByIdRepository } from '@/application/protocol'
 import { getAlbumByIdMock } from '../mock/album.mock'
 
 jest.mock('uuid', () => ({
