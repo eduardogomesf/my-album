@@ -184,6 +184,26 @@ services:
     volumes:
       - redis-data:/data
 
+  file-manager-service:
+    container_name: file-service-app
+    restart: always
+    build:
+      context: ./file-manager
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    working_dir: /usr/app
+    command: [ "npm", "start" ]
+    depends_on:
+      file-manager-postgres:
+        condition: service_started
+      s3:
+        condition: service_started
+      file-manager-redis:
+        condition: service_started
+      kafka:
+        condition: service_started
+
 volumes:
   mongodb_data:
   kong-db:
