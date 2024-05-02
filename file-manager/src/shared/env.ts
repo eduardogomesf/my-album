@@ -36,5 +36,8 @@ export const ENVS = {
     PORT: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
     USERNAME: process.env.REDIS_USERNAME ?? 'default',
     PASSWORD: process.env.REDIS_PASSWORD ?? 'redis'
+  },
+  ACCESS_TOKEN: {
+    SECRET_KEY: process.env.ACCESS_TOKEN_SECRET ?? ''
   }
 } as const
