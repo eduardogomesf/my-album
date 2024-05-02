@@ -1,5 +1,4 @@
 import { type Request, type Response } from 'express'
-import { v4 as uuid } from 'uuid'
 import {
   type UserLoginUseCase,
   type CreateNewUserUseCase,
@@ -18,7 +17,7 @@ export class UserController {
   ) {}
 
   async create(request: Request, response: Response): Promise<Response> {
-    const correlationId = uuid()
+    const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Create user request received', correlationId)
 
@@ -57,7 +56,7 @@ export class UserController {
   }
 
   async login(request: Request, response: Response): Promise<Response> {
-    const correlationId = uuid()
+    const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Login request received', correlationId)
 
@@ -108,7 +107,7 @@ export class UserController {
   }
 
   async refresh(request: Request, response: Response): Promise<Response> {
-    const correlationId = uuid()
+    const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Refresh token request received', correlationId)
 
