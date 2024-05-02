@@ -14,7 +14,7 @@ echo "Applying Kong configurations..."
 # Add correlation-id plugin
 curl -s -X POST $KONG_ADMIN_URL/plugins \
     -d name=correlation-id \
-    -d config.header_name=X-Request-ID \
+    -d config.header_name=x-correlation-id \
     -d config.generator=uuid \
     -d config.echo_downstream=true \
     > /dev/null 2>&1
