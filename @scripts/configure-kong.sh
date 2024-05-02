@@ -11,6 +11,14 @@ echo "Waiting for Kong to be fully operational..."
 sleep 10
 
 echo "Applying Kong configurations..."
+# Add correlation-id plugin
+curl -s -X POST $KONG_ADMIN_URL/plugins \
+    -d name=correlation-id \
+    -d config.header_name=X-Request-ID \
+    -d config.generator=uuid \
+    -d config.echo_downstream=true \
+    > /dev/null 2>&1
+
 # Create the 'user-service' service
 curl -s -X POST $KONG_ADMIN_URL/services \
     -d name=user-service \
