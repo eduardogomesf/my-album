@@ -4,11 +4,13 @@ import * as cors from 'cors'
 import { ENVS, Logger } from '@/shared'
 import { type UseCases } from '@/presentation/interface/use-cases'
 import { getUserRouter } from '@/presentation/rest/route'
+import { logger } from '@/presentation/rest/middleware'
 
 function setDefaultMiddlewares(app: express.Express) {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(cors())
+  app.use(logger)
 }
 
 function setDefaultRoutes(app: express.Express) {
