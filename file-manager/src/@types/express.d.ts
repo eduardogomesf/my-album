@@ -6,5 +6,8 @@ declare module 'express-serve-static-core' {
     auth: {
       userId: string
     }
+    tracking: {
+      correlationId: string
+    }
   }
 }
