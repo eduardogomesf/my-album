@@ -1,3 +1,5 @@
+import { OutboxStatus, OutboxType, type File as PrismaFile } from '@prisma/client'
+import { v4 as uuid } from 'uuid'
 import {
   type GetFilesByAlbumIdRepository,
   type GetCurrentStorageUsageRepository,
@@ -7,7 +9,9 @@ import {
   type MoveFilesRepositoryParams,
   type GetFilesByIdsRepository,
   type GetFilesByIdsRepositoryResponse,
-  type CountFilesByAlbumIdRepository
+  type CountFilesByAlbumIdRepository,
+  type GetFileByIdAndAlbumIdRepository,
+  type DeleteFileRepository
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
@@ -21,7 +25,8 @@ const logger = new Logger('PrismaFileRepository')
 export class PrismaFileRepository
 implements
   SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
-  MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository {
+  MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository,
+  GetFileByIdAndAlbumIdRepository, DeleteFileRepository {
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
     const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
@@ -127,6 +132,46 @@ implements
         }
       })
       return numberOfFiles
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async getFileByIdAndAlbumId(
+    fileId: string,
+    albumId: string,
+    userId: string
+  ): Promise<File | null> {
+    try {
+      const file = await prisma.$queryRaw<PrismaFile>`
+        SELECT * FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id = ${fileId} and a.user_id = ${userId} and a.id = ${albumId}
+      `
+      return file ? FileMapper.toEntity(file) : null
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async deleteFile (file: File): Promise<boolean> {
+    try {
+      await prisma.$transaction([
+        prisma.file.delete({
+          where: {
+            id: file.id
+          }
+        }),
+        prisma.outbox.create({
+          data: {
+            id: uuid(),
+            type: OutboxType.FILE_DELETED,
+            status: OutboxStatus.PENDING,
+            payload: JSON.stringify(file)
+          }
+        })
+      ])
+      return true
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
