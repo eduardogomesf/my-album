@@ -191,7 +191,7 @@ services:
       context: ./file-manager
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3002:3002"
     working_dir: /usr/app
     command: [ "npm", "start" ]
     depends_on:
