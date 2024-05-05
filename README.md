@@ -8,7 +8,7 @@ The architecture is composed by three main services: User Management Service, Fi
 
 ## High-level System Design
 
-![System Design](./@docs/system-design.jpg "File Management System")
+![System Design](./@docs/system-design.svg "File Management System")
 
 ## Services
 The **User Management Service** is responsible for handling the management and authentication of users within the system. This service uses a MongoDB database to save all required information and communicates with other services in an asynchronous way by using Kafka Topics to send messages.
