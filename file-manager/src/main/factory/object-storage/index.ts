@@ -1,1 +1,1 @@
-export * from './save-file-storage-service.factory'
+export * from './file-storage-service.factory'
