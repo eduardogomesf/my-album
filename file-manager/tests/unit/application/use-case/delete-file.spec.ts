@@ -61,7 +61,7 @@ describe('Delete file Use Case', () => {
     await sut.execute(payload)
 
     expect(getFileByIdAndAlbumIdSpy).toHaveBeenCalledWith('any-id', 'any-album-id', 'any-user-id')
-    expect(deleteFileSpy).toHaveBeenCalledWith('any-id')
+    expect(deleteFileSpy).toHaveBeenCalledWith(getFileMock())
     expect(deleteFileFromStorageSpy).toHaveBeenCalledWith(getFileMock())
   })
 
