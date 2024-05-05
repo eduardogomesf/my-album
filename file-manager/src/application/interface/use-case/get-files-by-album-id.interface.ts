@@ -10,7 +10,7 @@ export interface GetFilesByAlbumIdUseCaseParams {
   filters: GetFilesByAlbumIdFilters
 }
 
-export interface GetFilesByAlbumIdUseCaseResponse {
+export interface GetFilesByAlbumIdFile {
   id: string
   name: string
   size: number
@@ -20,4 +20,12 @@ export interface GetFilesByAlbumIdUseCaseResponse {
   albumId: string
   url: string
   updatedAt: string
+}
+
+export interface GetFilesByAlbumIdUseCaseResponse {
+  files: GetFilesByAlbumIdFile[]
+  total: number
+  limit: number
+  page: number
+  totalPages: number
 }

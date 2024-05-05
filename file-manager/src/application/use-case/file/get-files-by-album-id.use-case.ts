@@ -5,22 +5,25 @@ import {
   type GetFilesByAlbumIdUseCaseParams,
   type UseCase,
   type UseCaseResponse,
-  type GetFilesByAlbumIdFilters
+  type GetFilesByAlbumIdFilters,
+  type GetFilesByAlbumIdFile
 } from '../../interface'
 import {
   type GetFileUrlService,
   type GetAlbumByIdRepository,
-  type GetFilesByAlbumIdRepository
+  type GetFilesByAlbumIdRepository,
+  type CountFilesByAlbumIdRepository
 } from '../../protocol'
 
 export class GetFilesByAlbumIdUseCase implements UseCase {
   constructor(
     private readonly getFilesByAlbumIdRepository: GetFilesByAlbumIdRepository,
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
-    private readonly getFileUrlService: GetFileUrlService
+    private readonly getFileUrlService: GetFileUrlService,
+    private readonly countFilesByAlbumIdRepository: CountFilesByAlbumIdRepository
   ) {}
 
-  async execute(params: GetFilesByAlbumIdUseCaseParams): Promise<UseCaseResponse<GetFilesByAlbumIdUseCaseResponse[]>> {
+  async execute(params: GetFilesByAlbumIdUseCaseParams): Promise<UseCaseResponse<GetFilesByAlbumIdUseCaseResponse>> {
     const albumById = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 
     if (!albumById) {
@@ -32,12 +35,15 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
     const filters = this.handleFilters(params.filters, albumById.status === AlbumStatus.ACTIVE)
 
-    const files = await this.getFilesByAlbumIdRepository.getManyWithFilters(
-      params.albumId,
-      filters
-    )
+    const [files, totalCountOfFiles] = await Promise.all([
+      this.getFilesByAlbumIdRepository.getManyWithFilters(
+        params.albumId,
+        filters
+      ),
+      this.countFilesByAlbumIdRepository.countWithFilters(params.albumId)
+    ])
 
-    const filesWithUrls: GetFilesByAlbumIdUseCaseResponse[] = await Promise.all(files.map(async (file) => {
+    const filesWithUrls: GetFilesByAlbumIdFile[] = await Promise.all(files.map(async (file) => {
       const url = await this.getFileUrlService.getFileUrl(file, params.userId)
 
       return {
@@ -55,7 +61,13 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
 
     return {
       ok: true,
-      data: filesWithUrls
+      data: {
+        files: filesWithUrls,
+        limit: filters.limit,
+        page: filters.page,
+        total: totalCountOfFiles,
+        totalPages: Math.ceil(totalCountOfFiles / filters.limit)
+      }
     }
   }
 

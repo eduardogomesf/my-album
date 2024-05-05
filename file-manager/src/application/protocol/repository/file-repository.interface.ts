@@ -37,3 +37,9 @@ export type GetFilesByIdsRepositoryResponse = Array<File & { album: Album } >
 export interface GetFilesByIdsRepository {
   getByIds: (filesIds: string[], userId: string) => Promise<GetFilesByIdsRepositoryResponse>
 }
+
+export interface CountFilesByAlbumIdRepository {
+  countWithFilters: (
+    albumId: string
+  ) => Promise<number>
+}
