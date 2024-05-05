@@ -47,7 +47,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   )
   const addNewAlbumUseCase = generateAddNewAlbumUseCase(userRepository, albumRepository, albumRepository)
   const getActiveAlbumsUseCase = generateGetActiveAlbumsUseCase(albumRepository)
-  const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository, getFileUrlDecorator)
+  const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository, getFileUrlDecorator, fileRepository)
   const getDeletedAlbumsUseCase = generateGetDeletedAlbumsUseCase(albumRepository)
   const moveFilesToOtherAlbumUseCase = generateMoveFilesToOtherAlbumUseCase(albumRepository, fileRepository, fileRepository)
 

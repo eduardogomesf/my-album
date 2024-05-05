@@ -6,7 +6,8 @@ import {
   type MoveFilesToAlbumByFilesIdsRepository,
   type MoveFilesRepositoryParams,
   type GetFilesByIdsRepository,
-  type GetFilesByIdsRepositoryResponse
+  type GetFilesByIdsRepositoryResponse,
+  type CountFilesByAlbumIdRepository
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
@@ -18,7 +19,9 @@ import { AlbumMapper } from '../mapper'
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository
-implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository, MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository {
+implements
+  SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
+  MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository {
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
     const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
@@ -110,6 +113,20 @@ implements SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbum
           album: AlbumMapper.toDomain(rawFile.album)
         } as any
       })
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async countWithFilters(albumId: string): Promise<number> {
+    try {
+      const numberOfFiles = await prisma.file.count({
+        where: {
+          albumId
+        }
+      })
+      return numberOfFiles
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
