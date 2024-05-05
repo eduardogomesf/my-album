@@ -1,6 +1,10 @@
 import { type Request, type Response } from 'express'
 import * as fs from 'node:fs/promises'
-import { type MoveFilesToOtherAlbumUseCase, type AddNewFileUseCase } from '@/application/use-case'
+import {
+  type MoveFilesToOtherAlbumUseCase,
+  type AddNewFileUseCase,
+  type DeleteFileUseCase
+} from '@/application/use-case'
 import { Logger } from '@/shared'
 import { MissingFieldsHelper, getFileExtension } from '../helper'
 import { HTTP_CODES } from '../constant'
@@ -10,7 +14,8 @@ export class FileController {
 
   constructor(
     private readonly addNewFileUseCase: AddNewFileUseCase,
-    private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase
+    private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase,
+    private readonly deleteFileUseCase: DeleteFileUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -112,6 +117,42 @@ export class FileController {
       return response.status(204).send()
     } catch (error) {
       this.logger.error('Error moving files', correlationId)
+      this.logger.error(error, correlationId)
+      this.logger.error(error.stack, correlationId)
+      return response.status(500).send()
+    }
+  }
+
+  async delete(request: Request, response: Response): Promise<Response> {
+    const correlationId = request.tracking.correlationId
+    try {
+      const { fileId, albumId } = request.params
+      const { userId } = request.auth
+
+      if (!fileId) {
+        this.logger.warn('File id not found', correlationId)
+        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: 'File id not found'
+        })
+      }
+
+      const result = await this.deleteFileUseCase.execute({
+        fileId,
+        userId,
+        albumId
+      })
+
+      if (!result.ok) {
+        this.logger.warn(result.message ?? HTTP_CODES.BAD_REQUEST.message, correlationId)
+        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: result.message ?? HTTP_CODES.BAD_REQUEST.message
+        })
+      }
+
+      this.logger.info('File deleted successfully', correlationId)
+      return response.status(204).send()
+    } catch (error) {
+      this.logger.error('Error deleting file', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(500).send()

@@ -29,7 +29,8 @@ export function getFileRouter(useCases: UseCases): Router {
 
   const fileController = new FileController(
     useCases.addNewFileUseCase,
-    useCases.moveFilesToOtherAlbumUseCase
+    useCases.moveFilesToOtherAlbumUseCase,
+    useCases.deleteFileUseCase
   )
 
   router.post(
@@ -44,6 +45,8 @@ export function getFileRouter(useCases: UseCases): Router {
     getAuthInfoFromHeaders,
     fileController.moveFiles.bind(fileController)
   )
+
+  router.delete('/albums/:albumId/files/:fileId', getAuthInfoFromHeaders, fileController.delete.bind(fileController))
 
   return router
 }

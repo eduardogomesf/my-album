@@ -2,18 +2,20 @@ import { type UseCases } from '@/presentation/interface/injections'
 import {
   generateAlbumRepository,
   generateFileRepository,
+  generateOutboxRepository,
   generateUserRepository
 } from '../factory/repository'
 import {
   generateAddNewAlbumUseCase,
   generateAddNewFileUseCase,
   generateAddNewUserUseCase,
+  generateDeleteFileUseCase,
   generateGetActiveAlbumsUseCase,
   generateGetDeletedAlbumsUseCase,
   generateGetFilesByAlbumIdUseCase,
   generateMoveFilesToOtherAlbumUseCase
 } from '../factory/use-case'
-import { generateSaveFileStorageService } from '../factory/object-storage'
+import { generateFileStorageService } from '../factory/object-storage'
 import { generateGetFileUrlDecorator } from '../factory/decorator/'
 import { generateCache } from '../factory/cache'
 import { ENVS } from '@/shared'
@@ -23,9 +25,14 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const userRepository = generateUserRepository()
   const fileRepository = generateFileRepository()
   const albumRepository = generateAlbumRepository()
+  const outboxRepository = generateOutboxRepository()
 
   // services
-  const saveFileStorage = generateSaveFileStorageService()
+  const fileStorageService = generateFileStorageService(
+    outboxRepository,
+    outboxRepository,
+    outboxRepository
+  )
 
   // decorators
   const cache = generateCache({
@@ -35,13 +42,13 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     password: ENVS.REDIS.PASSWORD,
     port: ENVS.REDIS.PORT
   })
-  const getFileUrlDecorator = generateGetFileUrlDecorator(saveFileStorage, cache)
+  const getFileUrlDecorator = generateGetFileUrlDecorator(fileStorageService, cache)
 
   // use-cases
   const addNewUserUseCase = generateAddNewUserUseCase(userRepository, userRepository)
   const addNewFileUseCase = generateAddNewFileUseCase(
     fileRepository,
-    saveFileStorage,
+    fileStorageService,
     fileRepository,
     albumRepository
   )
@@ -50,6 +57,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository, getFileUrlDecorator, fileRepository)
   const getDeletedAlbumsUseCase = generateGetDeletedAlbumsUseCase(albumRepository)
   const moveFilesToOtherAlbumUseCase = generateMoveFilesToOtherAlbumUseCase(albumRepository, fileRepository, fileRepository)
+  const deleteFileUseCase = generateDeleteFileUseCase(fileRepository, fileRepository, fileStorageService)
 
   return {
     addNewUserUseCase,
@@ -58,6 +66,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     getActiveAlbumsUseCase,
     getFilesByAlbumIdUseCase,
     getDeletedAlbumsUseCase,
-    moveFilesToOtherAlbumUseCase
+    moveFilesToOtherAlbumUseCase,
+    deleteFileUseCase
   }
 }
