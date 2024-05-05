@@ -18,5 +18,5 @@ export interface SaveFileStorageService {
 }
 
 export interface DeleteFileFromStorageService {
-  delete: (file: File) => Promise<boolean>
+  delete: (file: File, userId: string) => Promise<boolean>
 }

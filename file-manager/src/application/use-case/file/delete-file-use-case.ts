@@ -29,7 +29,7 @@ export class DeleteFileUseCase implements UseCase {
 
     await this.deleteFileRepository.deleteFile(file)
 
-    await this.deleteFileFromStorageService.delete(file)
+    await this.deleteFileFromStorageService.delete(file, params.userId)
 
     return {
       ok: true

@@ -62,7 +62,7 @@ describe('Delete file Use Case', () => {
 
     expect(getFileByIdAndAlbumIdSpy).toHaveBeenCalledWith('any-id', 'any-album-id', 'any-user-id')
     expect(deleteFileSpy).toHaveBeenCalledWith(getFileMock())
-    expect(deleteFileFromStorageSpy).toHaveBeenCalledWith(getFileMock())
+    expect(deleteFileFromStorageSpy).toHaveBeenCalledWith(getFileMock(), 'any-user-id')
   })
 
   it('should not delete a file if it does not exist', async () => {
