@@ -1,4 +1,4 @@
-import { OutboxStatus, OutboxType, type File as PrismaFile } from '@prisma/client'
+import { OutboxType, type File as PrismaFile } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import {
   type GetFilesByAlbumIdRepository,
@@ -23,7 +23,7 @@ import { AlbumMapper } from '../mapper'
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository
-implements
+  implements
   SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
   MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository,
   GetFileByIdAndAlbumIdRepository, DeleteFileRepository {
@@ -81,7 +81,7 @@ implements
     }
   }
 
-  async moveFiles (payload: MoveFilesRepositoryParams): Promise<void> {
+  async moveFiles(payload: MoveFilesRepositoryParams): Promise<void> {
     try {
       await prisma.file.updateMany({
         where: {
@@ -99,7 +99,7 @@ implements
     }
   }
 
-  async getByIds (filesIds: string[]): Promise<GetFilesByIdsRepositoryResponse> {
+  async getByIds(filesIds: string[]): Promise<GetFilesByIdsRepositoryResponse> {
     try {
       const files = await prisma.file.findMany({
         where: {
@@ -154,7 +154,7 @@ implements
     }
   }
 
-  async deleteFile (file: File): Promise<boolean> {
+  async deleteFile(file: File): Promise<boolean> {
     try {
       await prisma.$transaction([
         prisma.file.delete({
@@ -166,7 +166,6 @@ implements
           data: {
             id: uuid(),
             type: OutboxType.FILE_DELETED,
-            status: OutboxStatus.PENDING,
             payload: JSON.stringify(file),
             aggregateId: file.id
           }
