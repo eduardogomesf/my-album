@@ -167,7 +167,8 @@ implements
             id: uuid(),
             type: OutboxType.FILE_DELETED,
             status: OutboxStatus.PENDING,
-            payload: JSON.stringify(file)
+            payload: JSON.stringify(file),
+            aggregateId: file.id
           }
         })
       ])

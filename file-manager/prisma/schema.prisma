@@ -55,26 +55,19 @@ model File {
 }
 
 model Outbox {
-  id              String       @id @default(uuid())
+  id              String     @id @default(uuid())
   type            OutboxType
-  status          OutboxStatus
+  aggregateId     String     @map("aggregate_id")
   payload         Json
-  retryCount      Int          @default(0)
-  lastAttemptedAt DateTime?    @map("last_attempted_at")
-  processedAt     DateTime?    @map("processed_at")
-  createdAt       DateTime     @default(now()) @map("created_at")
-  updatedAt       DateTime     @updatedAt @map("updated_at")
+  retryCount      Int        @default(0)
+  lastAttemptedAt DateTime?  @map("last_attempted_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
 
-  @@index([type, status])
+  @@index([type, aggregateId])
   @@map("outbox")
 }
 
 enum OutboxType {
   FILE_DELETED
-}
-
-enum OutboxStatus {
-  PENDING
-  SUCCESS
-  FAILED
 }
