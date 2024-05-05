@@ -29,6 +29,7 @@ export class EmailNotification extends BaseEntity {
     this.subject = emailNotification.subject
     this.body = emailNotification.body
     this.tags = emailNotification.tags
+    this.text = emailNotification.text
 
     const validation = this.validate()
 
