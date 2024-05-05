@@ -16,3 +16,7 @@ export interface SaveFileStorageServiceDTO {
 export interface SaveFileStorageService {
   save: (params: SaveFileStorageServiceDTO) => Promise<null>
 }
+
+export interface DeleteFileFromStorageService {
+  delete: (file: File) => Promise<boolean>
+}

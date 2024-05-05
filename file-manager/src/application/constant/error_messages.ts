@@ -11,5 +11,8 @@ export const ERROR_MESSAGES = {
   },
   PERMISSION: {
     NOT_ALLOWED: 'You do not have permission to perform this action'
+  },
+  FILE: {
+    NOT_FOUND: 'File not found'
   }
 } as const

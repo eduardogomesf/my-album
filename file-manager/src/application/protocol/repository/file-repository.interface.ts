@@ -43,3 +43,15 @@ export interface CountFilesByAlbumIdRepository {
     albumId: string
   ) => Promise<number>
 }
+
+export interface DeleteFileRepository {
+  deleteFile: (fileId: string) => Promise<boolean>
+}
+
+export interface GetFileByIdAndAlbumIdRepository {
+  getFileByIdAndAlbumId: (
+    fileId: string,
+    albumId: string,
+    userId: string
+  ) => Promise<File | null>
+}
