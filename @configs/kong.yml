@@ -1,0 +1,121 @@
+_format_version: "1.1"
+
+services:
+  - name: user-service
+    host: user-service
+    port: 3000
+    protocol: http
+    retries: 5
+    connect_timeout: 30000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - microservice
+      - user-management
+    routes:
+      - name: user-login
+        paths: ["/login"]
+        methods: ["POST"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["user-service"]
+      - name: create-new-user
+        paths: ["/users"]
+        methods: ["POST"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["user-service"]
+      - name: refresh-token
+        paths: ["/refresh-token"]
+        methods: ["POST"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["user-service"]
+
+  - name: file-manager-service
+    host: file-manager-service
+    port: 3002
+    protocol: http
+    retries: 5
+    connect_timeout: 30000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - microservice
+      - file-management
+    routes:
+      - name: create-album
+        paths: ["/albums"]
+        methods: ["POST"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+      - name: get-active-albums
+        paths: ["/albums/active"]
+        methods: ["GET"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+      - name: get-deleted-albums
+        paths: ["/albums/deleted"]
+        methods: ["GET"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+      - name: get-album-files
+        paths: ["/albums/([a-zA-Z0-9-]+)/files"]
+        methods: ["GET"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+      - name: add-file
+        paths: ["/files"]
+        methods: ["POST"]
+        https_redirect_status_code: 426
+        strip_path: false
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+      - name: move-files
+        paths: ["/files/move"]
+        methods: ["PUT"]
+        https_redirect_status_code: 426
+        strip_path: false
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+
+plugins:
+  - name: correlation-id
+    config:
+      header_name: x-correlation-id
+      generator: uuid
+      echo_downstream: true
