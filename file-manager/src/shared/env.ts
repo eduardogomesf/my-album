@@ -38,6 +38,6 @@ export const ENVS = {
     PASSWORD: process.env.REDIS_PASSWORD ?? 'redis'
   },
   ACCESS_TOKEN: {
-    SECRET_KEY: process.env.ACCESS_TOKEN_SECRET ?? ''
+    SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY ?? ''
   }
 } as const
