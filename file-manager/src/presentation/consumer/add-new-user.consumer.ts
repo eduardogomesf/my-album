@@ -11,6 +11,28 @@ export class AddNewUserEventConsumer {
     private readonly kafkaConsumer: Consumer
   ) {}
 
+  private isValid(payload: any) {
+    const missingFields = []
+
+    if (!payload.id) {
+      missingFields.push('id')
+    }
+
+    if (!payload.firstName) {
+      missingFields.push('firstName')
+    }
+
+    if (!payload.lastName) {
+      missingFields.push('lastName')
+    }
+
+    if (!payload.email) {
+      missingFields.push('email')
+    }
+
+    return missingFields.length === 0
+  }
+
   async start(): Promise<void> {
     await this.kafkaConsumer.run({
       eachMessage: async ({ message }) => {
@@ -19,6 +41,13 @@ export class AddNewUserEventConsumer {
         const parsedData: AddNewUserDTO = JSON.parse(dataFromBuffer)
 
         logger.info('New user request received', parsedData.id)
+
+        const isValid = this.isValid(parsedData)
+
+        if (!isValid) {
+          logger.error(`Invalid data: ${JSON.stringify(parsedData)}`, parsedData.id)
+          return
+        }
 
         await this.addNewUserUseCase.execute({
           id: parsedData.id,
