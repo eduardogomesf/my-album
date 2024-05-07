@@ -63,7 +63,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
 
   // Subscribers
   const newUserCreatedSenderSubscriber = new Subscriber(
-    'NewUserCreatedSendeer',
+    'NewUserCreatedSender',
     newUserCreatedSender.send.bind(newUserCreatedSender)
   )
   createNewUser.addSubscriber(newUserCreatedSenderSubscriber)
