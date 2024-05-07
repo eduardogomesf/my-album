@@ -1,0 +1,511 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My Album Backend Services",
+    "description": "API documentation for managing user and file services in the My Album platform."
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "User Service"
+        ],
+        "summary": "User login",
+        "operationId": "userLogin",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLoginBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/AccessTokenResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "User Service"
+        ],
+        "summary": "Create new user",
+        "operationId": "createNewUser",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUserBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Error in user creation"
+          }
+        }
+      }
+    },
+    "/refresh-token": {
+      "post": {
+        "tags": [
+          "User Service"
+        ],
+        "summary": "Refresh authentication token",
+        "operationId": "refreshToken",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RefreshTokenBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "schema": {
+              "$ref": "#/definitions/AccessTokenResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/albums": {
+      "post": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Create an album",
+        "operationId": "createAlbum",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateAlbumBody"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Album created successfully"
+          },
+          "400": {
+            "description": "Error in album creation"
+          }
+        }
+      }
+    },
+    "/albums/active": {
+      "get": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "List active albums",
+        "operationId": "getActiveAlbums",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active albums retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/AlbumsResponse"
+            }
+          },
+          "404": {
+            "description": "No active albums found"
+          }
+        }
+      }
+    },
+    "/albums/deleted": {
+      "get": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "List deleted albums",
+        "operationId": "getDeletedAlbums",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted albums retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/AlbumsResponse"
+            }
+          },
+          "404": {
+            "description": "No deleted albums found"
+          }
+        }
+      }
+    },
+    "/albums/{albumId}/files": {
+      "get": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Retrieve files for a specific album",
+        "operationId": "getAlbumFiles",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "albumId",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the album"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Files retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/FilesResponse"
+            }
+          },
+          "404": {
+            "description": "Album not found"
+          }
+        }
+      }
+    },
+    "/files": {
+      "post": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Add a file to an album",
+        "operationId": "addFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "required": true,
+            "description": "File to upload"
+          },
+          {
+            "in": "formData",
+            "name": "albumId",
+            "type": "string",
+            "required": true,
+            "description": "ID of the album to which the file will be added"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "File added successfully"
+          },
+          "400": {
+            "description": "Error in adding file"
+          }
+        }
+      }
+    },
+    "/files/move": {
+      "put": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Move files between albums",
+        "operationId": "moveFiles",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MoveFilesBody"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Files moved successfully"
+          },
+          "400": {
+            "description": "Error in moving files"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserLoginBody": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "AccessTokenResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "description": "JWT access token"
+        },
+        "refreshToken": {
+          "type": "string",
+          "description": "JWT refresh token"
+        }
+      }
+    },
+    "CreateUserBody": {
+      "type": "object",
+      "required": [
+        "firstName",
+        "lastName",
+        "email",
+        "cellphone",
+        "password"
+      ],
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "cellphone": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "RefreshTokenBody": {
+      "type": "object",
+      "required": [
+        "refreshToken",
+        "userId"
+      ],
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateAlbumBody": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AlbumsResponse": {
+      "type": "object",
+      "properties": {
+        "albums": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Album"
+          }
+        }
+      }
+    },
+    "Album": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "FilesResponse": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/File"
+          }
+        },
+        "limit": {
+          "type": "integer"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        },
+        "totalPages": {
+          "type": "integer"
+        }
+      }
+    },
+    "File": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer"
+        },
+        "encoding": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "extension": {
+          "type": "string"
+        },
+        "albumId": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "MoveFilesBody": {
+      "type": "object",
+      "required": [
+        "targetAlbumId",
+        "filesIds"
+      ],
+      "properties": {
+        "targetAlbumId": {
+          "type": "string"
+        },
+        "filesIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
