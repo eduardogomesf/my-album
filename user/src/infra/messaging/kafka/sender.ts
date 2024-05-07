@@ -29,7 +29,7 @@ export class KafkaProducer implements MessageSender {
     try {
       const message = JSON.stringify(messageWithId)
 
-      logger.info(`Publishing message to Kafka topic ${this.topic} ...`)
+      logger.info(`Publishing message with id ${messageWithId.id} to topic ${this.topic} ...`)
 
       await producer.send({
         topic: this.topic,
@@ -41,7 +41,7 @@ export class KafkaProducer implements MessageSender {
         ]
       })
 
-      logger.info(`Message of Id ${messageWithId.id} published to Kafka topic ${this.topic}`)
+      logger.info(`Message of id ${messageWithId.id} published to Kafka topic ${this.topic}`)
     } catch (error) {
       logger.warn(`Error while sending message to Kafka topic ${this.topic}}`)
       logger.warn(error.message)
