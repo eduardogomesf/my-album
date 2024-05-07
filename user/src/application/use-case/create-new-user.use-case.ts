@@ -7,6 +7,7 @@ import {
   type SendEmailNotification
 } from '../protocol'
 import { Publisher } from '../interface/observer.interface'
+import { ERROR_MESSAGES } from '../constant'
 
 interface CreateNewUserUseCaseDTO {
   firstName: string
@@ -32,7 +33,7 @@ export class CreateNewUserUseCase extends Publisher implements UseCase {
     if (userByEmail) {
       return {
         ok: false,
-        message: 'E-mail already in use'
+        message: ERROR_MESSAGES.USER.EMAIL_ALREADY_EXIST
       }
     }
 
