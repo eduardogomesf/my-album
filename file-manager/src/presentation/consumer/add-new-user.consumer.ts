@@ -13,12 +13,12 @@ export class AddNewUserEventConsumer {
 
   async start(): Promise<void> {
     await this.kafkaConsumer.run({
-      eachMessage: async ({ message, topic, partition }) => {
+      eachMessage: async ({ message }) => {
         const dataFromBuffer = message?.value?.toString() ?? '{}'
 
         const parsedData: AddNewUserDTO = JSON.parse(dataFromBuffer)
 
-        logger.info(`Message with id ${parsedData.id} received from ${topic} topic and ${partition} partition`)
+        logger.info('New user request received', parsedData.id)
 
         await this.addNewUserUseCase.execute({
           id: parsedData.id,
@@ -26,6 +26,8 @@ export class AddNewUserEventConsumer {
           lastName: parsedData.lastName,
           email: parsedData.email
         })
+
+        logger.info('New user added', parsedData.id)
       }
     })
   }
