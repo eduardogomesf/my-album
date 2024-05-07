@@ -18,7 +18,7 @@
     "start": "npm run prisma && npm run build && node -r tsconfig-paths/register dist/main/server.js",
     "up": "docker compose up -d",
     "down": "docker compose down",
-    "prisma": "npx prisma generate && npx prisma migrate deploy"
+    "prisma": "npx prisma migrate deploy && npx prisma generate"
   },
   "devDependencies": {
     "@types/amqplib": "0.10.4",
