@@ -33,7 +33,14 @@ You can find more details in the **[High-Level System Design](#high-level-system
 [Docker Compose](https://docs.docker.com/compose/)  
 [Jest](https://jestjs.io/pt-BR/)  
 
-
+# Patterns and Design Principles applied
+[Microservices](https://martinfowler.com/articles/microservices.html)  
+[Observer](https://refactoring.guru/design-patterns/observer)  
+[Transactional Outbox](https://microservices.io/patterns/data/transactional-outbox.html)  
+[Repository](https://medium.com/@pererikbergman/repository-design-pattern-e28c0f3e4a30)  
+[Factory](https://refactoring.guru/design-patterns/factory-method)  
+[SOLID](https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/)  
+[Decorator](https://refactoring.guru/design-patterns/decorator)  
 
 ---
 🛠️ Created by [eduardogomesf](https://eduardogomesf.dev)
