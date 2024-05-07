@@ -2,12 +2,11 @@
 **My album** is a backend system that allow users to store and manage their albums, photos and videos in an easy and secure way.
 
 ## Description
-**My album** follows a microservice event-driven architecture where all the communication between the services works in asynchronous way through a distributed streaming platform (Apache Kafka).
+**My album** is a robust backend system designed to offer users a secure and efficient way to store and manage their digital albums, photos, and videos. This system leverages a microservice event-driven architecture, ensuring that all service-to-service communications occur asynchronously via a distributed streaming platform, specifically Apache Kafka. This architectural choice enhances the responsiveness and scalability of the platform, facilitating seamless interactions across various services.
 
 The architecture is composed by three main services: User Management Service, File Manager Service and Notification Service.
 
-## High-level System Design
-
+## System Design
 ![System Design](./@docs/system-design.svg "File Management System")
 
 ## Services
@@ -16,8 +15,6 @@ The **User Management Service** is responsible for handling the management and a
 The **File Manager Service** is responsible for allowing users to manage their files. This service uses a Postgres database to save all required information and uses the Amazon S3 service to store the actual files. It also communicates with other services through Kafka topics.
 
 The **Notification Service** is responsible for sending e-mail notifications to users on important occasions. This service is constantly reading messages from Kafka in order to send real-time notifications to the users. It has an integration with MailHog service for Email Testing.
-
-You can find more details in the **[High-Level System Design](#high-level-system-design)** section.
 
 ## Key Technologies:
 [Node](https://nodejs.org/en)  
