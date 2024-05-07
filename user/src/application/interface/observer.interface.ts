@@ -18,7 +18,7 @@ export class Subscriber {
     this.fn = fn
   }
 
-  public update(...data: any[]) {
+  public update(data: any) {
     this.fn(data)
   }
 }
@@ -46,7 +46,7 @@ export abstract class Publisher {
     this.subscribers.filter(sub => sub.name !== subscriberName)
   }
 
-  public notifySubscribers(...data: any[]) {
+  public notifySubscribers(data: any) {
     for (const sub of this.subscribers) {
       sub.update(data)
     }
