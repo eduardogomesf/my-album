@@ -75,6 +75,9 @@ I recommend using a swagger editor like [this](https://editor.swagger.io/) to vi
 - Create a file recovery feature
 - Create a MFA feature
 - Create a see all files feature
+- Update user information feature
+- Update password feature
+- Add monitoring services
 
 
 ---
