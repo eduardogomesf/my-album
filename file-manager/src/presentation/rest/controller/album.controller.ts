@@ -1,7 +1,13 @@
 import { Logger } from '@/shared'
 import { type Request, type Response } from 'express'
 import { HTTP_CODES } from '../constant'
-import { type AddNewAlbumUseCase, type GetFilesByAlbumIdUseCase, type GetActiveAlbumsUseCase, type GetDeletedAlbumsUseCase } from '@/application/use-case'
+import {
+  type AddNewAlbumUseCase,
+  type GetFilesByAlbumIdUseCase,
+  type GetActiveAlbumsUseCase,
+  type GetDeletedAlbumsUseCase,
+  type DeleteAlbumUseCase
+} from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
 
 export class AlbumController {
@@ -11,7 +17,8 @@ export class AlbumController {
     private readonly addNewAlbumUseCase: AddNewAlbumUseCase,
     private readonly getActiveAlbumsUseCase: GetActiveAlbumsUseCase,
     private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase,
-    private readonly getDeletedAlbumsUseCase: GetDeletedAlbumsUseCase
+    private readonly getDeletedAlbumsUseCase: GetDeletedAlbumsUseCase,
+    private readonly deleteAlbumUseCase: DeleteAlbumUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -133,6 +140,40 @@ export class AlbumController {
       })
     } catch (error) {
       this.logger.error('Error retrieving files by album id', correlationId)
+      this.logger.error(error, correlationId)
+      this.logger.error(error.stack, correlationId)
+      return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+      })
+    }
+  }
+
+  async deleteAlbum(request: Request, response: Response): Promise<Response> {
+    const correlationId = request.tracking.correlationId
+
+    this.logger.info('Delete album request received', correlationId)
+
+    try {
+      const { userId } = request.auth
+      const { albumId } = request.params
+
+      const deleteAlbumResult = await this.deleteAlbumUseCase.execute({
+        albumId,
+        userId
+      })
+
+      if (!deleteAlbumResult.ok) {
+        this.logger.warn(`Album not deleted: ${deleteAlbumResult.message}`, correlationId)
+        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: deleteAlbumResult.message ?? HTTP_CODES.BAD_REQUEST.message
+        })
+      }
+
+      this.logger.info('Album deleted successfully', correlationId)
+
+      return response.status(HTTP_CODES.OK.code).json()
+    } catch (error) {
+      this.logger.error('Error retrieving deleted albums', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
