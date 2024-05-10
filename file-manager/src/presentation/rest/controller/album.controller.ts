@@ -139,7 +139,8 @@ export class AlbumController {
         files: getFilesByAlbumIdResult.data?.files,
         page: getFilesByAlbumIdResult.data?.page,
         limit: getFilesByAlbumIdResult.data?.limit,
-        total: getFilesByAlbumIdResult.data?.total
+        total: getFilesByAlbumIdResult.data?.total,
+        totalOfPages: getFilesByAlbumIdResult.data?.totalPages
       })
     } catch (error) {
       this.logger.error('Error retrieving files by album id', correlationId)
