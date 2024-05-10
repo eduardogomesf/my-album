@@ -136,7 +136,10 @@ export class AlbumController {
       this.logger.info('Files retrieved successfully', correlationId)
 
       return response.status(HTTP_CODES.OK.code).json({
-        files: getFilesByAlbumIdResult.data
+        files: getFilesByAlbumIdResult.data?.files,
+        page: getFilesByAlbumIdResult.data?.page,
+        limit: getFilesByAlbumIdResult.data?.limit,
+        total: getFilesByAlbumIdResult.data?.total
       })
     } catch (error) {
       this.logger.error('Error retrieving files by album id', correlationId)
