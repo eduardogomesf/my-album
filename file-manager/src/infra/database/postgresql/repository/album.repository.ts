@@ -6,14 +6,18 @@ import {
   type GetAlbumByNameRepository,
   type GetAlbumByIdRepository,
   type SaveAlbumRepository,
-  type GetAlbumsByStatusRepository
+  type GetAlbumsByStatusRepository,
+  type UpdateAlbumRepository,
+  type DeleteAlbumRepository
 } from '@/application/protocol'
 import { type AlbumStatus } from '@/domain/enum'
 import { AlbumMapper } from '../mapper'
 
 const logger = new Logger('PrismaAlbumRepository')
 
-export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsByStatusRepository {
+export class PrismaAlbumRepository
+implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsByStatusRepository,
+  UpdateAlbumRepository, DeleteAlbumRepository {
   async getById(id: string, userId: string): Promise<Album | null> {
     try {
       const rawAlbum = await prisma.album.findUnique({
@@ -71,6 +75,38 @@ export class PrismaAlbumRepository implements GetAlbumByIdRepository, GetAlbumBy
       })
 
       return albums.map(album => AlbumMapper.toDomain(album)) as Album[]
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async update(album: Album): Promise<void> {
+    try {
+      await prisma.album.update({
+        where: {
+          id: album.id
+        },
+        data: {
+          name: album.name,
+          status: album.status as AlbumStatusPrisma
+
+        }
+      })
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async delete(albumId: string, userId: string): Promise<void> {
+    try {
+      await prisma.album.delete({
+        where: {
+          id: albumId,
+          userId
+        }
+      })
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
