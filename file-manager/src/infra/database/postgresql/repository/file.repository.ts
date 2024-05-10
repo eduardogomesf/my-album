@@ -23,7 +23,7 @@ import { AlbumMapper } from '../mapper'
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository
-  implements
+implements
   SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
   MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository,
   GetFileByIdAndAlbumIdRepository, DeleteFileRepository {

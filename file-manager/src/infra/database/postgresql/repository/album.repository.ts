@@ -1,4 +1,6 @@
-import { type AlbumStatus as AlbumStatusPrisma } from '@prisma/client'
+import { OutboxType, type AlbumStatus as AlbumStatusPrisma } from '@prisma/client'
+import { v4 as uuid } from 'uuid'
+
 import { type Album } from '@/domain/entity'
 import { Logger } from '@/shared'
 import { prisma } from '../client'
@@ -101,12 +103,41 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
 
   async delete(albumId: string, userId: string): Promise<void> {
     try {
-      await prisma.album.delete({
+      const files = await prisma.file.findMany({
         where: {
-          id: albumId,
-          userId
+          albumId
         }
       })
+
+      if (files.length <= 0) {
+        await prisma.album.delete({
+          where: {
+            id: albumId,
+            userId
+          }
+        })
+        return
+      }
+
+      const formattedFiles = files.map(file => ({
+        id: uuid(),
+        type: OutboxType.FILE_DELETED,
+        payload: JSON.stringify(file),
+        aggregateId: file.id
+      }))
+
+      await prisma.$transaction([
+        prisma.album.delete({
+          where: {
+            id: albumId,
+            userId
+          }
+        }),
+        prisma.outbox.createMany({
+          data: formattedFiles
+        })
+
+      ])
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
