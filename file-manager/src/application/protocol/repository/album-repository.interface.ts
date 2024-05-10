@@ -16,3 +16,11 @@ export interface GetAlbumsByStatusRepository {
 export interface SaveAlbumRepository {
   save: (album: Album) => Promise<void>
 }
+
+export interface UpdateAlbumRepository {
+  update: (album: Album) => Promise<void>
+}
+
+export interface DeleteAlbumRepository {
+  delete: (id: string, userId: string) => Promise<void>
+}
