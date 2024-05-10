@@ -9,6 +9,9 @@ The architecture is composed by three main services: User Management Service, Fi
 ## System Design
 ![System Design](./@docs/system-design.svg "File Management System")
 
+## Interested in running the project?
+[Go to how to run section](#running-the-project-on-docker)
+
 ## Services
 The **User Management Service** is responsible for handling the management and authentication of users within the system. This service uses a MongoDB database to save all required information and communicates with other services in an asynchronous way by using Kafka Topics to send messages.
 
@@ -30,7 +33,7 @@ The **Notification Service** is responsible for sending e-mail notifications to 
 [Docker Compose](https://docs.docker.com/compose/)  
 [Jest](https://jestjs.io/pt-BR/)  
 
-# Patterns and Design Principles applied
+## Patterns and Design Principles applied
 [Microservices](https://martinfowler.com/articles/microservices.html)  
 [Observer](https://refactoring.guru/design-patterns/observer)  
 [Transactional Outbox](https://microservices.io/patterns/data/transactional-outbox.html)  
@@ -38,6 +41,41 @@ The **Notification Service** is responsible for sending e-mail notifications to 
 [Factory](https://refactoring.guru/design-patterns/factory-method)  
 [SOLID](https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/)  
 [Decorator](https://refactoring.guru/design-patterns/decorator)  
+
+## Running the project on Docker
+***You must have Docker and Docker Compose installed.***
+
+Run the following command in the project's root folder
+``` 
+docker compose up -d --build
+```
+
+## Documentation
+You can find a swagger file in the @docs folder. 
+
+I recommend using a swagger editor like [this](https://editor.swagger.io/) to visualize all available routes.
+
+
+## Available features
+- User creation
+- User login
+- Refresh token
+- Album creation
+- Album deletion
+- Retrieve user's active albums
+- Retrieve user's deleted albums
+- Retrieve user's album and its files
+- Upload a file to an album
+- Delete a file from an album
+- Move files from one album to another
+
+## Possible improvements
+- Implement a front-end application to interact with the system
+- Create a recover password feature
+- Create a file recovery feature
+- Create a MFA feature
+- Create a see all files feature
+
 
 ---
 🛠️ Created by [eduardogomesf](https://eduardogomesf.dev)
