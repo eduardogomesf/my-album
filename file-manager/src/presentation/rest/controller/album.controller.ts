@@ -6,7 +6,8 @@ import {
   type GetFilesByAlbumIdUseCase,
   type GetActiveAlbumsUseCase,
   type GetDeletedAlbumsUseCase,
-  type DeleteAlbumUseCase
+  type DeleteAlbumUseCase,
+  type RestoreAlbumUseCase
 } from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
 
@@ -18,7 +19,8 @@ export class AlbumController {
     private readonly getActiveAlbumsUseCase: GetActiveAlbumsUseCase,
     private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase,
     private readonly getDeletedAlbumsUseCase: GetDeletedAlbumsUseCase,
-    private readonly deleteAlbumUseCase: DeleteAlbumUseCase
+    private readonly deleteAlbumUseCase: DeleteAlbumUseCase,
+    private readonly restoreAlbumUseCase: RestoreAlbumUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -178,6 +180,40 @@ export class AlbumController {
       return response.status(HTTP_CODES.OK.code).json()
     } catch (error) {
       this.logger.error('Error retrieving deleted albums', correlationId)
+      this.logger.error(error, correlationId)
+      this.logger.error(error.stack, correlationId)
+      return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+      })
+    }
+  }
+
+  async restore(request: Request, response: Response): Promise<Response> {
+    const correlationId = request.tracking.correlationId
+
+    this.logger.info('Restore album request received', correlationId)
+
+    try {
+      const { userId } = request.auth
+      const { albumId } = request.params
+
+      const restoreAlbumResult = await this.restoreAlbumUseCase.execute({
+        albumId,
+        userId
+      })
+
+      if (!restoreAlbumResult.ok) {
+        this.logger.warn(`Album not restored: ${restoreAlbumResult.message}`, correlationId)
+        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: restoreAlbumResult.message ?? HTTP_CODES.BAD_REQUEST.message
+        })
+      }
+
+      this.logger.info('Album restored successfully', correlationId)
+
+      return response.status(HTTP_CODES.OK.code).json()
+    } catch (error) {
+      this.logger.error('Error restoring album', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({

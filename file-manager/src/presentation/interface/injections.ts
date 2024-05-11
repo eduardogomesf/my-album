@@ -7,7 +7,8 @@ import {
   type GetDeletedAlbumsUseCase,
   type MoveFilesToOtherAlbumUseCase,
   type DeleteFileUseCase,
-  type DeleteAlbumUseCase
+  type DeleteAlbumUseCase,
+  type RestoreAlbumUseCase
 } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 
@@ -21,6 +22,7 @@ export interface UseCases {
   moveFilesToOtherAlbumUseCase: MoveFilesToOtherAlbumUseCase
   deleteFileUseCase: DeleteFileUseCase
   deleteAlbumUseCase: DeleteAlbumUseCase
+  restoreAlbumUseCase: RestoreAlbumUseCase
 }
 
 export interface Injections extends UseCases {

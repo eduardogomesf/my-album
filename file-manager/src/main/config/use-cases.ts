@@ -14,7 +14,8 @@ import {
   generateGetActiveAlbumsUseCase,
   generateGetDeletedAlbumsUseCase,
   generateGetFilesByAlbumIdUseCase,
-  generateMoveFilesToOtherAlbumUseCase
+  generateMoveFilesToOtherAlbumUseCase,
+  generateRestoreAlbumUseCase
 } from '../factory/use-case'
 import { generateFileStorageService } from '../factory/object-storage'
 import { generateGetFileUrlDecorator } from '../factory/decorator/'
@@ -60,6 +61,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const moveFilesToOtherAlbumUseCase = generateMoveFilesToOtherAlbumUseCase(albumRepository, fileRepository, fileRepository)
   const deleteFileUseCase = generateDeleteFileUseCase(fileRepository, fileRepository, fileStorageService)
   const deleteAlbumUseCase = generateDeleteAlbumUseCase(albumRepository, albumRepository, albumRepository)
+  const restoreAlbumUseCase = generateRestoreAlbumUseCase(albumRepository, albumRepository)
 
   return {
     addNewUserUseCase,
@@ -70,6 +72,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     getDeletedAlbumsUseCase,
     moveFilesToOtherAlbumUseCase,
     deleteFileUseCase,
-    deleteAlbumUseCase
+    deleteAlbumUseCase,
+    restoreAlbumUseCase
   }
 }
