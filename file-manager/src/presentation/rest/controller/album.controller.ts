@@ -4,8 +4,7 @@ import { HTTP_CODES } from '../constant'
 import {
   type AddNewAlbumUseCase,
   type GetFilesByAlbumIdUseCase,
-  type GetActiveAlbumsUseCase,
-  type GetDeletedAlbumsUseCase,
+  type GetAlbumsUseCase,
   type DeleteAlbumUseCase,
   type RestoreAlbumUseCase
 } from '@/application/use-case'
@@ -16,9 +15,8 @@ export class AlbumController {
 
   constructor(
     private readonly addNewAlbumUseCase: AddNewAlbumUseCase,
-    private readonly getActiveAlbumsUseCase: GetActiveAlbumsUseCase,
+    private readonly getAlbumsUseCase: GetAlbumsUseCase,
     private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase,
-    private readonly getDeletedAlbumsUseCase: GetDeletedAlbumsUseCase,
     private readonly deleteAlbumUseCase: DeleteAlbumUseCase,
     private readonly restoreAlbumUseCase: RestoreAlbumUseCase
   ) {}
@@ -57,50 +55,27 @@ export class AlbumController {
     }
   }
 
-  async getAllActive(request: Request, response: Response): Promise<Response> {
+  async getManyByStatus(request: Request, response: Response): Promise<Response> {
     const correlationId = request.tracking.correlationId
 
-    this.logger.info('Get all active albums request received', correlationId)
+    this.logger.info('Get albums request received', correlationId)
 
     try {
       const { userId } = request.auth
+      const { deletedAlbumsOnly } = request.query
 
-      const getAlbumsResult = await this.getActiveAlbumsUseCase.execute(userId)
+      const getAlbumsResult = await this.getAlbumsUseCase.execute({
+        userId,
+        deletedAlbums: deletedAlbumsOnly === 'true'
+      })
 
-      this.logger.info('Active albums retrieved successfully', correlationId)
+      this.logger.info('Albums retrieved successfully', correlationId)
 
       return response.status(HTTP_CODES.OK.code).json({
         albums: getAlbumsResult.data
       })
     } catch (error) {
-      this.logger.error('Error retrieving active albums', correlationId)
-      this.logger.error(error, correlationId)
-      this.logger.error(error.stack, correlationId)
-      return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
-      })
-    }
-  }
-
-  async getAllDeleted(request: Request, response: Response): Promise<Response> {
-    const correlationId = request.tracking.correlationId
-
-    this.logger.info('Get all deleted albums request received', correlationId)
-
-    try {
-      const { userId } = request.auth
-
-      const getAlbumsResult = await this.getDeletedAlbumsUseCase.execute({
-        userId
-      })
-
-      this.logger.info('Deleted albums retrieved successfully', correlationId)
-
-      return response.status(HTTP_CODES.OK.code).json({
-        albums: getAlbumsResult.data
-      })
-    } catch (error) {
-      this.logger.error('Error retrieving deleted albums', correlationId)
+      this.logger.error('Error retrieving albums', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({

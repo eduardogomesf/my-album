@@ -1,6 +1,5 @@
 export * from './get-files-by-album-id.interface'
-export * from './get-active-albums.interface'
-export * from './get-deleted-albums.interface'
+export * from './get-albums.interface'
 export * from './delete-file.interface'
 export * from './delete-album.interface'
 export * from './restore-album.interface'

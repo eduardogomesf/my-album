@@ -1,45 +1,45 @@
-import { GetDeletedAlbumsUseCase } from '@/application/use-case'
+import { GetAlbumsUseCase } from '@/application/use-case'
 import { type GetAlbumsByStatusRepository } from '@/application/protocol'
 import { getAlbumByIdMock } from '../mock/album.mock'
 
-describe('Get Deleted Albums Use Case', () => {
-  let sut: GetDeletedAlbumsUseCase
+describe('Get Albums Use Case', () => {
+  let sut: GetAlbumsUseCase
   let mockGetAlbumsByStatusRepository: GetAlbumsByStatusRepository
 
   beforeEach(() => {
     mockGetAlbumsByStatusRepository = {
       getManyByStatus: jest.fn().mockResolvedValue([
-        {
-          ...getAlbumByIdMock(),
-          status: 'DELETED'
-        },
-        {
-          ...getAlbumByIdMock(),
-          status: 'DELETED'
-        }
+        getAlbumByIdMock(),
+        getAlbumByIdMock()
       ])
     }
 
-    sut = new GetDeletedAlbumsUseCase(mockGetAlbumsByStatusRepository)
+    sut = new GetAlbumsUseCase(mockGetAlbumsByStatusRepository)
   })
 
-  it('should get a list of deleted albums successfully', async () => {
+  it('should get a list of active albums successfully', async () => {
+    const getManyByStatusSpy = jest.spyOn(mockGetAlbumsByStatusRepository, 'getManyByStatus')
+
     const result = await sut.execute({
-      userId: 'user-id'
+      userId: 'user-id',
+      deletedAlbums: false
     })
 
     expect(result.ok).toBe(true)
     expect(result.data).toHaveLength(2)
+    expect(getManyByStatusSpy).toHaveBeenCalledWith('user-id', 'ACTIVE')
   })
 
-  it('should call dependencies with right params ', async () => {
+  it('should get a list of deleted albums successfully', async () => {
     const getManyByStatusSpy = jest.spyOn(mockGetAlbumsByStatusRepository, 'getManyByStatus')
 
-    await sut.execute({
-      userId: 'user-id'
+    const result = await sut.execute({
+      userId: 'user-id',
+      deletedAlbums: true
     })
 
-    expect(getManyByStatusSpy).toHaveBeenCalledTimes(1)
+    expect(result.ok).toBe(true)
+    expect(result.data).toHaveLength(2)
     expect(getManyByStatusSpy).toHaveBeenCalledWith('user-id', 'DELETED')
   })
 
@@ -47,7 +47,8 @@ describe('Get Deleted Albums Use Case', () => {
     mockGetAlbumsByStatusRepository.getManyByStatus = jest.fn().mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
-      userId: 'user-id'
+      userId: 'user-id',
+      deletedAlbums: true
     })
 
     await expect(result).rejects.toThrow('any-error')

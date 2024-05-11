@@ -8,16 +8,14 @@ export function getAlbumRouter(useCases: UseCases): Router {
 
   const albumController = new AlbumController(
     useCases.addNewAlbumUseCase,
-    useCases.getActiveAlbumsUseCase,
+    useCases.getAlbumsUseCase,
     useCases.getFilesByAlbumIdUseCase,
-    useCases.getDeletedAlbumsUseCase,
     useCases.deleteAlbumUseCase,
     useCases.restoreAlbumUseCase
   )
 
   router.post('/albums', getAuthInfoFromHeaders, albumController.add.bind(albumController))
-  router.get('/albums/active', getAuthInfoFromHeaders, albumController.getAllActive.bind(albumController))
-  router.get('/albums/deleted', getAuthInfoFromHeaders, albumController.getAllDeleted.bind(albumController))
+  router.get('/albums', getAuthInfoFromHeaders, albumController.getManyByStatus.bind(albumController))
   router.get(
     '/albums/:albumId/files',
     getAuthInfoFromHeaders,

@@ -3,8 +3,7 @@ import {
   type AddNewFileUseCase,
   type AddNewUserUseCase,
   type GetFilesByAlbumIdUseCase,
-  type GetActiveAlbumsUseCase,
-  type GetDeletedAlbumsUseCase,
+  type GetAlbumsUseCase,
   type MoveFilesToOtherAlbumUseCase,
   type DeleteFileUseCase,
   type DeleteAlbumUseCase,
@@ -16,9 +15,8 @@ export interface UseCases {
   addNewUserUseCase: AddNewUserUseCase
   addNewFileUseCase: AddNewFileUseCase
   addNewAlbumUseCase: AddNewAlbumUseCase
-  getActiveAlbumsUseCase: GetActiveAlbumsUseCase
+  getAlbumsUseCase: GetAlbumsUseCase
   getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
-  getDeletedAlbumsUseCase: GetDeletedAlbumsUseCase
   moveFilesToOtherAlbumUseCase: MoveFilesToOtherAlbumUseCase
   deleteFileUseCase: DeleteFileUseCase
   deleteAlbumUseCase: DeleteAlbumUseCase
