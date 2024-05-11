@@ -320,6 +320,72 @@
           }
         }
       }
+    },
+    "/albums/{albumId}": {
+      "delete": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Delete a specific album",
+        "operationId": "deleteAlbum",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "albumId",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the album"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album deleted successfully"
+          },
+          "404": {
+            "description": "Album not found"
+          }
+        }
+      }
+    },
+    "/albums/{albumId}/restore": {
+      "patch": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Restore a specific album",
+        "operationId": "restoreAlbum",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "albumId",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the album"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album restored successfully"
+          },
+          "404": {
+            "description": "Album not found"
+          }
+        }
+      }
     }
   },
   "definitions": {

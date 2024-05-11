@@ -112,6 +112,26 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
+      - name: delete-album
+        paths: ["/albums/([a-zA-Z0-9-]+)"]
+        methods: ["DELETE"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
+      - name: restore-album
+        paths: ["/albums/([a-zA-Z0-9-]+)/restore"]
+        methods: ["PATCH"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
 
 plugins:
   - name: correlation-id
