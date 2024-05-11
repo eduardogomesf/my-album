@@ -66,8 +66,8 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
-      - name: get-active-albums
-        paths: ["/albums/active"]
+      - name: get-albums
+        paths: ["/albums"]
         methods: ["GET"]
         https_redirect_status_code: 426
         regex_priority: 0
@@ -76,17 +76,7 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
-      - name: get-deleted-albums
-        paths: ["/albums/deleted"]
-        methods: ["GET"]
-        https_redirect_status_code: 426
-        regex_priority: 0
-        strip_path: false
-        path_handling: "v1"
-        request_buffering: true
-        response_buffering: true
-        tags: ["file-manager-service"]
-      - name: get-album-files
+      - name: get-files-by-album-id
         paths: ["/albums/([a-zA-Z0-9-]+)/files"]
         methods: ["GET"]
         https_redirect_status_code: 426

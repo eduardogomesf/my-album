@@ -145,15 +145,13 @@
             "description": "Error in album creation"
           }
         }
-      }
-    },
-    "/albums/active": {
+      },
       "get": {
         "tags": [
           "File Manager Service"
         ],
-        "summary": "List active albums",
-        "operationId": "getActiveAlbums",
+        "summary": "List of albums",
+        "operationId": "getAlbums",
         "parameters": [
           {
             "in": "header",
@@ -161,6 +159,14 @@
             "required": true,
             "type": "string",
             "description": "Bearer JWT token"
+          },
+          {
+            "name": "deletedAlbumsOnly",
+            "in": "query",
+            "description": "If the list should contain only deleted albums",
+            "required": false,
+            "type": "string",
+            "default": "false"
           }
         ],
         "responses": {
@@ -172,35 +178,6 @@
           },
           "404": {
             "description": "No active albums found"
-          }
-        }
-      }
-    },
-    "/albums/deleted": {
-      "get": {
-        "tags": [
-          "File Manager Service"
-        ],
-        "summary": "List deleted albums",
-        "operationId": "getDeletedAlbums",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": true,
-            "type": "string",
-            "description": "Bearer JWT token"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted albums retrieved successfully",
-            "schema": {
-              "$ref": "#/definitions/AlbumsResponse"
-            }
-          },
-          "404": {
-            "description": "No deleted albums found"
           }
         }
       }
