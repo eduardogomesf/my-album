@@ -48,7 +48,7 @@ export class File extends BaseEntity {
       throw new DomainError(missingFieldsValidation.message)
     }
 
-    if (this.size < 0) {
+    if (this.size <= 0) {
       throw new DomainError('Size should be greater than 0')
     }
   }

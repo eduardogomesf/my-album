@@ -30,4 +30,19 @@ describe('File Entity', () => {
       } as any)
     }).toThrow(new DomainError('fields name, size, extension, type, encoding, albumId can not be empty'))
   })
+
+  it('should not be able to create a new file with invalid size', () => {
+    expect(() => {
+      new File({
+        name: 'file.txt',
+        size: 0,
+        extension: 'txt',
+        encoding: 'utf-8',
+        type: 'text/plain',
+        albumId: 'album-id',
+        createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
+        updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
+      })
+    }).toThrow(new DomainError('Size should be greater than 0'))
+  })
 })

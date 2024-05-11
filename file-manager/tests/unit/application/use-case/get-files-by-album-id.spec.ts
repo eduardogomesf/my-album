@@ -83,6 +83,22 @@ describe('Get Files By Album Id Use Case', () => {
     expect(countWithFiltersSpy).toHaveBeenCalledWith('any-album-id')
   })
 
+  it('should not get files if album does not exist', async () => {
+    mockGetAlbumByIdRepository.getById = jest.fn().mockResolvedValue(null)
+
+    const result = await sut.execute({
+      albumId: 'any-album-id',
+      userId: 'user-id',
+      filters: {
+        page: 1,
+        limit: 10
+      }
+    })
+
+    expect(result.ok).toBe(false)
+    expect(result.message).toBe('Album not found')
+  })
+
   it('should pass along any unknown error', async () => {
     mockGetAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
 
