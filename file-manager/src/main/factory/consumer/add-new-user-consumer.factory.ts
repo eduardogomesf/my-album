@@ -10,7 +10,7 @@ export const generateAddNewUserConsumer = async (): Promise<AddNewUserEventConsu
     consumerGroup: ENVS.KAFKA.CONSUMER_GROUPS.USER.NEW_USER,
     subscribeOptions: {
       topic: ENVS.KAFKA.TOPICS.USER.CREATED,
-      fromBeginning: false
+      fromBeginning: true
     }
   })
   const userRepository = generateUserRepository()

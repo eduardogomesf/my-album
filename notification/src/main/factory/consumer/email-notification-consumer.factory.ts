@@ -9,7 +9,7 @@ export const generateEmailNotificationConsumer = async (): Promise<EmailNotifica
     consumerGroup: ENVS.KAFKA.CONSUMER_GROUPS.NOTIFICATIONS.EMAIL,
     subscribeOptions: {
       topic: ENVS.KAFKA.TOPICS.NOTIFICATIONS.EMAIL,
-      fromBeginning: false
+      fromBeginning: true
     }
   })
   const sendEmailNotificationUseCase = generateSendEmailNotificationUseCase()
