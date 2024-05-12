@@ -60,7 +60,7 @@ export class AddNewFileUseCase implements UseCase {
       if (!isValidExtension) {
         return {
           ok: false,
-          message: 'Invalid extension'
+          message: ERROR_MESSAGES.FILE.INVALID_EXTENSION
         }
       }
 
