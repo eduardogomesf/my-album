@@ -9,6 +9,7 @@ import {
   type RestoreAlbumUseCase
 } from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
+import { convertErrorToHttpError } from '../helper'
 
 export class AlbumController {
   private readonly logger = new Logger(AlbumController.name)
@@ -37,8 +38,19 @@ export class AlbumController {
 
       if (!createAlbumResult.ok) {
         this.logger.warn(`Album not created: ${createAlbumResult.message}`, correlationId)
-        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: createAlbumResult.message ?? HTTP_CODES.BAD_REQUEST.message
+
+        const httpError = convertErrorToHttpError(
+          [
+            {
+              message: ERROR_MESSAGES.USER.NOT_FOUND,
+              httpCode: HTTP_CODES.BAD_REQUEST.code
+            }
+          ],
+          createAlbumResult.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 
@@ -103,10 +115,21 @@ export class AlbumController {
         }
       })
 
-      if (!getFilesByAlbumIdResult.ok && getFilesByAlbumIdResult.message === ERROR_MESSAGES.ALBUM.NOT_FOUND) {
+      if (!getFilesByAlbumIdResult.ok) {
         this.logger.warn(`Album not found: ${getFilesByAlbumIdResult.message}`, correlationId)
-        return response.status(HTTP_CODES.NOT_FOUND.code).json({
-          message: getFilesByAlbumIdResult.message ?? HTTP_CODES.NOT_FOUND.message
+
+        const httpError = convertErrorToHttpError(
+          [
+            {
+              message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            }
+          ],
+          getFilesByAlbumIdResult.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 
@@ -145,8 +168,19 @@ export class AlbumController {
 
       if (!deleteAlbumResult.ok) {
         this.logger.warn(`Album not deleted: ${deleteAlbumResult.message}`, correlationId)
-        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: deleteAlbumResult.message ?? HTTP_CODES.BAD_REQUEST.message
+
+        const httpError = convertErrorToHttpError(
+          [
+            {
+              message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            }
+          ],
+          deleteAlbumResult.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 
@@ -179,8 +213,19 @@ export class AlbumController {
 
       if (!restoreAlbumResult.ok) {
         this.logger.warn(`Album not restored: ${restoreAlbumResult.message}`, correlationId)
-        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: restoreAlbumResult.message ?? HTTP_CODES.BAD_REQUEST.message
+
+        const httpError = convertErrorToHttpError(
+          [
+            {
+              message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            }
+          ],
+          restoreAlbumResult.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 

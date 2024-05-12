@@ -6,8 +6,9 @@ import {
   type DeleteFileUseCase
 } from '@/application/use-case'
 import { Logger } from '@/shared'
-import { MissingFieldsHelper, getFileExtension } from '../helper'
+import { MissingFieldsHelper, convertErrorToHttpError, getFileExtension } from '../helper'
 import { HTTP_CODES } from '../constant'
+import { ERROR_MESSAGES } from '@/application/constant'
 
 export class FileController {
   private readonly logger = new Logger('FileController')
@@ -27,9 +28,9 @@ export class FileController {
 
     try {
       if (!request?.file) {
-        this.logger.warn('File not found', correlationId)
-        return response.status(400).json({
-          message: 'File not found'
+        this.logger.warn('File not found in the request', correlationId)
+        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: 'File not found in the request'
         })
       }
 
@@ -56,8 +57,17 @@ export class FileController {
 
       if (!createUserResult.ok) {
         this.logger.warn(`File not created: ${createUserResult.message}`, correlationId)
-        return response.status(400).json({
-          message: createUserResult.message
+
+        const httpError = convertErrorToHttpError(
+          [{
+            message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
+            httpCode: HTTP_CODES.NOT_FOUND.code
+          }],
+          createUserResult.message ?? HTTP_CODES.BAD_REQUEST.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 
@@ -108,8 +118,24 @@ export class FileController {
 
       if (!result.ok) {
         this.logger.warn(result.message ?? HTTP_CODES.BAD_REQUEST.message, correlationId)
-        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: result.message ?? HTTP_CODES.BAD_REQUEST.message
+
+        const httpError = convertErrorToHttpError(
+          [
+            {
+              message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            },
+            {
+              message: ERROR_MESSAGES.PERMISSION.NOT_ALLOWED,
+              httpCode: HTTP_CODES.FORBIDDEN.code
+            }
+
+          ],
+          result.message ?? HTTP_CODES.BAD_REQUEST.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 
@@ -144,8 +170,19 @@ export class FileController {
 
       if (!result.ok) {
         this.logger.warn(result.message ?? HTTP_CODES.BAD_REQUEST.message, correlationId)
-        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: result.message ?? HTTP_CODES.BAD_REQUEST.message
+
+        const httpError = convertErrorToHttpError(
+          [
+            {
+              message: ERROR_MESSAGES.FILE.NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            }
+          ],
+          result.message ?? HTTP_CODES.BAD_REQUEST.message
+        )
+
+        return response.status(httpError.httpCode).json({
+          message: httpError.message
         })
       }
 
