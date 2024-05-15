@@ -18,6 +18,7 @@ interface RefreshTokenUseCaseParams {
 interface RefreshTokenUseCaseResponse {
   accessToken: string
   refreshToken: string
+  userId: string
 }
 
 export class RefreshTokenUseCase implements UseCase {
@@ -92,7 +93,8 @@ export class RefreshTokenUseCase implements UseCase {
       ok: true,
       data: {
         accessToken,
-        refreshToken: newRefreshToken
+        refreshToken: newRefreshToken,
+        userId: params.userId
       }
     }
   }

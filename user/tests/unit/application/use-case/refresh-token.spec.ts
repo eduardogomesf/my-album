@@ -69,7 +69,8 @@ describe('Refresh Token Use Case', () => {
       ok: true,
       data: {
         accessToken: 'any_access_token',
-        refreshToken: 'any_refresh_token'
+        refreshToken: 'any_refresh_token',
+        userId: 'any_user_id'
       }
     })
     expect(deleteByIdSpy).toHaveBeenCalled()

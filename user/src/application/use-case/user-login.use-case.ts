@@ -15,6 +15,7 @@ interface UserLoginUseCaseDTO {
 interface UserLoginUseCaseResponse {
   accessToken: string
   refreshToken: string
+  userId: string
 }
 
 export class UserLoginUseCase implements UseCase {
@@ -66,7 +67,8 @@ export class UserLoginUseCase implements UseCase {
       ok: true,
       data: {
         accessToken,
-        refreshToken
+        refreshToken,
+        userId: userByEmail.id
       }
     }
   }

@@ -55,7 +55,8 @@ describe('User Login Use Case', () => {
       ok: true,
       data: {
         accessToken: 'any-token',
-        refreshToken: 'any-token'
+        refreshToken: 'any-token',
+        userId: 'any-id'
       }
     })
   })
