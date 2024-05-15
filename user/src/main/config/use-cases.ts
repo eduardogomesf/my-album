@@ -1,6 +1,6 @@
 import { type UseCases } from '@/presentation/interface/use-cases'
 import { ENVS } from '@/shared'
-import { generateCreateNewUserUseCase, generateRefreshTokenUseCase, generateUserLoginUseCase } from '../factory/use-case'
+import { generateCreateNewUserUseCase, generateGetUserInfoUseCase, generateRefreshTokenUseCase, generateUserLoginUseCase } from '../factory/use-case'
 import { generateKafkaProducer } from '../factory/messaging'
 import { generateMongoRefreshTokenRepository, generateMongoUnpublishedMessagesRepository, generateMongoUserRepository } from '../factory/repository'
 import {
@@ -60,6 +60,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     refreshTokenValidator,
     refreshTokenRepository
   )
+  const getUserInfoUseCase = generateGetUserInfoUseCase(userRepository)
 
   // Subscribers
   const newUserCreatedSenderSubscriber = new Subscriber(
@@ -71,6 +72,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   return {
     createNewUser,
     userLogin,
-    refreshToken
+    refreshToken,
+    getUserInfoUseCase
   }
 }
