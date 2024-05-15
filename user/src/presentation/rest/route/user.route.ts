@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import { type UseCases } from '../../interface/use-cases'
 import { UserController } from '../controller/user.controller'
+import { getAuthInfoFromHeaders } from '../middleware'
 
 export function getUserRouter(useCases: UseCases): Router {
   const router = Router()
@@ -16,7 +17,7 @@ export function getUserRouter(useCases: UseCases): Router {
   router.post('/users', userController.create.bind(userController))
   router.post('/login', userController.login.bind(userController))
   router.post('/refresh-token', userController.refresh.bind(userController))
-  router.get('/users/:id', userController.getUserInfo.bind(userController))
+  router.get('/users/:id', getAuthInfoFromHeaders as any, userController.getUserInfo.bind(userController))
 
   return router
 }

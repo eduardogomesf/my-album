@@ -12,7 +12,7 @@ const logger = new Logger('getAuthInfoFromToken')
 
 const tokenValidator = generateJwtTokenValidator()
 
-export async function asyncgetAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): Promise<any> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, token] = req.headers.authorization?.split(' ') as string[]
 
