@@ -96,7 +96,8 @@ export class UserController {
 
       const responseBody = {
         accessToken: loginResult?.data?.accessToken,
-        refreshToken: loginResult?.data?.refreshToken
+        refreshToken: loginResult?.data?.refreshToken,
+        userId: loginResult?.data?.userId
       }
 
       this.logger.info('User logged in successfully', correlationId)
@@ -142,7 +143,8 @@ export class UserController {
       this.logger.info('Token refreshed successfully', correlationId)
       return response.status(200).json({
         accessToken: refreshResult.data?.accessToken,
-        refreshToken: refreshResult.data?.refreshToken
+        refreshToken: refreshResult.data?.refreshToken,
+        userId: refreshResult.data?.userId
       })
     } catch (error) {
       this.logger.error('Error refreshing token')
