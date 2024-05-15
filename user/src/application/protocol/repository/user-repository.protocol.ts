@@ -11,3 +11,7 @@ export interface FindUserByEmailRepository {
 export interface UserExistsRepository {
   exists: (userId: string) => Promise<boolean>
 }
+
+export interface FindUserByIdRepository {
+  findById: (id: string) => Promise<User | null>
+}
