@@ -59,7 +59,7 @@ export class MongoUserRepository implements FindUserByEmailRepository, CreateUse
 
   async findById(id: string): Promise<User | null> {
     try {
-      const user = await UserModel.findOne<User>({ id })
+      const user = await UserModel.findById<User>(id)
 
       if (!user) {
         return null
