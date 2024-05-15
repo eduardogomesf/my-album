@@ -77,6 +77,45 @@
         }
       }
     },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "User Service"
+        ],
+        "summary": "Get User Information",
+        "operationId": "GetUserInfo",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the user"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User created successfully",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
     "/refresh-token": {
       "post": {
         "tags": [
@@ -382,6 +421,27 @@
         }
       }
     },
+    "UserInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
     "AccessTokenResponse": {
       "type": "object",
       "properties": {
@@ -392,6 +452,10 @@
         "refreshToken": {
           "type": "string",
           "description": "JWT refresh token"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID"
         }
       }
     },

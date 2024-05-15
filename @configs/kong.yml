@@ -43,6 +43,16 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["user-service"]
+      - name: get-user-by-id
+        paths: ["/users/([a-zA-Z0-9-]+)"]
+        methods: ["GET"]
+        https_redirect_status_code: 426
+        regex_priority: 0
+        strip_path: false
+        path_handling: "v1"
+        request_buffering: true
+        response_buffering: true
+        tags: ["user-service"]
 
   - name: file-manager-service
     host: file-manager-service
