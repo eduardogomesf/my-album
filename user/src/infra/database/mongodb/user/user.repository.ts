@@ -1,7 +1,8 @@
 import {
   type FindUserByEmailRepository,
   type CreateUserRepository,
-  type UserExistsRepository
+  type UserExistsRepository,
+  type FindUserByIdRepository
 } from '@/application/protocol'
 import { User } from '@/domain/entity/user.entity'
 import { Logger } from '@/shared'
@@ -9,7 +10,7 @@ import { UserModel } from './user.entity'
 
 const logger = new Logger('MongoUserRepository')
 
-export class MongoUserRepository implements FindUserByEmailRepository, CreateUserRepository, UserExistsRepository {
+export class MongoUserRepository implements FindUserByEmailRepository, CreateUserRepository, UserExistsRepository, FindUserByIdRepository {
   async findByEmail(email: string): Promise<User | null> {
     try {
       const user = await UserModel.findOne<User>({ email })
@@ -51,6 +52,22 @@ export class MongoUserRepository implements FindUserByEmailRepository, CreateUse
       return !!user
     } catch (error) {
       logger.error('Error finding user by user id')
+      logger.error(error)
+      throw error
+    }
+  }
+
+  async findById(id: string): Promise<User | null> {
+    try {
+      const user = await UserModel.findOne<User>({ id })
+
+      if (!user) {
+        return null
+      }
+
+      return new User(user)
+    } catch (error) {
+      logger.error('Error finding user by id')
       logger.error(error)
       throw error
     }
