@@ -2,7 +2,8 @@ import { type Request, type Response } from 'express'
 import {
   type UserLoginUseCase,
   type CreateNewUserUseCase,
-  type RefreshTokenUseCase
+  type RefreshTokenUseCase,
+  type GetUserInfoUseCase
 } from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
@@ -13,7 +14,8 @@ export class UserController {
   constructor(
     private readonly createNewUserUseCase: CreateNewUserUseCase,
     private readonly userLoginUseCase: UserLoginUseCase,
-    private readonly refreshTokenUseCase: RefreshTokenUseCase
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
+    private readonly getUserInfoUseCase: GetUserInfoUseCase
   ) {}
 
   async create(request: Request, response: Response): Promise<Response> {
@@ -145,6 +147,33 @@ export class UserController {
     } catch (error) {
       this.logger.error('Error refreshing token')
       this.logger.error(error)
+      return response.status(500).send()
+    }
+  }
+
+  async getUserInfo(request: Request, response: Response): Promise<Response> {
+    const correlationId = request.tracking.correlationId
+    try {
+      this.logger.info('Get user info request received', correlationId)
+
+      const { userId } = request.auth
+
+      const getUserInfoResult = await this.getUserInfoUseCase.execute({
+        userId
+      })
+
+      if (!getUserInfoResult.ok) {
+        this.logger.warn(`User not found: ${getUserInfoResult.message}`, correlationId)
+        return response.status(404).json({
+          message: getUserInfoResult.message
+        })
+      }
+
+      this.logger.info('User info retrieved successfully', correlationId)
+      return response.status(200).json(getUserInfoResult.data)
+    } catch (error) {
+      this.logger.error('Error getting user info', correlationId)
+      this.logger.error(error, correlationId)
       return response.status(500).send()
     }
   }
