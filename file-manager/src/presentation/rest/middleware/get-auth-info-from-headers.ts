@@ -14,8 +14,13 @@ const logger = new Logger('getAuthInfoFromToken')
 const tokenValidator = generateJwtTokenValidator()
 
 export function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): any {
+  if (!req.headers.authorization) {
+    logger.error('Authorization header not found')
+    return res.status(403).send('Authorization header not found')
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, token] = req.headers.authorization?.split(' ') as string[]
+  const [_, token] = req.headers.authorization?.split(' ')
 
   const { isValid, data, invalidationReason } = tokenValidator.validate(token)
 
