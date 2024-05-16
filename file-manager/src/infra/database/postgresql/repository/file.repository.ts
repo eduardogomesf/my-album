@@ -1,4 +1,4 @@
-import { OutboxType, type File as PrismaFile } from '@prisma/client'
+import { OutboxType } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import {
   type GetFilesByAlbumIdRepository,
@@ -144,10 +144,23 @@ implements
     userId: string
   ): Promise<File | null> {
     try {
-      const file = await prisma.$queryRaw<PrismaFile>`
-        SELECT * FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id = ${fileId} and a.user_id = ${userId} and a.id = ${albumId}
+      const file = await prisma.$queryRaw<any[]>`
+        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id = ${fileId} and a.user_id = ${userId} and a.id = ${albumId}
       `
-      return file ? FileMapper.toEntity(file) : null
+
+      if (!file?.length) {
+        return null
+      }
+
+      const rawData = file[0]
+
+      return FileMapper.toEntity({
+        ...rawData,
+        userId: rawData.user_id,
+        albumId: rawData.album_id,
+        createdAt: rawData.created_at,
+        updatedAt: rawData.updated_at
+      })
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
