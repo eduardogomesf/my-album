@@ -402,6 +402,46 @@
           }
         }
       }
+    },
+    "/albums/{albumId}/files/{fileId}": {
+      "delete": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Delete a file ",
+        "operationId": "deleteFile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "albumId",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the album"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the file"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File deleted successfully"
+          },
+          "404": {
+            "description": "File not found"
+          }
+        }
+      }
     }
   },
   "definitions": {
