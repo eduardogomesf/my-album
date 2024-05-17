@@ -9,8 +9,16 @@ export interface GetAlbumByNameRepository {
   getByName: (name: string, userId: string) => Promise<Album | null>
 }
 
+export interface GetAlbumsByStatusRepositoryResponse {
+  id: string
+  name: string
+  updatedAt: Date
+  numberOfPhotos: number
+  numberOfVideos: number
+}
+
 export interface GetAlbumsByStatusRepository {
-  getManyByStatus: (userId: string, status: AlbumStatus) => Promise<Album[]>
+  getManyByStatus: (userId: string, status: AlbumStatus) => Promise<GetAlbumsByStatusRepositoryResponse[]>
 }
 
 export interface SaveAlbumRepository {

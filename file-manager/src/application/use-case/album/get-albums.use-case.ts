@@ -23,7 +23,9 @@ export class GetAlbumsUseCase implements UseCase {
     const formattedAlbums: GetAlbumsUseCaseResponse[] = albums.map(album => ({
       id: album.id,
       name: album.name,
-      updatedAt: album.updatedAt ? new Date(album.updatedAt).toISOString() : ''
+      updatedAt: album.updatedAt ? new Date(album.updatedAt).toISOString() : '',
+      numberOfPhotos: album.numberOfPhotos,
+      numberOfVideos: album.numberOfVideos
     }))
 
     return {

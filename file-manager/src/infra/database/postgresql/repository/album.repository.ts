@@ -10,7 +10,8 @@ import {
   type SaveAlbumRepository,
   type GetAlbumsByStatusRepository,
   type UpdateAlbumRepository,
-  type DeleteAlbumRepository
+  type DeleteAlbumRepository,
+  type GetAlbumsByStatusRepositoryResponse
 } from '@/application/protocol'
 import { type AlbumStatus } from '@/domain/enum'
 import { AlbumMapper } from '../mapper'
@@ -64,19 +65,29 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     }
   }
 
-  async getManyByStatus(userId: string, status: AlbumStatus): Promise<Album[]> {
+  async getManyByStatus(userId: string, status: AlbumStatus): Promise<GetAlbumsByStatusRepositoryResponse[]> {
     try {
-      const albums = await prisma.album.findMany({
-        where: {
-          userId,
-          status: status as AlbumStatusPrisma
-        },
-        orderBy: {
-          updatedAt: 'desc'
-        }
-      })
-
-      return albums.map(album => AlbumMapper.toDomain(album)) as Album[]
+      const albumsWithCounts = await prisma.$queryRaw<any[]>`
+        select
+          f.album_id as "albumId",
+          a.name,
+          a.updated_at as "updatedAt",
+          count(case when f."type" = 'image' then 1 end) as "numberOfImages",
+          count(case when f."type" = 'video' then 1 end) as "numberOfVideos"
+        from albums a
+        join files f on a.id = f.album_id
+        where a.status = ${status}
+        AND a.user_id = ${userId}
+        group by f.album_id, a.name, a.updated_at
+        order by a.updated_at desc
+      `
+      return albumsWithCounts.map(album => ({
+        id: album.id,
+        name: album.name,
+        updatedAt: album.updatedAt,
+        numberOfPhotos: album.numberOfImages,
+        numberOfVideos: album.numberOfVideos
+      }))
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)

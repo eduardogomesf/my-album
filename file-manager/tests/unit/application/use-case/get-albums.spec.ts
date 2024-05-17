@@ -1,6 +1,5 @@
 import { GetAlbumsUseCase } from '@/application/use-case'
 import { type GetAlbumsByStatusRepository } from '@/application/protocol'
-import { getAlbumByIdMock } from '../mock/album.mock'
 
 describe('Get Albums Use Case', () => {
   let sut: GetAlbumsUseCase
@@ -9,8 +8,20 @@ describe('Get Albums Use Case', () => {
   beforeEach(() => {
     mockGetAlbumsByStatusRepository = {
       getManyByStatus: jest.fn().mockResolvedValue([
-        getAlbumByIdMock(),
-        getAlbumByIdMock()
+        {
+          id: 'album-id-1',
+          name: 'album-name-1',
+          updatedAt: new Date(),
+          numberOfPhotos: 1,
+          numberOfVideos: 1
+        },
+        {
+          id: 'album-id-2',
+          name: 'album-name-2',
+          updatedAt: new Date(),
+          numberOfPhotos: 1,
+          numberOfVideos: 1
+        }
       ])
     }
 
