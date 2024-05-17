@@ -67,12 +67,12 @@ export class AddNewFileUseCase implements UseCase {
         }
       }
 
-      const isValidSize = this.validateSize(file.size)
+      const sizeValidation = this.validateSize(file.size)
 
-      if (!isValidSize) {
+      if (!sizeValidation.isValid) {
         return {
           ok: false,
-          message: 'The file is too large. Max 10MB'
+          message: `The file is too large. Max ${sizeValidation.allowedSize}MB`
         }
       }
 
@@ -131,9 +131,12 @@ export class AddNewFileUseCase implements UseCase {
     return allowedExtensions.includes(extension)
   }
 
-  private validateSize(size: number): boolean {
+  private validateSize(size: number) {
     const allowedSize = 1024 * 1024 * ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB // Convert from MB to bytes
 
-    return size <= allowedSize
+    return {
+      isValid: size <= allowedSize,
+      allowedSize
+    }
   }
 }
