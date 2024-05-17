@@ -8,6 +8,10 @@ export const ENVS = {
     ID: process.env.ID ?? 'file-manager-service',
     URL: process.env.URL ?? 'http://localhost:3002'
   },
+  FILE_CONFIGS: {
+    MAX_FILE_SIZE_IN_MB: process.env.FILE_MAX_SIZE_IN_MB ? Number(process.env.FILE_MAX_SIZE_IN_MB) : 10,
+    MAX_STORAGE_SIZE_IN_MB: process.env.MAX_STORAGE_SIZE_IN_MB ? Number(process.env.MAX_STORAGE_SIZE_IN_MB) : 50
+  },
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],
     TOPICS: {

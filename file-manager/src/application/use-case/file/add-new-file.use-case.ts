@@ -1,3 +1,4 @@
+import { ENVS } from '@/shared'
 import { DomainError, File } from '@/domain/entity'
 import { AlbumStatus } from '@/domain/enum'
 import { type UseCase, type UseCaseResponse } from '../../interface'
@@ -112,7 +113,7 @@ export class AddNewFileUseCase implements UseCase {
   private async canAddMoreFiles(userId: string, size: number): Promise<{ freeSpace: number, canAdd: boolean }> {
     const { usage } = await this.getCurrentStorageUsageRepository.getUsage(userId)
 
-    const maxStorageSize = 1024 * 1024 * 50 // 50MB
+    const maxStorageSize = 1024 * 1024 * ENVS.FILE_CONFIGS.MAX_STORAGE_SIZE_IN_MB // Convert from MB to bytes
 
     const freeSpace = maxStorageSize - usage
 
@@ -129,7 +130,7 @@ export class AddNewFileUseCase implements UseCase {
   }
 
   private validateSize(size: number): boolean {
-    const allowedSize = 1024 * 1024 * 10 // 10MB
+    const allowedSize = 1024 * 1024 * ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB // Convert from MB to bytes
 
     return size <= allowedSize
   }
