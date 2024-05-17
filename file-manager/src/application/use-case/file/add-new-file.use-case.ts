@@ -47,12 +47,14 @@ export class AddNewFileUseCase implements UseCase {
         }
       }
 
+      const type = params.type.includes('image') ? 'image' : 'video'
+
       const file = new File({
         name: params.name,
         albumId: params.albumId,
         size: params.size,
         encoding: params.encoding,
-        type: params.type,
+        type,
         extension: params.extension
       })
 
