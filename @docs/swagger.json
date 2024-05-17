@@ -564,7 +564,7 @@
         }
       }
     },
-    "Album": {
+    "AlbumWithCounts": {
       "type": "object",
       "properties": {
         "id": {
@@ -576,6 +576,12 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "numberOfVideos": {
+          "type": "integer"
+        },
+        "numberOfImages": {
+          "type": "integer"
         }
       }
     },
