@@ -75,7 +75,7 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
           count(case when f."type" = 'image' then 1 end) as "numberOfImages",
           count(case when f."type" = 'video' then 1 end) as "numberOfVideos"
         from albums a
-        join files f on a.id = f.album_id
+        left join files f on a.id = f.album_id
         where a.status = ${status}::"AlbumStatus"
         AND a.user_id = ${userId}
         group by f.album_id, a.name, a.updated_at
