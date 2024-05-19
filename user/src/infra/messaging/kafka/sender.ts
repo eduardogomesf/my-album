@@ -49,7 +49,9 @@ export class KafkaProducer implements MessageSender {
       await this.unpublishedMessagesRepository.save({
         id: messageWithId.id,
         data: messageWithId,
-        options: messageWithId
+        options: {
+          topic: this.topic
+        }
       })
 
       logger.warn(`Message of Id ${messageWithId.id} saved to MongoDB`)
