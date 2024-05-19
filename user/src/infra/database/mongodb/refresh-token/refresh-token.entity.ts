@@ -15,7 +15,7 @@ const RefreshToken = new Schema({
     type: String,
     required: true
   }
-})
+}, { timestamps: true })
 
 RefreshToken.virtual('id').get(function() {
   return this._id.toString()

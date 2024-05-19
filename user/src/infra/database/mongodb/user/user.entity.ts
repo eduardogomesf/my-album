@@ -27,7 +27,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   }
-})
+}, { timestamps: true })
 
 UserSchema.virtual('id').get(function() {
   return this._id.toString()

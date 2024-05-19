@@ -9,7 +9,7 @@ const UnpublishedMessageSchema = new Schema({
   },
   data: Schema.Types.Mixed,
   options: Schema.Types.Mixed
-})
+}, { timestamps: true })
 
 UnpublishedMessageSchema.virtual('id').get(function() {
   return this._id.toString()
