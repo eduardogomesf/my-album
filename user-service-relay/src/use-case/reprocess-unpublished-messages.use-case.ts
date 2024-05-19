@@ -17,7 +17,7 @@ export class ReprocessUnpublishedMessages {
     private readonly updateUnpublishedMessagesRepository: UpdateUnpublishedMessageRepository
   ) {}
 
-  async execute(): Promise<void> {
+  async execute(): Promise<boolean> {
     this.logger.info('Reprocessing unpublished messages')
 
     const unpublishedMessages = await this.getPendingUnpublishedMessagesRepository.findAllPending()
@@ -39,6 +39,8 @@ export class ReprocessUnpublishedMessages {
         this.logger.error(`Error processing message ${unpublishedMessage.id}`, error)
       }
     }
+
+    return true
   }
 
   private async verifyMessageIntegrity(message: UnpublishedMessage): Promise<{ canContinue: boolean }> {
