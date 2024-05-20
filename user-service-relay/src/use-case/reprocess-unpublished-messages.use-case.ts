@@ -29,14 +29,14 @@ export class ReprocessUnpublishedMessages {
         continue
       }
 
-      try {
-        await this.messageSender.send(
-          unpublishedMessage.data,
-          unpublishedMessage.options
-        )
+      const wasSent = await this.messageSender.send(
+        unpublishedMessage.data,
+        unpublishedMessage.options
+      )
+      if (wasSent) {
         await this.deleteUnpublishedMessagesRepository.delete(unpublishedMessage.id)
-      } catch (error) {
-        this.logger.error(`Error processing message ${unpublishedMessage.id}`, error)
+      } else {
+        this.logger.error(`Error processing message with ID ${unpublishedMessage.id}`)
       }
     }
 

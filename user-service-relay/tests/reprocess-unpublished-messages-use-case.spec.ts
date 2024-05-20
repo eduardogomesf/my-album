@@ -45,7 +45,7 @@ describe('Reprocess unpublished messages use case', () => {
       ])
     }
     messageSender = {
-      send: jest.fn().mockResolvedValue(null)
+      send: jest.fn().mockResolvedValue(true)
     }
     deleteUnpublishedMessagesRepository = {
       delete: jest.fn().mockResolvedValue(null)
@@ -75,6 +75,19 @@ describe('Reprocess unpublished messages use case', () => {
     expect(updateSpy).toHaveBeenCalledTimes(0)
   })
 
+  it('should not delete the message if it was not sent', async () => {
+    const deleteSpy = jest.spyOn(deleteUnpublishedMessagesRepository, 'delete')
+    const sendSpy = jest.spyOn(messageSender, 'send')
+    const updateSpy = jest.spyOn(updateUnpublishedMessagesRepository, 'update')
+
+    const result = await sut.execute()
+
+    expect(result).toBe(true)
+    expect(deleteSpy).toHaveBeenCalledTimes(0)
+    expect(sendSpy).toHaveBeenCalledTimes(5)
+    expect(updateSpy).toHaveBeenCalledTimes(0)
+  })
+
   it('should not process invalid messages', async () => {
     getPendingUnpublishedMessagesRepository.findAllPending = jest.fn().mockResolvedValue([
       {
@@ -100,39 +113,5 @@ describe('Reprocess unpublished messages use case', () => {
     expect(deleteSpy).toHaveBeenCalledTimes(3)
     expect(updateSpy).toHaveBeenCalledTimes(2)
     expect(sendSpy).toHaveBeenCalledTimes(3)
-  })
-
-  it('should ignore failed messages', async () => {
-    getPendingUnpublishedMessagesRepository.findAllPending = jest.fn().mockResolvedValue([
-      generateMessage('any-id'),
-      {
-        ...generateMessage('any-id-1'),
-        options: { topic: 'wrong-topic' }
-      },
-      {
-        ...generateMessage('any-id-2'),
-        options: { topic: 'wrong-topic' }
-      },
-      generateMessage('any-id-3'),
-      generateMessage('any-id-4')
-    ])
-    messageSender.send = jest.fn().mockImplementation((_, options) => {
-      if (options.topic === 'wrong-topic') {
-        throw new Error('any-error')
-      }
-
-      return null
-    })
-
-    const deleteSpy = jest.spyOn(deleteUnpublishedMessagesRepository, 'delete')
-    const updateSpy = jest.spyOn(updateUnpublishedMessagesRepository, 'update')
-    const sendSpy = jest.spyOn(messageSender, 'send')
-
-    const result = await sut.execute()
-
-    expect(result).toBe(true)
-    expect(sendSpy).toHaveBeenCalledTimes(5)
-    expect(deleteSpy).toHaveBeenCalledTimes(3)
-    expect(updateSpy).toHaveBeenCalledTimes(0)
   })
 })
