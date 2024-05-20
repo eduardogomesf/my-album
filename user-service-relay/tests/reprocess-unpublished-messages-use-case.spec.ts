@@ -76,6 +76,8 @@ describe('Reprocess unpublished messages use case', () => {
   })
 
   it('should not delete the message if it was not sent', async () => {
+    messageSender.send = jest.fn().mockResolvedValue(false)
+
     const deleteSpy = jest.spyOn(deleteUnpublishedMessagesRepository, 'delete')
     const sendSpy = jest.spyOn(messageSender, 'send')
     const updateSpy = jest.spyOn(updateUnpublishedMessagesRepository, 'update')
