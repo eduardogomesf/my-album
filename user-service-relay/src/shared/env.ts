@@ -21,5 +21,10 @@ export const ENVS = {
         EMAIL: process.env.KAFKA_TOPIC_EMAIL_NOTIFICATIONS ?? 'email-notifications'
       }
     }
+  },
+  JOBS: {
+    SCHEDULES: {
+      REPROCESS_UNPUBLISHED_MESSAGES: process.env.REPROCESS_UNPUBLISHED_MESSAGES_JOB_SCHEDULE ?? '*/5 * * * *'
+    }
   }
 } as const

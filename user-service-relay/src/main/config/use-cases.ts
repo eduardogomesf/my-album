@@ -3,7 +3,7 @@ import { generateKafkaProducer } from '../factory/messaging'
 import { generateMongoUnpublishedMessagesRepository } from '../factory/repository'
 import { generateReprocessUnpublishedMessagesUseCase } from '../factory/use-case'
 
-interface UseCases {
+export interface UseCases {
   reprocessUnpublishedMessagesUseCase: ReprocessUnpublishedMessages
 }
 

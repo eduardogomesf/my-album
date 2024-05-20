@@ -1,3 +1,4 @@
+import { Types } from 'mongoose'
 import { Logger } from '@/shared'
 import { UnpublishedMessageModel } from './unpublished-messages.entity'
 import {
@@ -38,7 +39,7 @@ export class MongoUnpublishedMessagesRepository implements
 
   async delete (id: string): Promise<void> {
     try {
-      await UnpublishedMessageModel.deleteOne({ _id: id })
+      await UnpublishedMessageModel.deleteOne({ _id: new Types.ObjectId(id) })
     } catch (error) {
       logger.error('Error finding deleting messages')
       logger.error(error)
