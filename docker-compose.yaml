@@ -36,8 +36,6 @@ services:
     build:
       context: ./user-service-relay
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
     working_dir: /usr/app
     command: [ "npm", "start" ]
     depends_on:
