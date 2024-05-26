@@ -1,2 +1,2 @@
-export * from './unpublished-messages.entity'
-export * from './unpublished-messages.repository'
+export * from './entity'
+export * from './repository'
