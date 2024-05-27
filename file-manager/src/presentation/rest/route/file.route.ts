@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import * as multer from 'multer'
 
+import { ENVS } from '@/shared'
 import { FileController } from '../controller/file.controller'
 import { type UseCases } from '../../interface/injections'
 import { getFileExtension } from '../helper'
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
 })
 
 const limits = {
-  fileSize: 1024 * 1024 * 10 // 10MB
+  fileSize: 1024 * 1024 * ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB
 }
 
 const upload = multer({ storage, limits })
