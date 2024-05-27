@@ -3,7 +3,8 @@ import * as fs from 'node:fs/promises'
 import {
   type MoveFilesToOtherAlbumUseCase,
   type AddNewFileUseCase,
-  type DeleteFileUseCase
+  type DeleteFileUseCase,
+  type GetAvailableStorageUseCase
 } from '@/application/use-case'
 import { Logger } from '@/shared'
 import { MissingFieldsHelper, convertErrorToHttpError, getFileExtension } from '../helper'
@@ -16,7 +17,8 @@ export class FileController {
   constructor(
     private readonly addNewFileUseCase: AddNewFileUseCase,
     private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase,
-    private readonly deleteFileUseCase: DeleteFileUseCase
+    private readonly deleteFileUseCase: DeleteFileUseCase,
+    private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase
   ) {}
 
   async add(request: Request, response: Response): Promise<Response> {
@@ -190,6 +192,28 @@ export class FileController {
       return response.status(204).send()
     } catch (error) {
       this.logger.error('Error deleting file', correlationId)
+      this.logger.error(error, correlationId)
+      this.logger.error(error.stack, correlationId)
+      return response.status(500).send()
+    }
+  }
+
+  async getAvailableStorage(request: Request, response: Response): Promise<Response> {
+    const correlationId = request.tracking.correlationId
+
+    this.logger.info('Get available storage request received', correlationId)
+
+    try {
+      const { userId } = request.auth
+
+      const result = await this.getAvailableStorageUseCase.execute({
+        userId
+      })
+
+      this.logger.info('Available storage retrieved successfully', correlationId)
+      return response.status(HTTP_CODES.OK.code).json(result.data)
+    } catch (error) {
+      this.logger.error('Error getting available storage', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(500).send()

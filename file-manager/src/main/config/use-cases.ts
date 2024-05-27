@@ -12,6 +12,7 @@ import {
   generateDeleteAlbumUseCase,
   generateDeleteFileUseCase,
   generateGetAlbumsUseCase,
+  generateGetAvailableStorageUseCase,
   generateGetFilesByAlbumIdUseCase,
   generateMoveFilesToOtherAlbumUseCase,
   generateRestoreAlbumUseCase
@@ -60,6 +61,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const deleteFileUseCase = generateDeleteFileUseCase(fileRepository, fileRepository, fileStorageService)
   const deleteAlbumUseCase = generateDeleteAlbumUseCase(albumRepository, albumRepository, albumRepository)
   const restoreAlbumUseCase = generateRestoreAlbumUseCase(albumRepository, albumRepository)
+  const getAvailableStorageUseCase = generateGetAvailableStorageUseCase(fileRepository)
 
   return {
     addNewUserUseCase,
@@ -70,6 +72,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     moveFilesToOtherAlbumUseCase,
     deleteFileUseCase,
     deleteAlbumUseCase,
-    restoreAlbumUseCase
+    restoreAlbumUseCase,
+    getAvailableStorageUseCase
   }
 }
