@@ -442,6 +442,35 @@
           }
         }
       }
+    },
+    "/storage": {
+      "get": {
+        "tags": [
+          "File Manager Service"
+        ],
+        "summary": "Get Storage Information",
+        "operationId": "GetStorageInfo",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Storage information retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/StorageInfo"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -657,6 +686,23 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "StorageInfo": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "integer"
+        },
+        "currentUsage": {
+          "type": "integer"
+        },
+        "maxStorage": {
+          "type": "integer"
+        },
+        "canAddMore": {
+          "type": "boolean"
         }
       }
     }
