@@ -8,7 +8,7 @@ import {
 } from '../../interface'
 import { type GetCurrentStorageUsageRepository } from '../../protocol'
 
-export class GetAvailableStorage implements UseCase {
+export class GetAvailableStorageUseCase implements UseCase {
   constructor(
     private readonly getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository
   ) {}
