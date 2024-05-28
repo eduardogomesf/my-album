@@ -10,7 +10,9 @@ export const ENVS = {
   },
   FILE_CONFIGS: {
     MAX_FILE_SIZE_IN_MB: process.env.FILE_MAX_SIZE_IN_MB ? Number(process.env.FILE_MAX_SIZE_IN_MB) : 10,
-    MAX_STORAGE_SIZE_IN_MB: process.env.MAX_STORAGE_SIZE_IN_MB ? Number(process.env.MAX_STORAGE_SIZE_IN_MB) : 50
+    MAX_STORAGE_SIZE_IN_MB: process.env.MAX_STORAGE_SIZE_IN_MB ? Number(process.env.MAX_STORAGE_SIZE_IN_MB) : 50,
+    ALLOWED_EXTENSIONS:
+      process.env.ALLOWED_EXTENSIONS ? String(process.env.ALLOWED_EXTENSIONS).split(',') : ['jpg', 'jpeg', 'png', 'gif', 'mp4']
   },
   KAFKA: {
     BROKERS_URL: process.env.KAFKA_HOSTS ? String(process.env.KAFKA_HOSTS).split(',') : [],

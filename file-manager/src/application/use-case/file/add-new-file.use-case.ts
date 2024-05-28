@@ -126,7 +126,7 @@ export class AddNewFileUseCase implements UseCase {
   }
 
   private validateExtension(extension: string): boolean {
-    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'mp4']
+    const allowedExtensions = ENVS.FILE_CONFIGS.ALLOWED_EXTENSIONS
 
     return allowedExtensions.includes(extension)
   }
