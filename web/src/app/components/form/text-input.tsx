@@ -21,7 +21,7 @@ const TextInput = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
-        <span className={clsx("opacity-0 text-red-500 text-sm", error && 'opacity-100')}>
+        <span className={clsx("mt-1 opacity-0 text-red-500 text-xs md:text-sm", error && 'opacity-100')}>
           {error ?? 'no-error'}
         </span>
       </div>

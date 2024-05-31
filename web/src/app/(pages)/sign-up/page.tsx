@@ -75,7 +75,7 @@ export default function SignUp() {
           />
 
           <TextInput
-            type="tel"
+            type="text"
             placeholder="5511999887755 (numbers only)"
             label="Phone number"
             labelId="phone-number"
