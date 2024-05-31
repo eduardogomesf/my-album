@@ -1,10 +1,15 @@
 "use client"
 
-import { TextInput } from "@/app/components/form/text-input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from '@tanstack/react-query'
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from 'zod'
+import { toast } from 'sonner';
+
+import { TextInput } from "@/app/components/form/text-input";
+import { signUp } from "@/app/api/sign-up";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, { message: 'First name is required' }),
@@ -14,20 +19,42 @@ const signUpSchema = z.object({
   password: z.string().min(8, { message: 'Password must have at least 8 characters' }),
 })
 
-type SignInSchema = z.infer<typeof signUpSchema>
+type SignUpSchema = z.infer<typeof signUpSchema>
 
 export default function SignUp() {
+  const router = useRouter()
 
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
     register,
-  } = useForm<SignInSchema>({
+  } = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
   })
 
-  async function handleSignUp(data: SignInSchema) {
-    console.log(data)
+  const { mutateAsync: createAccount } = useMutation({
+    mutationFn: signUp,
+  })
+
+  async function handleSignUp({ email, firstName, lastName, password, phoneNumber }: SignUpSchema) {
+    try {
+      await createAccount({
+        email,
+        firstName,
+        lastName,
+        password,
+        cellphone: phoneNumber
+      })
+
+      toast.success('Your account was created. Please sign-in.', {
+        action: {
+          label: 'Sign in',
+          onClick: () => router.push('/sign-in'),
+        },
+      })
+    } catch (err) {
+      toast.error('Something went wrong :(! Try again.')
+    }
   }
 
   return (
