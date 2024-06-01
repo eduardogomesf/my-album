@@ -7,6 +7,7 @@ import {
 } from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
+import { ERROR_MESSAGES } from '@/application/constant'
 
 export class UserController {
   private readonly logger = new Logger(UserController.name)
@@ -43,6 +44,13 @@ export class UserController {
 
       if (!createUserResult.ok) {
         this.logger.warn(`User not created: ${createUserResult.message}`, correlationId)
+
+        if (createUserResult.message === ERROR_MESSAGES.USER.EMAIL_ALREADY_EXIST) {
+          return response.status(409).json({
+            message: createUserResult.message
+          })
+        }
+
         return response.status(400).json({
           message: createUserResult.message
         })

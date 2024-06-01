@@ -50,6 +50,7 @@ export default function SignUp() {
 
       router.push('/sign-in')
     } catch (err) {
+      console.log(err)
       toast.error('Something went wrong :(! Try again.')
     }
   }
