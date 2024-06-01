@@ -152,7 +152,13 @@ export class UserController {
 
       if (!refreshResult.ok) {
         this.logger.warn(`Token not refreshed: ${refreshResult.message}`, correlationId)
-        return response.status(400).json({
+        if (refreshResult.message === ERROR_MESSAGES.USER.NOT_FOUND) {
+          return response.status(404).json({
+            message: refreshResult.message
+          })
+        }
+
+        return response.status(401).json({
           message: refreshResult.message
         })
       }
