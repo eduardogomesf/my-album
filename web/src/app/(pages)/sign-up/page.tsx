@@ -46,12 +46,9 @@ export default function SignUp() {
         cellphone: phoneNumber
       })
 
-      toast.success('Your account was created. Please sign-in.', {
-        action: {
-          label: 'Sign in',
-          onClick: () => router.push('/sign-in'),
-        },
-      })
+      toast.success('Your account was created. Please sign-in.')
+
+      router.push('/sign-in')
     } catch (err) {
       toast.error('Something went wrong :(! Try again.')
     }
