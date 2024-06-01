@@ -2,15 +2,16 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { toast } from 'sonner'
-
-import { TextInput } from '@/app/components/form/text-input'
-import { signUp } from '@/app/api/sign-up'
-import { useRouter } from 'next/navigation'
 import { isAxiosError } from 'axios'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
+import { signUp } from '@/app/api/sign-up'
+import { TextInput } from '@/app/components/form/text-input'
+
 import { SOMETHING_WENT_WRONG } from '../../constants/error'
 
 const signUpSchema = z.object({

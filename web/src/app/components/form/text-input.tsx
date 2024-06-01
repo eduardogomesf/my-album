@@ -1,6 +1,7 @@
-import { InputHTMLAttributes, forwardRef } from 'react'
-import { Label } from './label'
 import clsx from 'clsx'
+import { forwardRef, InputHTMLAttributes } from 'react'
+
+import { Label } from './label'
 
 type InputCustomProps = {
   label?: string

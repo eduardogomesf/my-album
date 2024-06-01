@@ -3,7 +3,11 @@
     "next/core-web-vitals",
     "@rocketseat/eslint-config/react"
   ],
+  "plugins": [
+    "simple-import-sort"
+  ],
   "rules": {
-    "@typescript-eslint/no-explicit-any": "warn"
+    "@typescript-eslint/no-explicit-any": "warn",
+    "simple-import-sort/imports": "error"
   }
 }

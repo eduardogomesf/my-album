@@ -1,8 +1,10 @@
-import type { Metadata } from 'next'
 import './globals.css'
+
+import type { Metadata } from 'next'
+import { Toaster } from 'sonner'
+
 import { inter } from './fonts'
 import QueryProvider from './providers/ReactQueryProvider'
-import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'My Album',
