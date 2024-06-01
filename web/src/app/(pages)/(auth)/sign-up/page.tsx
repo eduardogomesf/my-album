@@ -1,24 +1,26 @@
-"use client"
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import Link from "next/link";
-import { useForm } from "react-hook-form";
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { toast } from 'sonner';
+import { toast } from 'sonner'
 
-import { TextInput } from "@/app/components/form/text-input";
-import { signUp } from "@/app/api/sign-up";
-import { useRouter } from "next/navigation";
-import { isAxiosError } from "axios";
-import { SOMETHING_WENT_WRONG } from "../../constants/error";
+import { TextInput } from '@/app/components/form/text-input'
+import { signUp } from '@/app/api/sign-up'
+import { useRouter } from 'next/navigation'
+import { isAxiosError } from 'axios'
+import { SOMETHING_WENT_WRONG } from '../../constants/error'
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, { message: 'First name is required' }),
   lastName: z.string().min(2, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Invalid email' }),
   phoneNumber: z.string().min(10, { message: 'Invalid phone number' }),
-  password: z.string().min(8, { message: 'Password must have at least 8 characters' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must have at least 8 characters' }),
 })
 
 type SignUpSchema = z.infer<typeof signUpSchema>
@@ -38,14 +40,20 @@ export default function SignUp() {
     mutationFn: signUp,
   })
 
-  async function handleSignUp({ email, firstName, lastName, password, phoneNumber }: SignUpSchema) {
+  async function handleSignUp({
+    email,
+    firstName,
+    lastName,
+    password,
+    phoneNumber,
+  }: SignUpSchema) {
     try {
       await createAccount({
         email,
         firstName,
         lastName,
         password,
-        cellphone: phoneNumber
+        cellphone: phoneNumber,
       })
 
       toast.success('Your account was created. Please sign-in.')
@@ -66,21 +74,21 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <main className="flex flex-col items-center max-w-[500px] w-full p-6">
-        <h1 className="text-2xl text-gray-950 md:text-3xl	font-bold">
+    <div className="flex min-h-screen items-center justify-center">
+      <main className="flex w-full max-w-[500px] flex-col items-center p-6">
+        <h1 className="text-2xl font-bold text-gray-950 md:text-3xl">
           Sign up
         </h1>
-        <p className="mt-3 text-gray-500 font-normal text-md md:text-lg">
+        <p className="text-md mt-3 font-normal text-gray-500 md:text-lg">
           Create your account for free
         </p>
 
         <form
-          className="mt-4 md:mt-8 w-full flex flex-col gap-2 md:gap-3"
+          className="mt-4 flex w-full flex-col gap-2 md:mt-8 md:gap-3"
           onSubmit={handleSubmit(handleSignUp)}
           noValidate
         >
-          <div className="w-full flex flex-col gap-3 md:flex-row md:items-center">
+          <div className="flex w-full flex-col gap-3 md:flex-row md:items-center">
             <TextInput
               type="text"
               placeholder="John"
@@ -128,7 +136,7 @@ export default function SignUp() {
           />
 
           <button
-            className="md:mt-4 bg-gray-950 rounded-md text-white p-3 hover:bg-gray-800"
+            className="rounded-md bg-gray-950 p-3 text-white hover:bg-gray-800 md:mt-4"
             type="submit"
             disabled={isSubmitting}
           >
@@ -136,13 +144,15 @@ export default function SignUp() {
           </button>
         </form>
 
-        <span className="text-md font-normal mt-6">
+        <span className="text-md mt-6 font-normal">
           Already have an account?{' '}
-          <Link href="/sign-in" className="text-gray-600 hover:underline hover:text-gray-800">
+          <Link
+            href="/sign-in"
+            className="text-gray-600 hover:text-gray-800 hover:underline"
+          >
             Sign in
           </Link>
         </span>
-
       </main>
     </div>
   )

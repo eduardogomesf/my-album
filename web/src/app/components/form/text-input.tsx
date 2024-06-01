@@ -1,6 +1,6 @@
-import { InputHTMLAttributes, forwardRef } from "react"
-import { Label } from "./label"
-import clsx from "clsx"
+import { InputHTMLAttributes, forwardRef } from 'react'
+import { Label } from './label'
+import clsx from 'clsx'
 
 type InputCustomProps = {
   label?: string
@@ -16,17 +16,22 @@ const TextInput = forwardRef<HTMLInputElement, InputProps>(
       <div className="flex flex-col items-start gap-1">
         {label && <Label htmlFor={labelId}>{label}</Label>}
         <input
-          className="w-full rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+          className="w-full rounded-md bg-white p-3 focus:outline-none focus:ring-2 focus:ring-gray-950"
           id={labelId}
           ref={ref}
           {...props}
         />
-        <span className={clsx("mt-1 opacity-0 text-red-500 text-xs md:text-sm", error && 'opacity-100')}>
+        <span
+          className={clsx(
+            'mt-1 text-xs text-red-500 opacity-0 md:text-sm',
+            error && 'opacity-100',
+          )}
+        >
           {error ?? 'no-error'}
         </span>
       </div>
     )
-  }
+  },
 )
 
 TextInput.displayName = 'TextInput'
