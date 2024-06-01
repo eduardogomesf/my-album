@@ -1,4 +1,6 @@
 import { type Request, type Response } from 'express'
+import * as cookie from 'cookie'
+
 import {
   type UserLoginUseCase,
   type CreateNewUserUseCase,
@@ -103,13 +105,20 @@ export class UserController {
       }
 
       const responseBody = {
-        accessToken: loginResult?.data?.accessToken,
-        refreshToken: loginResult?.data?.refreshToken,
-        userId: loginResult?.data?.userId
+        accessToken: loginResult?.data?.accessToken ?? '',
+        refreshToken: loginResult?.data?.refreshToken ?? '',
+        userId: loginResult?.data?.userId ?? ''
       }
 
+      this.setCookies(
+        response,
+        responseBody.accessToken,
+        responseBody.refreshToken,
+        responseBody.userId
+      )
+
       this.logger.info('User logged in successfully', correlationId)
-      return response.status(200).json(responseBody)
+      return response.status(200).json()
     } catch (error) {
       this.logger.error('Error creating user', correlationId)
       this.logger.error(error, correlationId)
@@ -148,12 +157,21 @@ export class UserController {
         })
       }
 
+      const responseBody = {
+        accessToken: refreshResult?.data?.accessToken ?? '',
+        refreshToken: refreshResult?.data?.refreshToken ?? '',
+        userId: refreshResult?.data?.userId ?? ''
+      }
+
+      this.setCookies(
+        response,
+        responseBody.accessToken,
+        responseBody.refreshToken,
+        responseBody.userId
+      )
+
       this.logger.info('Token refreshed successfully', correlationId)
-      return response.status(200).json({
-        accessToken: refreshResult.data?.accessToken,
-        refreshToken: refreshResult.data?.refreshToken,
-        userId: refreshResult.data?.userId
-      })
+      return response.status(200).json()
     } catch (error) {
       this.logger.error('Error refreshing token')
       this.logger.error(error)
@@ -186,5 +204,28 @@ export class UserController {
       this.logger.error(error, correlationId)
       return response.status(500).send()
     }
+  }
+
+  private setCookies(response: Response, accessToken: string, refreshToken: string, userId: string): void {
+    response.setHeader('Set-Cookie', [
+      cookie.serialize('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 // 1 hour
+      }),
+      cookie.serialize('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 1 // 1 day
+      }),
+      cookie.serialize('userId', userId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 1 // 1 day
+      })
+    ])
   }
 }
