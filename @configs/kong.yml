@@ -15,7 +15,7 @@ services:
     routes:
       - name: user-login
         paths: ["/login"]
-        methods: ["POST"]
+        methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -25,7 +25,7 @@ services:
         tags: ["user-service"]
       - name: create-new-user
         paths: ["/users"]
-        methods: ["POST"]
+        methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -35,7 +35,7 @@ services:
         tags: ["user-service"]
       - name: refresh-token
         paths: ["/refresh-token"]
-        methods: ["POST"]
+        methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -45,7 +45,7 @@ services:
         tags: ["user-service"]
       - name: get-user-by-id
         paths: ["/users/([a-zA-Z0-9-]+)"]
-        methods: ["GET"]
+        methods: ["GET", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -68,7 +68,7 @@ services:
     routes:
       - name: create-album
         paths: ["/albums"]
-        methods: ["POST"]
+        methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -78,7 +78,7 @@ services:
         tags: ["file-manager-service"]
       - name: get-albums
         paths: ["/albums"]
-        methods: ["GET"]
+        methods: ["GET", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -88,7 +88,7 @@ services:
         tags: ["file-manager-service"]
       - name: get-files-by-album-id
         paths: ["/albums/([a-zA-Z0-9-]+)/files"]
-        methods: ["GET"]
+        methods: ["GET", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -98,7 +98,7 @@ services:
         tags: ["file-manager-service"]
       - name: add-file
         paths: ["/files"]
-        methods: ["POST"]
+        methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         strip_path: false
         request_buffering: true
@@ -106,7 +106,7 @@ services:
         tags: ["file-manager-service"]
       - name: move-files
         paths: ["/files/move"]
-        methods: ["PUT"]
+        methods: ["PUT", "OPTIONS"]
         https_redirect_status_code: 426
         strip_path: false
         request_buffering: true
@@ -114,7 +114,7 @@ services:
         tags: ["file-manager-service"]
       - name: delete-album
         paths: ["/albums/([a-zA-Z0-9-]+)"]
-        methods: ["DELETE"]
+        methods: ["DELETE", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -124,7 +124,7 @@ services:
         tags: ["file-manager-service"]
       - name: restore-album
         paths: ["/albums/([a-zA-Z0-9-]+)/restore"]
-        methods: ["PATCH"]
+        methods: ["PATCH", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -134,7 +134,7 @@ services:
         tags: ["file-manager-service"]
       - name: delete-file
         paths: ["/albums/([a-zA-Z0-9-]+)/files/([a-zA-Z0-9-]+)"]
-        methods: ["DELETE"]
+        methods: ["DELETE", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -144,7 +144,7 @@ services:
         tags: ["file-manager-service"]
       - name: get-storage
         paths: ["/storage"]
-        methods: ["GET"]
+        methods: ["GET", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false
@@ -159,3 +159,19 @@ plugins:
       header_name: x-correlation-id
       generator: uuid
       echo_downstream: true
+  - name: cors
+    config:
+      origins: 
+        - http://localhost:3003
+      methods:
+        - GET
+        - HEAD
+        - PUT
+        - PATCH
+        - POST
+        - DELETE
+        - OPTIONS
+      headers: [] 
+      exposed_headers: []
+      max_age: 3600
+      credentials: true
