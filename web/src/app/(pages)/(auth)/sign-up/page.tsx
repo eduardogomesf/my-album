@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { TextInput } from "@/app/components/form/text-input";
 import { signUp } from "@/app/api/sign-up";
 import { useRouter } from "next/navigation";
+import { isAxiosError } from "axios";
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, { message: 'First name is required' }),
@@ -51,7 +52,15 @@ export default function SignUp() {
       router.push('/sign-in')
     } catch (err) {
       console.log(err)
-      toast.error('Something went wrong :(! Try again.')
+      if (isAxiosError(err)) {
+        if (err.response?.status === 409) {
+          toast.error('Email is already in use. Try another one.')
+        } else {
+          toast.error('Something went wrong :(! Try again.')
+        }
+      } else {
+        toast.error('Something went wrong :(! Try again.')
+      }
     }
   }
 
