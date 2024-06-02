@@ -14,7 +14,7 @@
     "/login": {
       "post": {
         "tags": [
-          "User Service"
+          "Auth"
         ],
         "summary": "User login",
         "operationId": "userLogin",
@@ -50,7 +50,7 @@
     "/users": {
       "post": {
         "tags": [
-          "User Service"
+          "Users"
         ],
         "summary": "Create new user",
         "operationId": "createNewUser",
@@ -80,7 +80,7 @@
     "/users/profile": {
       "get": {
         "tags": [
-          "User Service"
+          "Users"
         ],
         "summary": "Get User Information",
         "operationId": "GetUserInfo",
@@ -112,7 +112,7 @@
     "/refresh-token": {
       "post": {
         "tags": [
-          "User Service"
+          "Auth"
         ],
         "summary": "Refresh authentication token",
         "operationId": "refreshToken",
@@ -145,7 +145,7 @@
     "/albums": {
       "post": {
         "tags": [
-          "File Manager Service"
+          "Albums"
         ],
         "summary": "Create an album",
         "operationId": "createAlbum",
@@ -180,7 +180,7 @@
       },
       "get": {
         "tags": [
-          "File Manager Service"
+          "Albums"
         ],
         "summary": "List of albums",
         "operationId": "getAlbums",
@@ -217,7 +217,7 @@
     "/albums/{albumId}/files": {
       "get": {
         "tags": [
-          "File Manager Service"
+          "Files"
         ],
         "summary": "Retrieve files for a specific album",
         "operationId": "getAlbumFiles",
@@ -253,7 +253,7 @@
     "/files": {
       "post": {
         "tags": [
-          "File Manager Service"
+          "Files"
         ],
         "summary": "Add a file to an album",
         "operationId": "addFile",
@@ -296,7 +296,7 @@
     "/files/move": {
       "put": {
         "tags": [
-          "File Manager Service"
+          "Files"
         ],
         "summary": "Move files between albums",
         "operationId": "moveFiles",
@@ -333,7 +333,7 @@
     "/albums/{albumId}": {
       "delete": {
         "tags": [
-          "File Manager Service"
+          "Albums"
         ],
         "summary": "Delete a specific album",
         "operationId": "deleteAlbum",
@@ -366,7 +366,7 @@
     "/albums/{albumId}/restore": {
       "patch": {
         "tags": [
-          "File Manager Service"
+          "Albums"
         ],
         "summary": "Restore a specific album",
         "operationId": "restoreAlbum",
@@ -399,7 +399,7 @@
     "/albums/{albumId}/files/{fileId}": {
       "delete": {
         "tags": [
-          "File Manager Service"
+          "Files"
         ],
         "summary": "Delete a file ",
         "operationId": "deleteFile",
@@ -439,7 +439,7 @@
     "/storage": {
       "get": {
         "tags": [
-          "File Manager Service"
+          "Files"
         ],
         "summary": "Get Storage Information",
         "operationId": "GetStorageInfo",
