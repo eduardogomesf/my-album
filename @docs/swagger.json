@@ -77,7 +77,7 @@
         }
       }
     },
-    "/users/{userId}": {
+    "/users/profile": {
       "get": {
         "tags": [
           "User Service"
@@ -89,18 +89,11 @@
         ],
         "parameters": [
           {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the user"
-          },
-          {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -170,10 +163,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -194,10 +187,10 @@
         "parameters": [
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           },
           {
             "name": "deletedAlbumsOnly",
@@ -238,10 +231,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -284,10 +277,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -321,10 +314,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -354,10 +347,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -387,10 +380,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -427,10 +420,10 @@
           },
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
@@ -456,10 +449,10 @@
         "parameters": [
           {
             "in": "header",
-            "name": "authorization",
+            "name": "Cookie",
             "required": true,
             "type": "string",
-            "description": "Bearer JWT token"
+            "description": "Cookies: accessToken, refreshToken, userId"
           }
         ],
         "responses": {
