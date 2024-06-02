@@ -1,5 +1,6 @@
-import { Logger } from '@/shared'
+import * as cookie from 'cookie'
 import { type NextFunction, type Request, type Response } from 'express'
+import { Logger } from '@/shared'
 import { generateJwtTokenValidator } from '@/main/factory/util'
 
 export interface AuthInfo {
@@ -13,15 +14,19 @@ const logger = new Logger('getAuthInfoFromToken')
 const tokenValidator = generateJwtTokenValidator()
 
 export async function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): Promise<any> {
-  if (!req.headers.authorization) {
-    logger.error('Authorization header not found')
-    return res.status(403).send('Authorization header not found')
+  if (!req.headers.cookie) {
+    logger.error('Cookies not found')
+    return res.status(403).send('Cookies not found')
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, token] = req.headers.authorization?.split(' ')
+  const { accessToken } = cookie.parse(req.headers.cookie)
 
-  const { isValid, data, invalidationReason } = await tokenValidator.validate(token)
+  if (!accessToken) {
+    logger.error('Invalid cookie format')
+    return res.status(403).send('Invalid cookie format')
+  }
+
+  const { isValid, data, invalidationReason } = await tokenValidator.validate(accessToken)
 
   if (!isValid) {
     logger.error('Auth token invalid or expired')
