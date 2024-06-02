@@ -1,6 +1,7 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { SignOut } from 'phosphor-react'
+import { AvatarSkeleton } from './skeleton/avatar-skeleton'
 
 interface AvatarProps {
   firstName: string
@@ -9,8 +10,7 @@ interface AvatarProps {
 export function Avatar({ firstName }: AvatarProps) {
   const router = useRouter()
 
-  const firstLetter = firstName ? firstName[0].toUpperCase() : 'U'
-
+  const firstLetter = firstName ? firstName[0].toUpperCase() : null
 
   async function handleSignOut() {
     router.replace('/sign-in')
@@ -29,10 +29,16 @@ export function Avatar({ firstName }: AvatarProps) {
     },
   ]
 
+  if (!firstLetter) {
+    return (
+      <AvatarSkeleton />
+    )
+  }
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="flex items-center justify-center size-8 bg-gray-700 text-white rounded-full">
+        <button className="flex items-center justify-center size-8 bg-gray-700 text-white rounded-full outline-none">
           {firstLetter}
         </button>
       </DropdownMenu.Trigger>
@@ -42,7 +48,7 @@ export function Avatar({ firstName }: AvatarProps) {
           sideOffset={1}
           className='flex flex-col gap-2 items-start m-auto bg-white rounded-md shadow-lg p-2 min-w-[150px] border border-gray-200 transition-all ease-in-out duration-1000'
         >
-          <DropdownMenu.Arrow className="fill-gray-700" />
+          <DropdownMenu.Arrow className="fill-gray-200" />
 
           {options.map(option => (
             <DropdownMenu.Item
