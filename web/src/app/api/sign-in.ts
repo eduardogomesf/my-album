@@ -6,6 +6,6 @@ interface SignInDTO {
 }
 
 export const signIn = async (data: SignInDTO) => {
-  const response = await api.post('/login', data)
+  const response = await api.post('/login', data, { withCredentials: true })
   return response.data
 }
