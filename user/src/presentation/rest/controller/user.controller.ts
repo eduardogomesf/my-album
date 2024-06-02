@@ -131,19 +131,28 @@ export class UserController {
     try {
       this.logger.info('Refresh token request received', correlationId)
 
-      const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-        ['refreshToken', 'userId'],
-        request.body
-      )
-
-      if (missingFieldsValidation.isMissing) {
-        this.logger.warn(`Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`, correlationId)
+      if (!request.headers.cookie) {
+        this.logger.warn('Cookies not found', correlationId)
         return response.status(400).json({
-          message: `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`
+          message: 'Cookies not found'
         })
       }
 
-      const { refreshToken, userId } = request.body
+      const cookies = cookie.parse(request.headers.cookie)
+
+      const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
+        ['refreshToken', 'userId'],
+        cookies
+      )
+
+      if (missingFieldsValidation.isMissing) {
+        this.logger.warn(`Missing cookies: ${missingFieldsValidation.missingFields.join(', ')}`, correlationId)
+        return response.status(400).json({
+          message: 'Cookies not found'
+        })
+      }
+
+      const { refreshToken, userId } = cookies
 
       const refreshResult = await this.refreshTokenUseCase.execute({
         refreshToken,
