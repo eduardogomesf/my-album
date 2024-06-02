@@ -12,10 +12,6 @@ export function Avatar({ firstName }: AvatarProps) {
 
   const firstLetter = firstName ? firstName[0].toUpperCase() : null
 
-  async function handleSignOut() {
-    router.replace('/sign-in')
-  }
-
   const options = [
     // {
     //   label: 'Edit profile',
@@ -25,7 +21,7 @@ export function Avatar({ firstName }: AvatarProps) {
     {
       label: 'Sign out',
       Icon: SignOut,
-      onClick: handleSignOut
+      onClick: () => router.push('/sign-out')
     },
   ]
 
