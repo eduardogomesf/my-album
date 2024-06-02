@@ -43,8 +43,8 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["user-service"]
-      - name: get-user-by-id
-        paths: ["/users/([a-zA-Z0-9-]+)"]
+      - name: get-user-profile
+        paths: ["/users/profile"]
         methods: ["GET", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
