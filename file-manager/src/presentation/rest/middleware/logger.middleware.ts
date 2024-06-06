@@ -16,7 +16,7 @@ export function logger(req: Request, res: Response, next: NextFunction): any {
     url: req.url,
     correlationId,
     hasBody: Object.keys(req.body).length > 0,
-    hasToken: req.headers.authorization !== undefined,
+    hasCookies: req.headers.cookie !== undefined,
     hasQuery: Object.keys(req.query).length > 0
   }
 
