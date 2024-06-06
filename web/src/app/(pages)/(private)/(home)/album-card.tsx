@@ -2,13 +2,10 @@ import { useState } from "react";
 import { ImageSquare, CheckCircle, Circle } from "phosphor-react";
 import clsx from "clsx";
 
+import { Album } from "@/app/api/get-albums";
+
 export interface AlbumCardProps {
-  album: {
-    name: string;
-    numberOfPhotos: number;
-    numberOfVideos: number;
-    date: string;
-  }
+  album: Album
   onSelect: (id: string) => void;
 }
 
@@ -17,7 +14,7 @@ export function AlbumCard({ album, onSelect }: AlbumCardProps) {
 
   function handleSelect() {
     setIsSelected(!isSelected)
-    onSelect(album.name)
+    onSelect(album.id)
   }
 
   return (
@@ -43,10 +40,10 @@ export function AlbumCard({ album, onSelect }: AlbumCardProps) {
           {album.name}
         </span>
         <span className="text-sm text-gray-500">
-          {`${album.numberOfPhotos} photos, ${album.numberOfVideos} videos`}
+          {`${album.numberOfImages} photos, ${album.numberOfVideos} videos`}
         </span>
         <span className="text-sm text-gray-500">
-          {album.date}
+          {album.updatedAt}
         </span>
       </div>
     </div >
