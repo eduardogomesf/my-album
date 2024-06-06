@@ -3,7 +3,7 @@ import { api } from "../lib/axios";
 export interface Album {
   id: string
   name: string
-  numberOfImages: number
+  numberOfPhotos: number
   numberOfVideos: number
   updatedAt: string
 }

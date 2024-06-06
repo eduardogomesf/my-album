@@ -1,33 +1,46 @@
-import { useState } from "react";
-import { ImageSquare, CheckCircle, Circle } from "phosphor-react";
-import clsx from "clsx";
+import { ImageSquare, DotsThreeOutline } from "phosphor-react";
+import Link from "next/link";
 
 import { Album } from "@/app/api/get-albums";
+import { formatDate } from "@/app/util/date";
+import { useRouter } from "next/navigation";
 
 export interface AlbumCardProps {
   album: Album
-  onSelect: (id: string) => void;
 }
 
-export function AlbumCard({ album, onSelect }: AlbumCardProps) {
-  const [isSelected, setIsSelected] = useState(false)
+export function AlbumCard({ album }: AlbumCardProps) {
+  const router = useRouter()
 
-  function handleSelect() {
-    setIsSelected(!isSelected)
-    onSelect(album.id)
+  function formatMediaCounts() {
+    if (album.numberOfPhotos && album.numberOfVideos) {
+      return `${album.numberOfPhotos} photos, ${album.numberOfVideos} videos`
+    } else if (album.numberOfPhotos) {
+      return `${album.numberOfPhotos} photos`
+    } else if (album.numberOfVideos) {
+      return `${album.numberOfVideos} videos`
+    } else {
+      return 'No media found'
+    }
+  }
+
+  const formattedUpdatedAt = album.updatedAt ? formatDate(album.updatedAt) : '';
+
+  function handleRedirect() {
+    return router.push(`/albums/${album.id}`)
   }
 
   return (
-    <div className="bg-gray-300 h-40 w-full max-w-[300px] rounded-md group cursor-pointer">
+    <button
+      className="bg-gray-300 h-40 w-full max-w-[300px] rounded-md group cursor-pointer"
+      onClick={handleRedirect}
+    >
       <div className="relative h-5/6 bg-gray-200 flex items-center justify-center rounded-t-lg">
         <button
-          className={clsx(
-            "absolute top-2 left-2 group-hover:block duration-500 transition ease-in-out",
-            !isSelected && 'hidden'
-          )}
-          onClick={handleSelect}
+          className="hidden absolute top-2 right-2 group-hover:block duration-500 transition ease-in-out"
+          onClick={() => {}}
         >
-          {isSelected ? (<CheckCircle className="h-6 w-6" />) : (<Circle className="h-6 w-6" />)}
+          <DotsThreeOutline className="h-6 w-6" />
         </button>
 
         <div className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center">
@@ -35,17 +48,17 @@ export function AlbumCard({ album, onSelect }: AlbumCardProps) {
         </div>
       </div>
 
-      <div className="bg-gray-50 p-3 flex flex-col gap-1 rounded-b-lg">
+      <div className="bg-gray-50 p-3 flex flex-col gap-1 rounded-b-lg items-start">
         <span className="text-lg font-bold">
           {album.name}
         </span>
         <span className="text-sm text-gray-500">
-          {`${album.numberOfImages} photos, ${album.numberOfVideos} videos`}
+          {formatMediaCounts()}
         </span>
         <span className="text-sm text-gray-500">
-          {album.updatedAt}
+          {formattedUpdatedAt}
         </span>
       </div>
-    </div >
+    </button >
   )
 }

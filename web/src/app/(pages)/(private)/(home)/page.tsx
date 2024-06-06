@@ -1,28 +1,16 @@
 "use client"
 
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { DownloadSimple, Plus, Trash } from "phosphor-react";
 
 import { AlbumCard } from "./album-card";
 import { getAlbums } from "@/app/api/get-albums";
 
 export default function Home() {
-  const [selectedAlbums, setSelectedAlbums] = useState<string[]>([])
-
   const { data: albums } = useQuery({
     queryFn: async () => await getAlbums(),
     queryKey: ['albums'],
     staleTime: 1000 * 60 * 60 * 24, // 24 hours 
   })
-
-  function handleSelectAlbum(albumId: string) {
-    if (selectedAlbums.includes(albumId)) {
-      setSelectedAlbums(selectedAlbums.filter((albumId) => albumId !== albumId))
-    } else {
-      setSelectedAlbums([...selectedAlbums, albumId])
-    }
-  }
 
   return (
     <main className="min-h-screen max-w-[1664px] w-full m-auto px-8 py-6">
@@ -31,14 +19,10 @@ export default function Home() {
           <h2 className="text-2xl	font-bold">Albums</h2>
 
           <div className="flex items-end gap-4">
-            <button>
-              <Plus className="h-6 w-6" />
-            </button>
-            <button>
-              <DownloadSimple className="h-6 w-6" />
-            </button>
-            <button>
-              <Trash className="h-6 w-6" />
+            <button
+              className="px-2 py-1 flex items-center gap-1 border bg-gray-800 rounded-md text-gray-50"
+            >
+              New album
             </button>
           </div>
         </div>
@@ -48,7 +32,6 @@ export default function Home() {
             <AlbumCard
               key={album.id}
               album={album}
-              onSelect={handleSelectAlbum}
             />
           ))}
         </div>
