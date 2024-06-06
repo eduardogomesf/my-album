@@ -1,7 +1,7 @@
 import { DeleteAlbumUseCase } from '@/application/use-case'
 import {
   type DeleteAlbumRepository,
-  type GetAlbumByIdRepository,
+  type GetAlbumByIdWithFilesCountRepository,
   type UpdateAlbumRepository
 } from '@/application/protocol'
 import { getAlbumByIdMock } from '../mock/album.mock'
@@ -12,14 +12,17 @@ jest.mock('uuid', () => ({
 
 describe('Delete Album Use Case', () => {
   let sut: DeleteAlbumUseCase
-  let getAlbumByIdRepository: GetAlbumByIdRepository
+  let getAlbumByIdWithFilesCountRepository: GetAlbumByIdWithFilesCountRepository
   let updateAlbumRepository: UpdateAlbumRepository
   let deleteAlbumRepository: DeleteAlbumRepository
 
   beforeEach(() => {
-    getAlbumByIdRepository = {
-      getById: jest.fn()
-        .mockResolvedValueOnce(getAlbumByIdMock())
+    getAlbumByIdWithFilesCountRepository = {
+      getByIdWithFilesCount: jest.fn()
+        .mockResolvedValueOnce({
+          ...getAlbumByIdMock(),
+          numberOfFiles: 1
+        })
     }
     updateAlbumRepository = {
       update: jest.fn().mockResolvedValue(null)
@@ -29,16 +32,16 @@ describe('Delete Album Use Case', () => {
     }
 
     sut = new DeleteAlbumUseCase(
-      getAlbumByIdRepository,
+      getAlbumByIdWithFilesCountRepository,
       updateAlbumRepository,
       deleteAlbumRepository
     )
   })
 
-  it('should update album status to DELETED if album status is ACTIVE', async () => {
+  it('should update album status to DELETED if album status is ACTIVE and has at least one file', async () => {
     const updateSpy = jest.spyOn(updateAlbumRepository, 'update')
     const deleteSpy = jest.spyOn(deleteAlbumRepository, 'delete')
-    const getAlbumByIdSpy = jest.spyOn(getAlbumByIdRepository, 'getById')
+    const getByIdWithFilesCountSpy = jest.spyOn(getAlbumByIdWithFilesCountRepository, 'getByIdWithFilesCount')
 
     const result = await sut.execute({
       albumId: 'album-id',
@@ -48,21 +51,22 @@ describe('Delete Album Use Case', () => {
     expect(result.ok).toBe(true)
     expect(updateSpy).toHaveBeenCalledWith({
       ...getAlbumByIdMock(),
-      status: 'DELETED'
+      status: 'DELETED',
+      numberOfFiles: 1
     })
     expect(deleteSpy).not.toHaveBeenCalled()
-    expect(getAlbumByIdSpy).toHaveBeenCalledWith('album-id', 'user-id')
+    expect(getByIdWithFilesCountSpy).toHaveBeenCalledWith('album-id', 'user-id')
   })
 
   it('should delete album if album status is DELETED', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce({
+    getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount = jest.fn().mockResolvedValueOnce({
       ...getAlbumByIdMock(),
       status: 'DELETED'
     })
 
     const updateSpy = jest.spyOn(updateAlbumRepository, 'update')
     const deleteSpy = jest.spyOn(deleteAlbumRepository, 'delete')
-    const getAlbumByIdSpy = jest.spyOn(getAlbumByIdRepository, 'getById')
+    const getByIdWithFilesCountSpy = jest.spyOn(getAlbumByIdWithFilesCountRepository, 'getByIdWithFilesCount')
 
     const result = await sut.execute({
       albumId: 'album-id',
@@ -72,11 +76,32 @@ describe('Delete Album Use Case', () => {
     expect(result.ok).toBe(true)
     expect(updateSpy).not.toHaveBeenCalled()
     expect(deleteSpy).toHaveBeenCalledWith('album-id', 'user-id')
-    expect(getAlbumByIdSpy).toHaveBeenCalledWith('album-id', 'user-id')
+    expect(getByIdWithFilesCountSpy).toHaveBeenCalledWith('album-id', 'user-id')
+  })
+
+  it('should delete album if album status is ACTIVE but album has no files', async () => {
+    getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount = jest.fn().mockResolvedValueOnce({
+      ...getAlbumByIdMock(),
+      numberOfFiles: 0
+    })
+
+    const updateSpy = jest.spyOn(updateAlbumRepository, 'update')
+    const deleteSpy = jest.spyOn(deleteAlbumRepository, 'delete')
+    const getByIdWithFilesCountSpy = jest.spyOn(getAlbumByIdWithFilesCountRepository, 'getByIdWithFilesCount')
+
+    const result = await sut.execute({
+      albumId: 'album-id',
+      userId: 'user-id'
+    })
+
+    expect(result.ok).toBe(true)
+    expect(updateSpy).not.toHaveBeenCalled()
+    expect(deleteSpy).toHaveBeenCalledWith('album-id', 'user-id')
+    expect(getByIdWithFilesCountSpy).toHaveBeenCalledWith('album-id', 'user-id')
   })
 
   it('should not delete if the album does not exist', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce(null)
+    getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount = jest.fn().mockResolvedValueOnce(null)
 
     const result = await sut.execute({
       albumId: 'album-id',
@@ -90,7 +115,7 @@ describe('Delete Album Use Case', () => {
   })
 
   it('should pass along any unknown error', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount = jest.fn().mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
       albumId: 'album-id',

@@ -32,3 +32,11 @@ export interface UpdateAlbumRepository {
 export interface DeleteAlbumRepository {
   delete: (id: string, userId: string) => Promise<void>
 }
+
+export type AlbumWithFileCount = Album & {
+  numberOfFiles: number
+}
+
+export interface GetAlbumByIdWithFilesCountRepository {
+  getByIdWithFilesCount: (id: string, userId: string) => Promise<AlbumWithFileCount | null>
+}

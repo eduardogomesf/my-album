@@ -6,20 +6,20 @@ import {
   type DeleteAlbumUseCaseParams
 } from '../../interface'
 import {
+  type GetAlbumByIdWithFilesCountRepository,
   type DeleteAlbumRepository,
-  type GetAlbumByIdRepository,
   type UpdateAlbumRepository
 } from '../../protocol'
 
 export class DeleteAlbumUseCase implements UseCase {
   constructor(
-    private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
+    private readonly getAlbumByIdWithFilesCountRepository: GetAlbumByIdWithFilesCountRepository,
     private readonly updateAlbumRepository: UpdateAlbumRepository,
     private readonly deleteAlbumRepository: DeleteAlbumRepository
   ) {}
 
   async execute (params: DeleteAlbumUseCaseParams): Promise<UseCaseResponse<void>> {
-    const album = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
+    const album = await this.getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount(params.albumId, params.userId)
 
     if (!album) {
       return {
@@ -28,7 +28,7 @@ export class DeleteAlbumUseCase implements UseCase {
       }
     }
 
-    if (album.status === AlbumStatus.ACTIVE) {
+    if (album.status === AlbumStatus.ACTIVE && album.numberOfFiles > 0) {
       album.status = AlbumStatus.DELETED
       await this.updateAlbumRepository.update(album)
     } else {
