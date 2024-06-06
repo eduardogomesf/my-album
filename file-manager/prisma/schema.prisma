@@ -21,7 +21,7 @@ model User {
 
 model Album {
   id        String      @id @default(uuid())
-  name      String      @unique
+  name      String
   userId    String      @map("user_id")
   status    AlbumStatus @default(ACTIVE)
   createdAt DateTime    @default(now()) @map("created_at")

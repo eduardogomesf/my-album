@@ -36,11 +36,12 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     }
   }
 
-  async getByName(name: string): Promise<Album | null> {
+  async getByName(name: string, userId: string): Promise<Album | null> {
     try {
-      const rawAlbum = await prisma.album.findUnique({
+      const rawAlbum = await prisma.album.findFirst({
         where: {
-          name
+          name,
+          userId
         }
       })
       return AlbumMapper.toDomain(rawAlbum)

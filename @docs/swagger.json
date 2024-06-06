@@ -585,7 +585,7 @@
         "numberOfVideos": {
           "type": "integer"
         },
-        "numberOfImages": {
+        "numberOfPhotos": {
           "type": "integer"
         }
       }
