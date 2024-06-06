@@ -73,7 +73,7 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
           f.album_id as "albumId",
           a.name,
           a.updated_at as "updatedAt",
-          count(case when f."type" = 'image' then 1 end) as "numberOfImages",
+          count(case when f."type" = 'image' then 1 end) as "numberOfPhotos",
           count(case when f."type" = 'video' then 1 end) as "numberOfVideos"
         from albums a
         left join files f on a.id = f.album_id
@@ -83,10 +83,10 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
         order by a.updated_at desc
       `
       return albumsWithCounts.map(album => ({
-        id: album.id,
+        id: album.albumId,
         name: album.name,
         updatedAt: album.updatedAt,
-        numberOfPhotos: Number(album.numberOfImages),
+        numberOfPhotos: Number(album.numberOfPhotos),
         numberOfVideos: Number(album.numberOfVideos)
       }))
     } catch (error) {
