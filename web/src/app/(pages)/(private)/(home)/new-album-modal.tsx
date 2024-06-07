@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as Dialog from '@radix-ui/react-dialog'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { X } from 'phosphor-react'
 import { useRef } from 'react'
@@ -23,6 +23,8 @@ const newAlbumSchema = z.object({
 type NewAlbumSchema = z.infer<typeof newAlbumSchema>
 
 export function NewAlbumModal({ children }: NewAlbumModalProps) {
+  const queryClient = useQueryClient()
+
   const {
     register,
     handleSubmit,
@@ -36,6 +38,11 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
 
   const { mutateAsync: newAlbum } = useMutation({
     mutationFn: createNewAlbum,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['albums'],
+      })
+    }
   })
 
   async function handleNewAlbum(data: NewAlbumSchema) {
