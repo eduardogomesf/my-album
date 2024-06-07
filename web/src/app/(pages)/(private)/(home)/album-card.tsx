@@ -1,5 +1,4 @@
-import { ImageSquare, DotsThreeOutline } from "phosphor-react";
-import Link from "next/link";
+import { ImageSquare, Trash } from "phosphor-react";
 
 import { Album } from "@/app/api/get-albums";
 import { formatDate } from "@/app/util/date";
@@ -31,24 +30,26 @@ export function AlbumCard({ album }: AlbumCardProps) {
   }
 
   return (
-    <button
+    <div
       className="bg-gray-300 h-40 w-full max-w-[300px] rounded-md group cursor-pointer"
-      onClick={handleRedirect}
     >
-      <div className="relative h-5/6 bg-gray-200 flex items-center justify-center rounded-t-lg">
-        <button
-          className="hidden absolute top-2 right-2 group-hover:block duration-500 transition ease-in-out"
-          onClick={() => {}}
-        >
-          <DotsThreeOutline className="h-6 w-6" />
-        </button>
-
+      <button
+        className="w-full h-5/6 bg-gray-200 flex items-center justify-center rounded-t-lg"
+        onClick={handleRedirect}
+      >
         <div className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center">
           <ImageSquare className="h-6 w-6" />
         </div>
-      </div>
+      </button>
 
-      <div className="bg-gray-50 p-3 flex flex-col gap-1 rounded-b-lg items-start">
+      <div className="relative bg-gray-50 p-3 flex flex-col gap-1 rounded-b-lg items-start">
+        <button
+          className="hidden absolute top-3 right-3 group-hover:block duration-500 transition ease-in-out"
+          onClick={() => {}}
+        >
+          <Trash className="h-6 w-6" />
+        </button>
+
         <span className="text-lg font-bold">
           {album.name}
         </span>
@@ -59,6 +60,6 @@ export function AlbumCard({ album }: AlbumCardProps) {
           {formattedUpdatedAt}
         </span>
       </div>
-    </button >
+    </div >
   )
 }
