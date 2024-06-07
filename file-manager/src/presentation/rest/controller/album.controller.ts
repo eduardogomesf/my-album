@@ -83,9 +83,7 @@ export class AlbumController {
 
       this.logger.info('Albums retrieved successfully', correlationId)
 
-      return response.status(HTTP_CODES.OK.code).json({
-        albums: getAlbumsResult.data
-      })
+      return response.status(HTTP_CODES.OK.code).json(getAlbumsResult.data)
     } catch (error) {
       this.logger.error('Error retrieving albums', correlationId)
       this.logger.error(error, correlationId)
