@@ -30,8 +30,8 @@ export default function Home() {
 
         <div className="h-full mt-4 grid grid-cols-1 justify-between gap-6 md:grid-cols-5">
           {isLoading ?
-            Array.from({ length: 5 }).map((value: any) => (
-              <AlbumCardSkeleton key={value} />
+            Array.from({ length: 5 }).map((_: unknown, index: number) => (
+              <AlbumCardSkeleton key={index} />
             )) :
             albums?.map((album) => (
               <AlbumCard
