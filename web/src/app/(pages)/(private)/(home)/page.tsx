@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlbumCard } from "./album-card";
 import { getAlbums } from "@/app/api/get-albums";
 import { AlbumCardSkeleton } from "./album-card-skeleton";
+import clsx from "clsx";
 
 export default function Home() {
   const { data: albums, isLoading } = useQuery({
@@ -28,17 +29,24 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="h-full mt-4 grid grid-cols-1 justify-between gap-6 md:grid-cols-5">
+        <div
+          className={clsx(
+            "h-full mt-4 grid grid-cols-1 justify-between gap-6 md:grid-cols-5",
+            albums && albums.length === 0 && !isLoading && "md:grid-cols-1 mt-[150px]"
+          )}
+        >
           {isLoading ?
             Array.from({ length: 5 }).map((_: unknown, index: number) => (
               <AlbumCardSkeleton key={index} />
             )) :
-            albums?.map((album) => (
-              <AlbumCard
-                key={album.id}
-                album={album}
-              />
-            ))}
+            (
+              albums && albums.length > 0 ?
+                albums.map((album: any) => (
+                  <AlbumCard key={album.id} album={album} />
+                )) :
+                <p className="text-gray-500 text-center">No albums found</p>
+            )
+          }
         </div>
       </section>
     </main>
