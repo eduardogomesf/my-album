@@ -106,12 +106,12 @@ export default function SignIn() {
         </form>
 
         <span className="text-md mt-6 font-normal">
-          New here? Create your account{' '}
+          New here? {` `}
           <Link
-            href="/sign-in"
+            href="/sign-up"
             className="text-gray-600 hover:text-gray-800 hover:underline"
           >
-            Sign in
+            Create your account
           </Link>
         </span>
       </main>
