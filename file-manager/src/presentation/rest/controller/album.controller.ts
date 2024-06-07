@@ -43,7 +43,7 @@ export class AlbumController {
           [
             {
               message: ERROR_MESSAGES.USER.NOT_FOUND,
-              httpCode: HTTP_CODES.BAD_REQUEST.code
+              httpCode: HTTP_CODES.NOT_FOUND.code
             }
           ],
           createAlbumResult.message
