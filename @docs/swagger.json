@@ -559,14 +559,9 @@
       }
     },
     "AlbumsResponse": {
-      "type": "object",
-      "properties": {
-        "albums": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AlbumWithCounts"
-          }
-        }
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AlbumWithCounts"
       }
     },
     "AlbumWithCounts": {
