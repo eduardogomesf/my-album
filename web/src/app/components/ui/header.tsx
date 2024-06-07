@@ -16,7 +16,7 @@ export function Header() {
 
   return (
     <div className="bg-white w-full py-4 px-8 border-b-2">
-      <header className="max-w-[1600px] m-auto flex flex-row justify-around md:justify-between items-center">
+      <header className="max-w-[1600px] m-auto flex flex-row justify-between items-center">
         <Link href={'/'} className="flex items-center gap-2 outline-none">
           <Image src='/logo.webp' alt='Logo' width={30} height={30} className="rounded-md" />
           <span className="text-lg text-gray-900 font-semibold">MyAlbum</span>
