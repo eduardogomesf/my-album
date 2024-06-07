@@ -11,7 +11,9 @@ import {
   type GetAlbumsByStatusRepository,
   type UpdateAlbumRepository,
   type DeleteAlbumRepository,
-  type GetAlbumsByStatusRepositoryResponse
+  type GetAlbumsByStatusRepositoryResponse,
+  type GetAlbumByIdWithFilesCountRepository,
+  type AlbumWithFileCount
 } from '@/application/protocol'
 import { type AlbumStatus } from '@/domain/enum'
 import { AlbumMapper } from '../mapper'
@@ -20,7 +22,7 @@ const logger = new Logger('PrismaAlbumRepository')
 
 export class PrismaAlbumRepository
 implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsByStatusRepository,
-  UpdateAlbumRepository, DeleteAlbumRepository {
+  UpdateAlbumRepository, DeleteAlbumRepository, GetAlbumByIdWithFilesCountRepository {
   async getById(id: string, userId: string): Promise<Album | null> {
     try {
       const rawAlbum = await prisma.album.findUnique({
@@ -89,6 +91,33 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
         numberOfPhotos: Number(album.numberOfPhotos),
         numberOfVideos: Number(album.numberOfVideos)
       }))
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async getByIdWithFilesCount(id: string, userId: string): Promise<AlbumWithFileCount> {
+    try {
+      const albumsWithCounts = await prisma.$queryRaw<any[]>`
+        select
+          a.id as "id",
+          a.name,
+          a.status,
+          a.created_at as "createdAt",
+          a.updated_at as "updatedAt",
+          a.user_id as "userId",
+          count(*) as "numberOfFiles"
+        from albums a
+        left join files f on a.id = f.album_id
+        where a.id = ${id}
+        AND a.user_id = ${userId}
+        group by a.id, a.name, a.status, a.created_at, a.updated_at, a.user_id
+      `
+
+      const rawResult = albumsWithCounts.length > 0 ? albumsWithCounts[0] : null
+
+      return rawResult
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)

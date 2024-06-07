@@ -1,17 +1,17 @@
 import { DeleteAlbumUseCase } from '@/application/use-case'
 import {
-  type GetAlbumByIdRepository,
   type UpdateAlbumRepository,
-  type DeleteAlbumRepository
+  type DeleteAlbumRepository,
+  type GetAlbumByIdWithFilesCountRepository
 } from '@/application/protocol'
 
 export const generateDeleteAlbumUseCase = (
-  getAlbumByIdRepository: GetAlbumByIdRepository,
+  getAlbumByIdWithFilesCountRepository: GetAlbumByIdWithFilesCountRepository,
   updateAlbumRepository: UpdateAlbumRepository,
   deleteAlbumRepository: DeleteAlbumRepository
 ) => {
   return new DeleteAlbumUseCase(
-    getAlbumByIdRepository,
+    getAlbumByIdWithFilesCountRepository,
     updateAlbumRepository,
     deleteAlbumRepository
   )
