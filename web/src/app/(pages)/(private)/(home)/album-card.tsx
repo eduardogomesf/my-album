@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { ImageSquare, Trash } from 'phosphor-react'
+import { Image, Trash } from 'phosphor-react'
 
 import { Album } from '@/app/api/get-albums'
 import { formatDate } from '@/app/util/date'
@@ -30,22 +30,20 @@ export function AlbumCard({ album }: AlbumCardProps) {
   }
 
   return (
-    <div className="group h-40 w-full max-w-[300px] cursor-pointer rounded-md bg-gray-300">
+    <div className="h-40 w-full max-w-[300px] cursor-pointer rounded-md bg-gray-300">
       <button
-        className="flex h-5/6 w-full items-center justify-center rounded-t-lg bg-gray-200"
+        className="flex h-5/6 w-full items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out hover:bg-gray-300"
         onClick={handleRedirect}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50">
-          <ImageSquare className="h-6 w-6" />
-        </div>
+        <Image className="h-10 w-10 text-gray-800" />
       </button>
 
-      <div className="relative flex flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">
+      <div className="relative flex flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3 group">
         <button
-          className="absolute right-3 top-3 hidden transition duration-500 ease-in-out group-hover:block"
+          className="absolute right-3 top-3"
           onClick={() => {}}
         >
-          <Trash className="h-6 w-6" />
+          <Trash className="hidden h-6 w-6 group-hover:block transition duration-300 animate-fade-in-down text-gray-700 hover:text-gray-800" />
         </button>
 
         <span className="text-lg font-bold">{album.name}</span>
