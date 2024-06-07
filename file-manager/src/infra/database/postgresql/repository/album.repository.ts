@@ -72,7 +72,7 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     try {
       const albumsWithCounts = await prisma.$queryRaw<any[]>`
         select
-          f.album_id as "albumId",
+          a.id as "albumId",
           a.name,
           a.updated_at as "updatedAt",
           count(case when f."type" = 'image' then 1 end) as "numberOfPhotos",
@@ -81,9 +81,10 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
         left join files f on a.id = f.album_id
         where a.status = ${status}::"AlbumStatus"
         AND a.user_id = ${userId}
-        group by f.album_id, a.name, a.updated_at
+        group by a.id, a.name, a.updated_at
         order by a.updated_at desc
       `
+
       return albumsWithCounts.map(album => ({
         id: album.albumId,
         name: album.name,
