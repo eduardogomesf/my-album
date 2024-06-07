@@ -13,7 +13,6 @@ import { signUp } from '@/app/api/sign-up'
 import { TextInput } from '@/app/components/form/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 
-
 const signUpSchema = z.object({
   firstName: z.string().min(2, { message: 'First name is required' }),
   lastName: z.string().min(2, { message: 'Last name is required' }),

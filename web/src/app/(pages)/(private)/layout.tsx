@@ -1,5 +1,6 @@
-import { ReactNode } from "react"
-import { Header } from "@/app/components/ui/header"
+import { ReactNode } from 'react'
+
+import { Header } from '@/app/components/ui/header'
 
 interface PrivateLayoutProps {
   children: ReactNode

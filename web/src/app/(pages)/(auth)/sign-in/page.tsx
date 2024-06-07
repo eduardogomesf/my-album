@@ -13,7 +13,6 @@ import { signIn } from '@/app/api/sign-in'
 import { TextInput } from '@/app/components/form/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 
-
 const signInSchema = z.object({
   email: z.string().email({ message: 'Invalid email' }),
   password: z.string().min(2, { message: 'Password is required' }),

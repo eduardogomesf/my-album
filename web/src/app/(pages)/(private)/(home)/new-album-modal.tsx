@@ -1,16 +1,16 @@
-import * as Dialog from '@radix-ui/react-dialog'
-import { X } from 'phosphor-react'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as Dialog from '@radix-ui/react-dialog'
+import { useMutation } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
+import { X } from 'phosphor-react'
+import { useRef } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { TextInput } from '@/app/components/form/text-input'
-import { useMutation } from '@tanstack/react-query'
 import { createNewAlbum } from '@/app/api/create-new-album'
-import { toast } from 'sonner'
-import { isAxiosError } from 'axios'
+import { TextInput } from '@/app/components/form/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
-import { useRef } from 'react'
 
 export interface NewAlbumModalProps {
   children: React.ReactNode
@@ -27,21 +27,21 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm<NewAlbumSchema>({
-    resolver: zodResolver(newAlbumSchema)
+    resolver: zodResolver(newAlbumSchema),
   })
 
   const btnRef = useRef<HTMLButtonElement>(null)
 
   const { mutateAsync: newAlbum } = useMutation({
-    mutationFn: createNewAlbum
+    mutationFn: createNewAlbum,
   })
 
   async function handleNewAlbum(data: NewAlbumSchema) {
     try {
       await newAlbum({
-        name: data.name.trim()
+        name: data.name.trim(),
       })
 
       btnRef.current?.click()
@@ -59,7 +59,7 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
       }
     } finally {
       reset({
-        name: ''
+        name: '',
       })
     }
   }
@@ -75,10 +75,7 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
             New album
           </Dialog.Title>
 
-          <form
-            className="mt-4"
-            onSubmit={handleSubmit(handleNewAlbum)}
-          >
+          <form className="mt-4" onSubmit={handleSubmit(handleNewAlbum)}>
             <TextInput
               id="name"
               placeholder="Name of the album"
@@ -89,8 +86,8 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
             <div className="mt-5 flex justify-end">
               {/* <Dialog.Close asChild> */}
               <button
-                className="ease-in-out flex cursor-pointer items-center gap-1 rounded-md border bg-gray-700 px-2 py-1 text-gray-50 transition duration-150 hover:bg-gray-800"
-                type='submit'
+                className="flex cursor-pointer items-center gap-1 rounded-md border bg-gray-700 px-2 py-1 text-gray-50 transition duration-150 ease-in-out hover:bg-gray-800"
+                type="submit"
               >
                 Create
               </button>
@@ -100,7 +97,7 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
 
           <Dialog.Close asChild>
             <button
-              className="ease-in-out group absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full transition duration-150 hover:bg-gray-200"
+              className="group absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full transition duration-150 ease-in-out hover:bg-gray-200"
               aria-label="Close"
               ref={btnRef}
             >

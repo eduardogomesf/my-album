@@ -1,11 +1,12 @@
-"use client"
+'use client'
 
-import Link from "next/link";
+import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
-import { useQuery } from "@tanstack/react-query";
+import Link from 'next/link'
 
-import { getUserProfile } from "@/app/api/get-user-profile";
-import { Avatar } from "./avatar";
+import { getUserProfile } from '@/app/api/get-user-profile'
+
+import { Avatar } from './avatar'
 
 export function Header() {
   const { data: user } = useQuery({
@@ -15,11 +16,17 @@ export function Header() {
   })
 
   return (
-    <div className="bg-white w-full py-4 px-8 border-b-2">
-      <header className="max-w-[1600px] m-auto flex flex-row justify-between items-center">
+    <div className="w-full border-b-2 bg-white px-8 py-4">
+      <header className="m-auto flex max-w-[1600px] flex-row items-center justify-between">
         <Link href={'/'} className="flex items-center gap-2 outline-none">
-          <Image src='/logo.webp' alt='Logo' width={30} height={30} className="rounded-md" />
-          <span className="text-lg text-gray-900 font-semibold">MyAlbum</span>
+          <Image
+            src="/logo.webp"
+            alt="Logo"
+            width={30}
+            height={30}
+            className="rounded-md"
+          />
+          <span className="text-lg font-semibold text-gray-900">MyAlbum</span>
         </Link>
 
         <Avatar firstName={user?.firstName ?? ''} />

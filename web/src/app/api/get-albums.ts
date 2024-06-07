@@ -1,4 +1,4 @@
-import { api } from "../lib/axios";
+import { api } from '../lib/axios'
 
 export interface Album {
   id: string
@@ -11,8 +11,8 @@ export interface Album {
 export async function getAlbums(onlyDeleted = false): Promise<Album[]> {
   const response = await api.get('/albums', {
     params: {
-      deletedAlbumsOnly: onlyDeleted
-    }
+      deletedAlbumsOnly: onlyDeleted,
+    },
   })
 
   return response.data
