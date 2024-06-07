@@ -15,5 +15,5 @@ export async function getAlbums(onlyDeleted = false): Promise<Album[]> {
     }
   })
 
-  return response.data?.albums ? response.data.albums : []
+  return response.data
 }
