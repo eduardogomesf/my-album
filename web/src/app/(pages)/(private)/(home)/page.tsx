@@ -4,12 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 
 import { AlbumCard } from "./album-card";
 import { getAlbums } from "@/app/api/get-albums";
+import { AlbumCardSkeleton } from "./album-card-skeleton";
 
 export default function Home() {
-  const { data: albums } = useQuery({
+  const { data: albums, isLoading } = useQuery({
     queryFn: async () => await getAlbums(),
     queryKey: ['albums'],
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours 
+    staleTime: 1000 * 60 * 60 * 1, // 1 hours 
   })
 
   return (
@@ -28,12 +29,16 @@ export default function Home() {
         </div>
 
         <div className="h-full mt-4 grid grid-cols-1 justify-between gap-6 md:grid-cols-5">
-          {albums?.map((album) => (
-            <AlbumCard
-              key={album.id}
-              album={album}
-            />
-          ))}
+          {isLoading ?
+            Array.from({ length: 5 }).map((value: any) => (
+              <AlbumCardSkeleton key={value} />
+            )) :
+            albums?.map((album) => (
+              <AlbumCard
+                key={album.id}
+                album={album}
+              />
+            ))}
         </div>
       </section>
     </main>
