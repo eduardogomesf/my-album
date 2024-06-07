@@ -24,7 +24,7 @@ export default function Home() {
 
           <div className="flex items-end gap-4">
             <NewAlbumModal>
-              <button className="flex items-center gap-1 rounded-md border bg-gray-800 px-2 py-1 text-gray-50">
+              <button className="flex items-center gap-1 rounded-md border bg-gray-700 px-2 py-1 text-gray-50 hover:bg-gray-800 transition duration-150 ease-in-out">
                 New album
               </button>
             </NewAlbumModal>
@@ -35,9 +35,9 @@ export default function Home() {
           className={clsx(
             'mt-4 grid h-full grid-cols-1 justify-between gap-6 md:grid-cols-5',
             albums &&
-              albums.length === 0 &&
-              !isLoading &&
-              'mt-[150px] md:grid-cols-1',
+            albums.length === 0 &&
+            !isLoading &&
+            'mt-[150px] md:grid-cols-1',
           )}
         >
           {isLoading ? (
