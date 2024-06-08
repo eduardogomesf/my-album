@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { signIn } from '@/app/api/sign-in'
-import { TextInput } from '@/app/components/ui/text-input'
+import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 
 const signInSchema = z.object({
