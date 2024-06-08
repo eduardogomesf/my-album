@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation'
 import { SignOut } from 'phosphor-react'
 
 import { AvatarSkeleton } from './skeleton/avatar-skeleton'
+import { toast } from 'sonner'
 
 interface AvatarProps {
   firstName: string
@@ -13,11 +14,16 @@ export function Avatar({ firstName }: AvatarProps) {
 
   const firstLetter = firstName ? firstName[0].toUpperCase() : null
 
+  function handleSignOut() {
+    router.push('/sign-out')
+    toast.success('You have been signed out.')
+  }
+
   const options = [
     {
       label: 'Sign out',
       Icon: SignOut,
-      onClick: () => router.push('/sign-out'),
+      onClick: handleSignOut,
     },
   ]
 
