@@ -28,7 +28,7 @@ export function Avatar({ firstName }: AvatarProps) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="flex size-8 items-center justify-center rounded-full bg-gray-700 text-white outline-none transition duration-150 ease-in-out hover:bg-gray-800">
+        <button className="flex size-8 items-center justify-center rounded-full bg-gray-800 text-white outline-none transition duration-150 ease-in-out hover:bg-gray-950">
           {firstLetter}
         </button>
       </DropdownMenu.Trigger>
