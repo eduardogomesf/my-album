@@ -7,10 +7,11 @@ interface ConfirmActionModalProps {
   children: React.ReactNode
   title: string
   description: string
+  additionalNote?: string
   onConfirm: () => Promise<void>
 }
 
-export function ConfirmActionModal({ children, title, description, onConfirm }: ConfirmActionModalProps) {
+export function ConfirmActionModal({ children, title, description, additionalNote, onConfirm }: ConfirmActionModalProps) {
   const btnRef = useRef<HTMLButtonElement>(null)
 
   function handleCancel() {
@@ -35,6 +36,10 @@ export function ConfirmActionModal({ children, title, description, onConfirm }: 
           <Dialog.Title className="text-lg font-semibold text-gray-900">
             {title}
           </Dialog.Title>
+
+          <span className='text-sm text-gray-500 mt-2'>
+            {additionalNote}
+          </span>
 
           <Dialog.Description className="text-md text-gray-700 mt-2">
             {description}
