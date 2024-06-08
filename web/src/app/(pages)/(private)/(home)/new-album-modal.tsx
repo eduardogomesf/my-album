@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { createNewAlbum } from '@/app/api/create-new-album'
-import { TextInput } from '@/app/components/form/text-input'
+import { TextInput } from '@/app/components/ui/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 
 export interface NewAlbumModalProps {
