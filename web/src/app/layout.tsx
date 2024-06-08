@@ -7,7 +7,7 @@ import { inter } from './fonts'
 import QueryProvider from './providers/ReactQueryProvider'
 
 export const metadata: Metadata = {
-  title: 'My Album',
+  title: 'MyAlbum',
 }
 
 export default function RootLayout({
