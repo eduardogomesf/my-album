@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { Image, Trash } from 'phosphor-react'
+import { ArrowClockwise, Image, Trash } from 'phosphor-react'
 
 import { Album } from '@/app/api/get-albums'
 import { formatDate } from '@/app/util/date'
@@ -9,6 +9,7 @@ import { isAxiosError } from 'axios'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteAlbum } from '@/app/api/delete-album'
+import { restoreAlbum } from '@/app/api/restore-album'
 
 
 export interface AlbumCardProps {
@@ -25,6 +26,21 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['albums'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['deleted-albums'],
+      })
+    }
+  })
+
+  const { mutateAsync: restoreCurrentAlbum } = useMutation({
+    mutationFn: restoreAlbum,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['albums'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['deleted-albums'],
       })
     }
   })
@@ -67,6 +83,24 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
     }
   }
 
+  async function handleRestore() {
+    try {
+      await restoreCurrentAlbum({ albumId: album.id })
+
+      toast.success('Album restored successfully!')
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          toast.error('Album not found. Please refresh the page.')
+        } else {
+          toast.error(SOMETHING_WENT_WRONG)
+        }
+      } else {
+        toast.error(SOMETHING_WENT_WRONG)
+      }
+    }
+  }
+
   return (
     <div className="h-40 w-full max-w-[300px] cursor-pointer rounded-md bg-gray-300">
       <button
@@ -77,17 +111,31 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
       </button>
 
       <div className="relative flex flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3 group">
-        <ConfirmActionModal
-          title={isDeletedAlbum ? 'Restore album' : 'Move album to Trash'}
-          description={isDeletedAlbum ? `Are you sure you want to permanently delete "${album.name}? This action can not be undone."` : `Are you sure you want to move "${album.name}" to the trash?`}
-          onConfirm={handleDelete}
-        >
-          <button
-            className="absolute right-3 top-3"
+        <div className='absolute right-3 top-3 flex items-center gap-3'>
+          {isDeletedAlbum && (
+            <ConfirmActionModal
+              title={'Restore album'}
+              description={`Are you sure you want to restore "${album.name}"?`}
+              onConfirm={handleRestore}
+            >
+              <button>
+                <ArrowClockwise className="hidden h-6 w-6 group-hover:block transition duration-300 animate-fade-in-down text-gray-700 hover:text-gray-800" />
+              </button>
+            </ConfirmActionModal>
+          )}
+
+          <ConfirmActionModal
+            title={isDeletedAlbum ? 'Delete album' : 'Move album to Trash'}
+            description={isDeletedAlbum ? `Are you sure you want to permanently delete "${album.name}"? This action can not be undone."` : `Are you sure you want to move "${album.name}" to the trash?`}
+            onConfirm={handleDelete}
           >
-            <Trash className="hidden h-6 w-6 group-hover:block transition duration-300 animate-fade-in-down text-gray-700 hover:text-gray-800" />
-          </button>
-        </ConfirmActionModal>
+            <button>
+              <Trash className="hidden h-6 w-6 group-hover:block transition duration-300 animate-fade-in-down text-gray-700 hover:text-gray-800" />
+            </button>
+          </ConfirmActionModal>
+
+        </div>
+
 
         <span className="text-lg font-bold">{album.name}</span>
         <span className="text-sm text-gray-500">{formatMediaCounts()}</span>
