@@ -8,6 +8,7 @@ import { getAlbums } from '@/app/api/get-albums'
 import { AlbumCard } from './album-card'
 import { AlbumCardSkeleton } from './album-card-skeleton'
 import { NewAlbumModal } from './new-album-modal'
+import { Button } from '@/app/components/button'
 
 export default function Home() {
   const { data: albums, isLoading: isAlbumsLoading } = useQuery({
@@ -30,9 +31,9 @@ export default function Home() {
 
           <div className="flex items-end gap-4">
             <NewAlbumModal>
-              <button className="flex items-center gap-1 rounded-md border bg-gray-700 px-2 py-1 text-gray-50 hover:bg-gray-800 transition duration-150 ease-in-out">
+              <Button>
                 New album
-              </button>
+              </Button>
             </NewAlbumModal>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { z } from 'zod'
 import { signUp } from '@/app/api/sign-up'
 import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
+import { Button } from '@/app/components/button'
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, { message: 'First name is required' }),
@@ -135,13 +136,13 @@ export default function SignUp() {
             error={errors.password?.message}
           />
 
-          <button
-            className="rounded-md bg-gray-950 p-3 text-white hover:bg-gray-800 md:mt-4"
+          <Button
+            className='py-2'
             type="submit"
             disabled={isSubmitting}
           >
             Sign up
-          </button>
+          </Button>
         </form>
 
         <span className="text-md mt-6 font-normal">

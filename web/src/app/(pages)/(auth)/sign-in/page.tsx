@@ -12,6 +12,7 @@ import { z } from 'zod'
 import { signIn } from '@/app/api/sign-in'
 import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
+import { Button } from '@/app/components/button'
 
 const signInSchema = z.object({
   email: z.string().email({ message: 'Invalid email' }),
@@ -95,13 +96,13 @@ export default function SignIn() {
             error={errors.password?.message}
           />
 
-          <button
-            className="rounded-md bg-gray-950 p-3 text-white hover:bg-gray-800 md:mt-4"
+          <Button
+            className='py-2'
             type="submit"
             disabled={isSubmitting}
           >
             Sign in
-          </button>
+          </Button>
         </form>
 
         <span className="text-md mt-6 font-normal">

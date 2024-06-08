@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { createNewAlbum } from '@/app/api/create-new-album'
 import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
+import { Button } from '@/app/components/button'
 
 export interface NewAlbumModalProps {
   children: React.ReactNode
@@ -91,14 +92,9 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
             />
 
             <div className="mt-5 flex justify-end">
-              {/* <Dialog.Close asChild> */}
-              <button
-                className="flex cursor-pointer items-center gap-1 rounded-md border bg-gray-700 px-2 py-1 text-gray-50 transition duration-150 ease-in-out hover:bg-gray-800"
-                type="submit"
-              >
+              <Button type="submit">
                 Create
-              </button>
-              {/* </Dialog.Close> */}
+              </Button>
             </div>
           </form>
 
