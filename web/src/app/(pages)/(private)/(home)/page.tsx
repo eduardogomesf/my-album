@@ -22,7 +22,7 @@ export default function Home() {
   })
 
   return (
-    <main className="m-auto min-h-screen w-full max-w-[1664px] px-8 py-6">
+    <main className="m-auto w-full max-w-[1664px] px-8 py-6">
       <section>
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Albums</h2>
