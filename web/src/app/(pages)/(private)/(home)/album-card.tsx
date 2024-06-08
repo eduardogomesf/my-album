@@ -21,6 +21,8 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
   const queryClient = useQueryClient()
   const router = useRouter()
 
+  const hasFiles = album.numberOfPhotos || album.numberOfVideos
+
   const { mutateAsync: deleteCurrentAlbum } = useMutation({
     mutationFn: deleteAlbum,
     onSuccess: () => {
@@ -102,9 +104,9 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
   }
 
   return (
-    <div className="h-40 w-full max-w-[300px] cursor-pointer rounded-md bg-gray-300">
+    <div className="flex flex-col h-60 w-full max-w-[300px] cursor-pointer rounded-md bg-gray-300">
       <button
-        className="flex h-5/6 w-full items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out hover:bg-gray-300"
+        className="flex flex-1 w-full items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out hover:bg-gray-300"
         onClick={handleRedirect}
       >
         <Image className="h-10 w-10 text-gray-800" />
@@ -125,8 +127,9 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
           )}
 
           <ConfirmActionModal
-            title={isDeletedAlbum ? 'Delete album' : 'Move album to Trash'}
-            description={isDeletedAlbum ? `Are you sure you want to permanently delete "${album.name}"? This action can not be undone."` : `Are you sure you want to move "${album.name}" to the trash?`}
+            title={isDeletedAlbum || !hasFiles ? 'Delete album' : 'Move album to Trash'}
+            description={isDeletedAlbum || !hasFiles ? `Are you sure you want to permanently delete "${album.name}"? This action can not be undone."` : `Are you sure you want to move "${album.name}" to the trash?`}
+            additionalNote={!isDeletedAlbum && !hasFiles ? 'This album will be permanently deleted since it does not have any media files' : ''}
             onConfirm={handleDelete}
           >
             <button>
