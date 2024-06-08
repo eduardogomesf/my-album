@@ -39,7 +39,7 @@ export default function Home() {
 
         <div
           className={clsx(
-            'mt-4 grid grid-cols-1 gap-6 md:grid-cols-5',
+            'mt-4 h-auto grid grid-cols-1 gap-6 md:grid-cols-5 auto-rows-auto',
             albums &&
             albums.length === 0 &&
             !isAlbumsLoading &&
@@ -60,7 +60,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="h-full mt-40">
+      <section className="h-full mt-20">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Deleted Albums</h2>
         </div>
