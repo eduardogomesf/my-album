@@ -108,7 +108,7 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
           a.created_at as "createdAt",
           a.updated_at as "updatedAt",
           a.user_id as "userId",
-          count(*) as "numberOfFiles"
+          count(f.id) as "numberOfFiles"
         from albums a
         left join files f on a.id = f.album_id
         where a.id = ${id}
