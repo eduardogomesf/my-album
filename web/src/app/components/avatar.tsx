@@ -22,6 +22,7 @@ export function Avatar({ firstName, email }: AvatarProps) {
   const { data: currentUsage } = useQuery({
     queryKey: ['current-usage'],
     queryFn: getCurrentUsage,
+    staleTime: 1000 * 60 * 60 * 1, // 1 hour
   })
 
   function handleSignOut() {
