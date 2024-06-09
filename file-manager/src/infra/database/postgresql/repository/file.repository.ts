@@ -69,11 +69,14 @@ implements
 
   async getUsage(userId: string): Promise<{ usage: number }> {
     try {
-      const usage = await prisma.$executeRaw`
+      const usageRaw = await prisma.$queryRaw<Array<{ usage: number }>>`
         SELECT SUM(size) as usage FROM "files" WHERE "album_id" IN (SELECT id FROM "albums" WHERE "user_id" = ${userId})
       `
+
+      const usage = usageRaw[0]?.usage ? Number(usageRaw[0]?.usage) : 0
+
       return {
-        usage: usage || 0
+        usage
       }
     } catch (error) {
       logger.error(error.message)
