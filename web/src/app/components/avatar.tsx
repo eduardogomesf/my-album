@@ -75,7 +75,7 @@ export function Avatar({ firstName, email }: AvatarProps) {
               </span>
             </DropdownMenu.Label>
             <div className="flex items-center flex-col gap-1 ">
-              <Progress progress={80} />
+              <Progress progress={currentUsage?.maxStorage ? (currentUsage?.currentUsage / currentUsage?.maxStorage) * 100 : 0} />
               <span className="text-sm text-gray-600 font-normal">
                 {bytesToMB(currentUsage?.currentUsage ?? 0)} MB of {bytesToMB(currentUsage?.maxStorage ?? 0)} MB used
               </span>
