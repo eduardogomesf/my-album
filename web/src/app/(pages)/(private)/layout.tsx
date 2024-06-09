@@ -9,7 +9,7 @@ interface PrivateLayoutProps {
 
 export default function PrivateLayout(props: PrivateLayoutProps) {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen">
       <Header />
       {props.children}
       <Footer />
