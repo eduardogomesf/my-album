@@ -4,6 +4,10 @@ import { SignOut } from 'phosphor-react'
 
 import { AvatarSkeleton } from './skeleton/avatar-skeleton'
 import { toast } from 'sonner'
+import { Progress } from './progress'
+import { getCurrentUsage } from '../api/get-current-usage'
+import { useQuery } from '@tanstack/react-query'
+import { bytesToMB } from '../util/converter'
 
 interface AvatarProps {
   firstName: string
@@ -14,6 +18,11 @@ export function Avatar({ firstName, email }: AvatarProps) {
   const router = useRouter()
 
   const firstLetter = firstName ? firstName[0].toUpperCase() : null
+
+  const { data: currentUsage } = useQuery({
+    queryKey: ['current-usage'],
+    queryFn: getCurrentUsage,
+  })
 
   function handleSignOut() {
     router.push('/sign-out')
@@ -47,17 +56,30 @@ export function Avatar({ firstName, email }: AvatarProps) {
         >
           <DropdownMenu.Arrow className="fill-gray-200" />
 
-          <DropdownMenu.Label className='w-full flex items-center justify-center'>
+          <DropdownMenu.Label className='w-full flex flex-col items-center justify-center'>
             <span className="text-gray-700 font-medium text-md">
               Hi, {' '}
               <span className="text-gray-800 font-semibold">{firstName}</span>!
             </span>
 
+            <span className='text-sm text-gray-500'>({email})</span>
           </DropdownMenu.Label>
 
-          <DropdownMenu.Label className='text-sm text-gray-500'>
-            <span>({email})</span>
-          </DropdownMenu.Label>
+          <DropdownMenu.Separator className='h-[1px] bg-gray-300 w-full' />
+
+          <div className='flex flex-col items-center mx-auto gap-1'>
+            <DropdownMenu.Label className='w-full flex items-center justify-center'>
+              <span className="text-gray-500 font-medium text-sm">
+                Usage
+              </span>
+            </DropdownMenu.Label>
+            <div className="flex items-center flex-col gap-1 ">
+              <Progress progress={80} />
+              <span className="text-sm text-gray-600 font-normal">
+                {bytesToMB(currentUsage?.currentUsage ?? 0)} MB of {bytesToMB(currentUsage?.maxStorage ?? 0)} MB used
+              </span>
+            </div>
+          </div>
 
           <DropdownMenu.Separator className='h-[1px] bg-gray-300 w-full' />
 

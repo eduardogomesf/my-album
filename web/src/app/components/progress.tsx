@@ -19,9 +19,3 @@ export function Progress({ progress = 50 }: ProgressProps) {
     </RadixProgress.Root>
   )
 }
-
-
-// const {} = useQuery({
-//   queryKey: ['current-usage'],
-//   queryFn: () => {}
-// })
