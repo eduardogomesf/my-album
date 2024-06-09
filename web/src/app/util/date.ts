@@ -6,3 +6,7 @@ export const formatDate = (date: string) => {
     day: 'numeric',
   })
 }
+
+export const isSameDate = (date1: string, date2: string) => {
+  return formatDate(date1) === formatDate(date2)
+}

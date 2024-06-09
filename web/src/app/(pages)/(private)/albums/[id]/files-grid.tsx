@@ -2,6 +2,8 @@ import clsx from "clsx"
 
 import { File } from "@/app/api/get-album-files"
 import { FileCardSkeleton } from "./file-card-skeleton"
+import { FileCard } from "./file-card"
+import { isSameDate } from "@/app/util/date"
 
 interface FilesGrid {
   files: File[]
@@ -25,7 +27,7 @@ export function FilesGrid({ isLoading, files }: FilesGrid) {
   return (
     <div
       className={clsx(
-        'mt-4 h-auto grid grid-cols-1 gap-6 md:grid-cols-5 auto-rows-auto',
+        'mt-4 h-auto grid grid-cols-1 gap-2 md:grid-cols-5 auto-rows-auto',
         files &&
         files.length === 0 &&
         !isLoading &&
@@ -37,8 +39,12 @@ export function FilesGrid({ isLoading, files }: FilesGrid) {
           <FileCardSkeleton key={index} />
         ))
       ) : (
-        files.map((album: any) => (
-          <span>{album.id}</span>
+        files.map((file: File, index) => (
+          <FileCard
+            file={file}
+            key={file.id}
+            hasSameDateAsPrevious={isSameDate(file.updatedAt, files[index - 1]?.updatedAt)}
+          />
         ))
       )}
     </div>
