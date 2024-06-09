@@ -1,12 +1,14 @@
 'use client'
 
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { ArrowLeft, Plus } from "phosphor-react"
 import { useRef } from "react"
 import { uploadFile } from "@/app/api/upload-file"
 import { toast } from "sonner"
 import { useParams } from "next/navigation"
+import { FilesAndCounts, getAlbumFiles } from "@/app/api/get-album-files"
+import { FilesGrid } from "./files-grid"
 
 export default function Album() {
   const { id: albumId } = useParams<{ id: string }>()
@@ -20,10 +22,13 @@ export default function Album() {
     }
   })
 
+  const { data: files = {} as FilesAndCounts, isLoading: isFilesLoading } = useQuery({
+    queryKey: ['album-files', { albumId }],
+    queryFn: async () => getAlbumFiles({ albumId, page: 0, limit: 10 })
+  })
+
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files
-
-    console.log('files', files)
 
     if (files && files.length > 0) {
       const filesArray = Array.from(files)
@@ -51,7 +56,7 @@ export default function Album() {
         <ArrowLeft className="h-6 w-6 transition duration-300 animate-fade-in-down text-gray-700 hover:text-gray-800" />
       </Link>
 
-      <main className="mt-8 flex items-center justify-between">
+      <main className="mt-8">
         <div className="w-full flex items-center justify-between">
           <h2 className="text-2xl font-bold">Album name</h2>
 
@@ -71,6 +76,14 @@ export default function Album() {
           </div>
         </div>
 
+        <FilesGrid
+          isLoading={isFilesLoading}
+          files={files?.files}
+          limit={files?.limit}
+          page={files?.page}
+          total={files?.total}
+          totalOfPages={files?.totalOfPages}
+        />
       </main>
     </div>
   )
