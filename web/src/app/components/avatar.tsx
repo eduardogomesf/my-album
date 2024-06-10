@@ -53,7 +53,7 @@ export function Avatar({ firstName, email }: AvatarProps) {
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           sideOffset={1}
-          className="m-auto flex min-w-[150px] flex-col items-start gap-2 rounded-md border border-gray-200 bg-white p-2 shadow-lg transition-all duration-1000 ease-in-out"
+          className="m-auto mr-4 flex min-w-[150px] flex-col items-start gap-2 rounded-md border border-gray-200 bg-white p-2 shadow-lg transition-all duration-1000 ease-in-out"
         >
           <DropdownMenu.Arrow className="fill-gray-200" />
 
