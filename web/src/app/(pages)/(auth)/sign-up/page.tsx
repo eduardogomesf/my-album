@@ -89,7 +89,7 @@ export default function SignUp() {
           onSubmit={handleSubmit(handleSignUp)}
           noValidate
         >
-          <div className="flex w-full flex-col md:flex-row md:items-center md:justify-between">
+          <div className="flex w-full flex-col md:flex-row md:items-center md:gap-2">
             <TextInput
               type="text"
               placeholder="John"
