@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Link from "next/link"
 import { ArrowLeft, Plus } from "phosphor-react"
 import { useRef } from "react"
@@ -13,13 +13,12 @@ import { FilesGrid } from "./files-grid"
 export default function Album() {
   const { id: albumId } = useParams<{ id: string }>()
 
+  const queryClient = useQueryClient()
+
   const inputFileRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync: uploadFileMutation } = useMutation({
     mutationFn: uploadFile,
-    onSuccess: () => {
-      toast.success('Files uploaded')
-    }
   })
 
   const { data: files = {} as FilesAndCounts, isLoading: isFilesLoading } = useQuery({
@@ -47,6 +46,12 @@ export default function Album() {
           }
         )
       )
+
+      await queryClient.invalidateQueries({
+        queryKey: ['album-files']
+      })
+
+      toast.success('Files uploaded successfully')
     }
   }
 
