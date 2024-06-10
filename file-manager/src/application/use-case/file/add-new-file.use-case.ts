@@ -128,7 +128,7 @@ export class AddNewFileUseCase implements UseCase {
   private validateExtension(extension: string): boolean {
     const allowedExtensions = ENVS.FILE_CONFIGS.ALLOWED_EXTENSIONS
 
-    return allowedExtensions.includes(extension)
+    return !!allowedExtensions.find(allowedExt => allowedExt.toLocaleLowerCase() === extension.toLocaleLowerCase())
   }
 
   private validateSize(size: number) {
