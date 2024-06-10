@@ -13,7 +13,7 @@ export function AlbumsGrid({ isLoading, albums }: AlbumsGridProps) {
 
   if (albums && albums.length === 0 && !isLoading) {
     return (
-      <div className="flex items-center justify-center my-40">
+      <div className="flex items-center justify-center my-32">
         <p className="text-center text-gray-600 text-lg">No albums found</p>
       </div>
     )
