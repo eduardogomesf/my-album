@@ -9,13 +9,13 @@ import { useState } from "react"
 interface FileCardProps {
   file: File
   hasSameDateAsPrevious: boolean
-  numberOfColumnsToDisplay: number
 }
 
-export function FileCard({ file, hasSameDateAsPrevious, numberOfColumnsToDisplay }: FileCardProps) {
+export function FileCard({ file, hasSameDateAsPrevious }: FileCardProps) {
   const [isSelected, setIsSelected] = useState(false)
 
   function handleSelect() {
+    console.log('selected')
     setIsSelected(!isSelected)
   }
 
@@ -27,7 +27,6 @@ export function FileCard({ file, hasSameDateAsPrevious, numberOfColumnsToDisplay
     <div
       className={clsx(
         "flex justify-start gap-1 flex-col relative group",
-        numberOfColumnsToDisplay === 3 && "col-span-3",
       )}
     >
       <span
@@ -52,13 +51,18 @@ export function FileCard({ file, hasSameDateAsPrevious, numberOfColumnsToDisplay
             isSelected && "opacity-70 border border-gray-500"
           )}
           fill={true}
-          objectFit="cover"
+          style={{ objectFit: "cover" }}
+          priority
+          sizes="100%"
         />
       </button>
 
       <button
         onClick={handleSelect}
-        className="hidden absolute top-8 left-2 group-hover:block"
+        className={clsx(
+          "absolute top-8 left-2 group-hover:block",
+          isSelected ? 'block' : 'hidden',
+        )}
       >
         {
           isSelected ? (
