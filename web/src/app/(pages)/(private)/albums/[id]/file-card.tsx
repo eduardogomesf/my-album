@@ -9,18 +9,26 @@ import { useState } from "react"
 interface FileCardProps {
   file: File
   hasSameDateAsPrevious: boolean
+  numberOfColumnsToDisplay: number
 }
 
-export function FileCard({ file, hasSameDateAsPrevious }: FileCardProps) {
+export function FileCard({ file, hasSameDateAsPrevious, numberOfColumnsToDisplay }: FileCardProps) {
   const [isSelected, setIsSelected] = useState(false)
 
   function handleSelect() {
     setIsSelected(!isSelected)
   }
 
+  function handleClick() {
+    console.log('clicked')
+  }
+
   return (
-    <button
-      className="flex justify-start gap-1 flex-col relative group"
+    <div
+      className={clsx(
+        "flex justify-start gap-1 flex-col relative group",
+        numberOfColumnsToDisplay === 3 && "col-span-3",
+      )}
     >
       <span
         className={clsx(
@@ -32,16 +40,21 @@ export function FileCard({ file, hasSameDateAsPrevious }: FileCardProps) {
         {formatDate(file.updatedAt)}
       </span>
 
-      <Image
-        src={file.url.replace('s3', 'localhost')}
-        alt={file.name}
-        className={clsx(
-          "rounded-lg hover:opacity-80 duration-300 transition-opacity",
-          isSelected && "opacity-70 border border-gray-500"
-        )}
-        width={300}
-        height={250}
-      />
+      <button
+        className="relative h-80 w-full"
+        onClick={handleClick}
+      >
+        <Image
+          src={file.url.replace('s3', 'localhost')}
+          alt={file.name}
+          className={clsx(
+            "rounded-lg hover:opacity-80 duration-300 transition-opacity",
+            isSelected && "opacity-70 border border-gray-500"
+          )}
+          fill={true}
+          objectFit="cover"
+        />
+      </button>
 
       <button
         onClick={handleSelect}
@@ -63,6 +76,6 @@ export function FileCard({ file, hasSameDateAsPrevious }: FileCardProps) {
           <PlayCircle className="w-8 h-8" />
         </div>
       )}
-    </button>
+    </div>
   )
 }

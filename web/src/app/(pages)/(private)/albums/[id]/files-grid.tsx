@@ -27,7 +27,7 @@ export function FilesGrid({ isLoading, files }: FilesGrid) {
   return (
     <div
       className={clsx(
-        'mt-4 h-auto grid grid-cols-1 gap-2 md:grid-cols-5 auto-rows-auto',
+        'mt-4 h-auto grid grid-cols-1 gap-2 md:grid-cols-5 lg:grid-cols-8 auto-rows-auto',
         files &&
         files.length === 0 &&
         !isLoading &&
@@ -44,6 +44,7 @@ export function FilesGrid({ isLoading, files }: FilesGrid) {
             file={file}
             key={file.id}
             hasSameDateAsPrevious={isSameDate(file.updatedAt, files[index - 1]?.updatedAt)}
+            numberOfColumnsToDisplay={[0, 3, 5].includes(index) ? 3 : 1}
           />
         ))
       )}
