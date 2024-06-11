@@ -57,7 +57,7 @@ export default function Album() {
 
   return (
     <div className="m-auto h-full w-full max-w-[1664px] px-8 py-6">
-      <Link href={'/'}>
+      <Link href={'/'} className="block w-6">
         <ArrowLeft className="h-6 w-6 transition duration-300 animate-fade-in-down text-gray-700 hover:text-gray-800" />
       </Link>
 
