@@ -396,27 +396,21 @@
         }
       }
     },
-    "/albums/{albumId}/files/{fileId}": {
-      "delete": {
+    "/files/delete": {
+      "post": {
         "tags": [
           "Files"
         ],
-        "summary": "Delete a file ",
-        "operationId": "deleteFile",
+        "summary": "Delete files",
+        "operationId": "deleteFiles",
         "parameters": [
           {
-            "in": "path",
-            "name": "albumId",
+            "in": "body",
+            "name": "body",
             "required": true,
-            "type": "string",
-            "description": "The ID of the album"
-          },
-          {
-            "in": "path",
-            "name": "fileId",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the file"
+            "schema": {
+              "$ref": "#/definitions/DeleteFilesBody"
+            }
           },
           {
             "in": "header",
@@ -428,10 +422,10 @@
         ],
         "responses": {
           "200": {
-            "description": "File deleted successfully"
+            "description": "Delete files successfully"
           },
           "404": {
-            "description": "File not found"
+            "description": "Files not found"
           }
         }
       }
@@ -650,6 +644,24 @@
       ],
       "properties": {
         "targetAlbumId": {
+          "type": "string"
+        },
+        "filesIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DeleteFilesBody": {
+      "type": "object",
+      "required": [
+        "albumId",
+        "filesIds"
+      ],
+      "properties": {
+        "albumId": {
           "type": "string"
         },
         "filesIds": {

@@ -132,9 +132,9 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
-      - name: delete-file
-        paths: ["/albums/([a-zA-Z0-9-]+)/files/([a-zA-Z0-9-]+)"]
-        methods: ["DELETE", "OPTIONS"]
+      - name: delete-files
+        paths: ["/files/delete"]
+        methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         regex_priority: 0
         strip_path: false

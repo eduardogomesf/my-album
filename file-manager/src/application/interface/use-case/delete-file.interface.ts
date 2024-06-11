@@ -1,5 +1,5 @@
 export interface DeleteFileUseCaseParams {
-  fileId: string
+  filesIds: string[]
   albumId: string
   userId: string
 }

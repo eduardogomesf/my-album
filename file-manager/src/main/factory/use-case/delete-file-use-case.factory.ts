@@ -1,18 +1,18 @@
-import { DeleteFileUseCase } from '@/application/use-case'
+import { DeleteFilesUseCase } from '@/application/use-case'
 import {
-  type GetFileByIdAndAlbumIdRepository,
-  type DeleteFileRepository,
+  type GetFilesByIdsAndAlbumIdRepository,
+  type DeleteFilesRepository,
   type DeleteFileFromStorageService
 } from '@/application/protocol'
 
 export const generateDeleteFileUseCase = (
-  getFileByIdAndAlbumIdRepository: GetFileByIdAndAlbumIdRepository,
-  deleteFileRepository: DeleteFileRepository,
+  GetFilesByIdsAndAlbumIdRepository: GetFilesByIdsAndAlbumIdRepository,
+  DeleteFilesRepository: DeleteFilesRepository,
   deleteFileFromStorageService: DeleteFileFromStorageService
 ) => {
-  return new DeleteFileUseCase(
-    getFileByIdAndAlbumIdRepository,
-    deleteFileRepository,
+  return new DeleteFilesUseCase(
+    GetFilesByIdsAndAlbumIdRepository,
+    DeleteFilesRepository,
     deleteFileFromStorageService
   )
 }

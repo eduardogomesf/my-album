@@ -48,7 +48,7 @@ export function getFileRouter(useCases: UseCases): Router {
     fileController.moveFiles.bind(fileController)
   )
 
-  router.delete('/albums/:albumId/files/:fileId', getAuthInfoFromHeaders, fileController.delete.bind(fileController))
+  router.post('/files/delete', getAuthInfoFromHeaders, fileController.delete.bind(fileController))
 
   router.get('/storage', getAuthInfoFromHeaders, fileController.getAvailableStorage.bind(fileController))
 

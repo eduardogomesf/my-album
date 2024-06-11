@@ -14,7 +14,7 @@ const logger = new Logger('getAuthInfoFromToken')
 
 const tokenValidator = generateJwtTokenValidator()
 
-export async function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): Promise<any> {
+export function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): any {
   if (!req.headers.cookie) {
     logger.error('Cookies not found')
     return res.status(HTTP_CODES.FORBIDDEN.code).send('Cookies not found')

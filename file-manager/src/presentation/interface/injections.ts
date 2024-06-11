@@ -5,7 +5,7 @@ import {
   type GetFilesByAlbumIdUseCase,
   type GetAlbumsUseCase,
   type MoveFilesToOtherAlbumUseCase,
-  type DeleteFileUseCase,
+  type DeleteFilesUseCase,
   type DeleteAlbumUseCase,
   type RestoreAlbumUseCase,
   type GetAvailableStorageUseCase
@@ -19,7 +19,7 @@ export interface UseCases {
   getAlbumsUseCase: GetAlbumsUseCase
   getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
   moveFilesToOtherAlbumUseCase: MoveFilesToOtherAlbumUseCase
-  deleteFileUseCase: DeleteFileUseCase
+  deleteFileUseCase: DeleteFilesUseCase
   deleteAlbumUseCase: DeleteAlbumUseCase
   restoreAlbumUseCase: RestoreAlbumUseCase
   getAvailableStorageUseCase: GetAvailableStorageUseCase

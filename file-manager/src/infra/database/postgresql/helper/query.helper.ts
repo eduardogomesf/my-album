@@ -5,4 +5,8 @@ export class PrismaQueryHelper {
       offset: (page - 1) * limit
     }
   }
+
+  static formatInParam(values: string[] | number[]): string {
+    return values.join(', ')
+  }
 }

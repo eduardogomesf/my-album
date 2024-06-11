@@ -1,7 +1,7 @@
-import { DeleteFileUseCase } from '@/application/use-case'
+import { DeleteFilesUseCase } from '@/application/use-case'
 import {
-  type GetFileByIdAndAlbumIdRepository,
-  type DeleteFileRepository,
+  type GetFilesByIdsAndAlbumIdRepository,
+  type DeleteFilesRepository,
   type DeleteFileFromStorageService
 } from '@/application/protocol'
 import { getFileMock } from '../mock'
@@ -11,32 +11,32 @@ jest.mock('uuid', () => ({
 }))
 
 describe('Delete file Use Case', () => {
-  let sut: DeleteFileUseCase
-  let getFileByIdAndAlbumIdRepository: GetFileByIdAndAlbumIdRepository
-  let deleteFileRepository: DeleteFileRepository
+  let sut: DeleteFilesUseCase
+  let getFilesByIdsAndAlbumIdRepository: GetFilesByIdsAndAlbumIdRepository
+  let deleteFilesRepository: DeleteFilesRepository
   let deleteFileFromStorageService: DeleteFileFromStorageService
 
   beforeEach(() => {
-    getFileByIdAndAlbumIdRepository = {
-      getFileByIdAndAlbumId: jest.fn().mockResolvedValue(getFileMock())
+    getFilesByIdsAndAlbumIdRepository = {
+      getFilesByIdsAndAlbumId: jest.fn().mockResolvedValue([getFileMock(), getFileMock()])
     }
-    deleteFileRepository = {
-      deleteFile: jest.fn().mockResolvedValue(true)
+    deleteFilesRepository = {
+      deleteFiles: jest.fn().mockResolvedValue(true)
     }
     deleteFileFromStorageService = {
       delete: jest.fn().mockResolvedValue(true)
     }
 
-    sut = new DeleteFileUseCase(
-      getFileByIdAndAlbumIdRepository,
-      deleteFileRepository,
+    sut = new DeleteFilesUseCase(
+      getFilesByIdsAndAlbumIdRepository,
+      deleteFilesRepository,
       deleteFileFromStorageService
     )
   })
 
   it('should delete a successfully', async () => {
     const payload = {
-      fileId: 'any-id',
+      filesIds: ['any-id', 'any-id-2'],
       albumId: 'any-album-id',
       userId: 'any-user-id'
     }
@@ -49,27 +49,27 @@ describe('Delete file Use Case', () => {
 
   it('should calls dependencies with correct input', async () => {
     const payload = {
-      fileId: 'any-id',
+      filesIds: ['any-id', 'any-id-2'],
       albumId: 'any-album-id',
       userId: 'any-user-id'
     }
 
-    const getFileByIdAndAlbumIdSpy = jest.spyOn(getFileByIdAndAlbumIdRepository, 'getFileByIdAndAlbumId')
-    const deleteFileSpy = jest.spyOn(deleteFileRepository, 'deleteFile')
+    const getFileByIdAndAlbumIdSpy = jest.spyOn(getFilesByIdsAndAlbumIdRepository, 'getFilesByIdsAndAlbumId')
+    const deleteFileSpy = jest.spyOn(deleteFilesRepository, 'deleteFiles')
     const deleteFileFromStorageSpy = jest.spyOn(deleteFileFromStorageService, 'delete')
 
     await sut.execute(payload)
 
-    expect(getFileByIdAndAlbumIdSpy).toHaveBeenCalledWith('any-id', 'any-album-id', 'any-user-id')
-    expect(deleteFileSpy).toHaveBeenCalledWith(getFileMock())
-    expect(deleteFileFromStorageSpy).toHaveBeenCalledWith(getFileMock(), 'any-user-id')
+    expect(getFileByIdAndAlbumIdSpy).toHaveBeenCalledWith(['any-id', 'any-id-2'], 'any-album-id', 'any-user-id')
+    expect(deleteFileSpy).toHaveBeenCalledWith([getFileMock(), getFileMock()])
+    expect(deleteFileFromStorageSpy).toHaveBeenCalledTimes(2)
   })
 
   it('should not delete a file if it does not exist', async () => {
-    getFileByIdAndAlbumIdRepository.getFileByIdAndAlbumId = jest.fn().mockResolvedValue(null)
+    getFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId = jest.fn().mockResolvedValue([])
 
     const payload = {
-      fileId: 'any-id',
+      filesIds: ['any-id', 'any-id-2'],
       albumId: 'any-album-id',
       userId: 'any-user-id'
     }
@@ -77,16 +77,16 @@ describe('Delete file Use Case', () => {
     const result = await sut.execute(payload)
 
     expect(result.ok).toBe(false)
-    expect(result.message).toBe('File not found')
+    expect(result.message).toBe('Files not found')
   })
 
   it('should pass along any error thrown when trying to create a user', async () => {
-    getFileByIdAndAlbumIdRepository.getFileByIdAndAlbumId = jest.fn().mockImplementation(
+    getFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId = jest.fn().mockImplementation(
       () => { throw new Error('any-error') }
     )
 
     const payload = {
-      fileId: 'any-id',
+      filesIds: ['any-id', 'any-id-2'],
       albumId: 'any-album-id',
       userId: 'any-user-id'
     }

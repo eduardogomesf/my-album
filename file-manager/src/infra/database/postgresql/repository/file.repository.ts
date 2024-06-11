@@ -10,8 +10,8 @@ import {
   type GetFilesByIdsRepository,
   type GetFilesByIdsRepositoryResponse,
   type CountFilesByAlbumIdRepository,
-  type GetFileByIdAndAlbumIdRepository,
-  type DeleteFileRepository
+  type GetFilesByIdsAndAlbumIdRepository,
+  type DeleteFilesRepository
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
@@ -26,7 +26,7 @@ export class PrismaFileRepository
 implements
   SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
   MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository,
-  GetFileByIdAndAlbumIdRepository, DeleteFileRepository {
+  GetFilesByIdsAndAlbumIdRepository, DeleteFilesRepository {
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
     const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
@@ -141,50 +141,58 @@ implements
     }
   }
 
-  async getFileByIdAndAlbumId(
-    fileId: string,
+  async getFilesByIdsAndAlbumId(
+    filesIds: string[],
     albumId: string,
     userId: string
-  ): Promise<File | null> {
+  ): Promise<File[]> {
     try {
-      const file = await prisma.$queryRaw<any[]>`
-        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id = ${fileId} and a.user_id = ${userId} and a.id = ${albumId}
+      const fieldsInParams = PrismaQueryHelper.formatInParam(filesIds)
+
+      const rawFiles = await prisma.$queryRaw<any[]>`
+        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id IN (${fieldsInParams}) and a.user_id = ${userId} and a.id = ${albumId}
       `
 
-      if (!file?.length) {
-        return null
+      if (!rawFiles?.length) {
+        return []
       }
 
-      const rawData = file[0]
-
-      return FileMapper.toEntity({
-        ...rawData,
-        userId: rawData.user_id,
-        albumId: rawData.album_id,
-        createdAt: rawData.created_at,
-        updatedAt: rawData.updated_at
+      const files = rawFiles.map((rawFile) => {
+        return FileMapper.toEntity({
+          ...rawFile,
+          userId: rawFile.user_id,
+          albumId: rawFile.album_id,
+          createdAt: rawFile.created_at,
+          updatedAt: rawFile.updated_at
+        })
       })
+
+      return files
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
     }
   }
 
-  async deleteFile(file: File): Promise<boolean> {
+  async deleteFiles(files: File[]): Promise<boolean> {
     try {
+      const filesIds = files.map(file => file.id)
+
       await prisma.$transaction([
-        prisma.file.delete({
+        prisma.file.deleteMany({
           where: {
-            id: file.id
+            id: {
+              in: filesIds
+            }
           }
         }),
-        prisma.outbox.create({
-          data: {
+        prisma.outbox.createMany({
+          data: files.map(file => ({
             id: uuid(),
             type: OutboxType.FILE_DELETED,
             payload: JSON.stringify(file),
             aggregateId: file.id
-          }
+          }))
         })
       ])
       return true

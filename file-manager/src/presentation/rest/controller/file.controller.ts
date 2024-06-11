@@ -3,7 +3,7 @@ import * as fs from 'node:fs/promises'
 import {
   type MoveFilesToOtherAlbumUseCase,
   type AddNewFileUseCase,
-  type DeleteFileUseCase,
+  type DeleteFilesUseCase,
   type GetAvailableStorageUseCase
 } from '@/application/use-case'
 import { Logger } from '@/shared'
@@ -17,7 +17,7 @@ export class FileController {
   constructor(
     private readonly addNewFileUseCase: AddNewFileUseCase,
     private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase,
-    private readonly deleteFileUseCase: DeleteFileUseCase,
+    private readonly deleteFileUseCase: DeleteFilesUseCase,
     private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase
   ) {}
 
@@ -154,18 +154,18 @@ export class FileController {
   async delete(request: Request, response: Response): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
-      const { fileId, albumId } = request.params
+      const { filesIds = [], albumId } = request.body
       const { userId } = request.auth
 
-      if (!fileId) {
-        this.logger.warn('File id not found', correlationId)
+      if (!filesIds.length) {
+        this.logger.warn('Files ids not found', correlationId)
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'File id not found'
+          message: 'filesIds property is empty'
         })
       }
 
       const result = await this.deleteFileUseCase.execute({
-        fileId,
+        filesIds,
         userId,
         albumId
       })
@@ -188,10 +188,10 @@ export class FileController {
         })
       }
 
-      this.logger.info('File deleted successfully', correlationId)
+      this.logger.info('Files deleted successfully', correlationId)
       return response.status(204).send()
     } catch (error) {
-      this.logger.error('Error deleting file', correlationId)
+      this.logger.error('Error deleting files', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(500).send()

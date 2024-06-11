@@ -15,6 +15,7 @@ export const ERROR_MESSAGES = {
   },
   FILE: {
     NOT_FOUND: 'File not found',
-    INVALID_EXTENSION: 'Invalid extension'
+    INVALID_EXTENSION: 'Invalid extension',
+    MANY_NOT_FOUND: 'Files not found'
   }
 } as const
