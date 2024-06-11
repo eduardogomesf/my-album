@@ -44,7 +44,6 @@ export function FilesGrid({ isLoading, files }: FilesGrid) {
             file={file}
             key={file.id}
             hasSameDateAsPrevious={isSameDate(file.updatedAt, files[index - 1]?.updatedAt)}
-            numberOfColumnsToDisplay={[0, 3, 5].includes(index) ? 3 : 1}
           />
         ))
       )}
