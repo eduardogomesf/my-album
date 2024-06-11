@@ -12,9 +12,10 @@ interface FilesGrid {
   page: number
   total: number
   totalOfPages: number
+  onSelect: (id: string) => void
 }
 
-export function FilesGrid({ isLoading, files }: FilesGrid) {
+export function FilesGrid({ isLoading, files, onSelect }: FilesGrid) {
 
   if (files && files.length === 0 && !isLoading) {
     return (
@@ -44,6 +45,7 @@ export function FilesGrid({ isLoading, files }: FilesGrid) {
             file={file}
             key={file.id}
             hasSameDateAsPrevious={isSameDate(file.updatedAt, files[index - 1]?.updatedAt)}
+            onSelect={onSelect}
           />
         ))
       )}

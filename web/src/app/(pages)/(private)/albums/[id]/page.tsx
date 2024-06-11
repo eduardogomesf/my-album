@@ -7,8 +7,20 @@ import { useParams } from "next/navigation"
 import { FilesAndCounts, getAlbumFiles } from "@/app/api/get-album-files"
 import { FilesGrid } from "./files-grid"
 import { UploadButton } from "./upload-button"
+import { DeleteButton } from "./delete-button"
+import { useState } from "react"
 
 export default function Album() {
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+
+  function handleSelectFile(id: string) {
+    if (selectedFiles.includes(id)) {
+      setSelectedFiles(selectedFiles.filter((fileId) => fileId !== id))
+    } else {
+      setSelectedFiles([...selectedFiles, id])
+    }
+  }
+
   const { id: albumId } = useParams<{ id: string }>()
 
   const { data: files = {} as FilesAndCounts, isLoading: isFilesLoading } = useQuery({
@@ -27,7 +39,8 @@ export default function Album() {
           <h2 className="text-2xl font-bold">Album name</h2>
 
           <div className="flex items-center gap-4">
-            <UploadButton albumId={albumId} />
+            {selectedFiles.length === 0 && <UploadButton albumId={albumId} />}
+            {selectedFiles.length > 0 && <DeleteButton />}
           </div>
         </div>
 
@@ -38,6 +51,7 @@ export default function Album() {
           page={files?.page}
           total={files?.total}
           totalOfPages={files?.totalOfPages}
+          onSelect={handleSelectFile}
         />
       </main>
     </div>

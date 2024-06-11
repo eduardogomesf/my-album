@@ -9,14 +9,15 @@ import { useState } from "react"
 interface FileCardProps {
   file: File
   hasSameDateAsPrevious: boolean
+  onSelect: (id: string) => void
 }
 
-export function FileCard({ file, hasSameDateAsPrevious }: FileCardProps) {
+export function FileCard({ file, hasSameDateAsPrevious, onSelect }: FileCardProps) {
   const [isSelected, setIsSelected] = useState(false)
 
   function handleSelect() {
-    console.log('selected')
     setIsSelected(!isSelected)
+    onSelect(file.id)
   }
 
   function handleClick() {
