@@ -142,9 +142,9 @@ services:
     environment:
       - SERVICES=s3
       - DEFAULT_REGION=us-east-1
-      - DATA_DIR=/tmp/localstack/data
+      - DATA_DIR=/var/lib/localstack/data
     volumes:
-      - "localstack-s3:/tmp/localstack-s3"
+      - "localstack-s3:/var/lib/localstack/data"
 
   file-manager-redis:
     image: redis:latest
