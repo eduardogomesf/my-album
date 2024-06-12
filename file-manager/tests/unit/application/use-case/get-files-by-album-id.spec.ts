@@ -60,6 +60,10 @@ describe('Get Files By Album Id Use Case', () => {
     expect(result.data?.limit).toBe(10)
     expect(result.data?.page).toBe(1)
     expect(result.data?.totalPages).toBe(1)
+    expect(result.data?.album).toEqual({
+      id: 'any-id',
+      name: 'any-name'
+    })
   })
 
   it('should call dependencies with right params ', async () => {

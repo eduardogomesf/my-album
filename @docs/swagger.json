@@ -599,6 +599,17 @@
         },
         "totalPages": {
           "type": "integer"
+        },
+        "album": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
         }
       }
     },

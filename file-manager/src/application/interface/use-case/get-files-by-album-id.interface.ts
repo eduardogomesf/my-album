@@ -28,4 +28,8 @@ export interface GetFilesByAlbumIdUseCaseResponse {
   limit: number
   page: number
   totalPages: number
+  album: {
+    id: string
+    name: string
+  }
 }

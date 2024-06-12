@@ -72,7 +72,7 @@ export class AddNewFileUseCase implements UseCase {
       if (!sizeValidation.isValid) {
         return {
           ok: false,
-          message: `The file is too large. Max ${sizeValidation.allowedSize}MB`
+          message: `The file is too large. Max ${ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB}MB`
         }
       }
 

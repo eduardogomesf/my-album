@@ -66,7 +66,11 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
         limit: filters.limit,
         page: filters.page,
         total: totalCountOfFiles,
-        totalPages: Math.ceil(totalCountOfFiles / filters.limit)
+        totalPages: Math.ceil(totalCountOfFiles / filters.limit),
+        album: {
+          id: albumById.id,
+          name: albumById.name
+        }
       }
     }
   }
