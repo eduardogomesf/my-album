@@ -40,7 +40,12 @@ export default function Album() {
 
           <div className="flex items-center gap-4">
             {selectedFiles.length === 0 && <UploadButton albumId={albumId} />}
-            {selectedFiles.length > 0 && <DeleteButton />}
+            {selectedFiles.length > 0 && (
+              <DeleteButton
+                albumId={albumId}
+                filesIds={selectedFiles}
+              />
+            )}
           </div>
         </div>
 
