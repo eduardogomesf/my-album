@@ -21,6 +21,10 @@ export default function Album() {
     }
   }
 
+  function cleanSelectedFiles() {
+    setSelectedFiles([])
+  }
+
   const { id: albumId } = useParams<{ id: string }>()
 
   const { data: files = {} as FilesAndCounts, isLoading: isFilesLoading } = useQuery({
@@ -44,6 +48,7 @@ export default function Album() {
               <DeleteButton
                 albumId={albumId}
                 filesIds={selectedFiles}
+                cleanSelectedFiles={cleanSelectedFiles}
               />
             )}
           </div>

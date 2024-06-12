@@ -7,9 +7,10 @@ import { ConfirmActionModal } from "@/app/components/confirm-action-modal";
 interface DeleteButtonProps {
   filesIds: string[];
   albumId: string;
+  cleanSelectedFiles: () => void;
 }
 
-export function DeleteButton({ albumId, filesIds }: DeleteButtonProps) {
+export function DeleteButton({ albumId, filesIds, cleanSelectedFiles }: DeleteButtonProps) {
   const queryClient = useQueryClient()
 
   const { mutateAsync: deleteFilesMutation } = useMutation({
@@ -33,6 +34,8 @@ export function DeleteButton({ albumId, filesIds }: DeleteButtonProps) {
         albumId
       })
 
+      cleanSelectedFiles()
+
       toast.success("Files deleted successfully")
     } catch (error) {
       toast.error("Error deleting files")
@@ -46,7 +49,7 @@ export function DeleteButton({ albumId, filesIds }: DeleteButtonProps) {
       onConfirm={handleDelete}
       additionalNote="You won't be able to recover these files."
     >
-      <button>
+      <button disabled={filesIds.length === 0}>
         <Trash className="h-6 w-6" />
       </button>
     </ConfirmActionModal>
