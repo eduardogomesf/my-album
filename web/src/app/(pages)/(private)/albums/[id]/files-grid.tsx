@@ -20,7 +20,7 @@ export function FilesGrid({ isLoading, files, onSelect }: FilesGrid) {
   if (files && files.length === 0 && !isLoading) {
     return (
       <div className="my-40 flex items-center justify-center">
-        <p className="text-center text-lg text-gray-600">No files found</p>
+        <p className="text-center text-lg text-gray-600">No media found</p>
       </div>
     )
   }
@@ -30,26 +30,26 @@ export function FilesGrid({ isLoading, files, onSelect }: FilesGrid) {
       className={clsx(
         'mt-4 grid h-auto auto-rows-auto grid-cols-1 gap-2 md:grid-cols-5 lg:grid-cols-8',
         files &&
-          files.length === 0 &&
-          !isLoading &&
-          'mt-[150px] md:grid-cols-1',
+        files.length === 0 &&
+        !isLoading &&
+        'mt-[150px] md:grid-cols-1',
       )}
     >
       {isLoading
         ? Array.from({ length: 10 }).map((_: unknown, index: number) => (
-            <FileCardSkeleton key={index} />
-          ))
+          <FileCardSkeleton key={index} />
+        ))
         : files.map((file: File, index) => (
-            <FileCard
-              file={file}
-              key={file.id}
-              hasSameDateAsPrevious={isSameDate(
-                file.updatedAt,
-                files[index - 1]?.updatedAt,
-              )}
-              onSelect={onSelect}
-            />
-          ))}
+          <FileCard
+            file={file}
+            key={file.id}
+            hasSameDateAsPrevious={isSameDate(
+              file.updatedAt,
+              files[index - 1]?.updatedAt,
+            )}
+            onSelect={onSelect}
+          />
+        ))}
     </div>
   )
 }
