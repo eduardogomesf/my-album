@@ -31,7 +31,7 @@ describe('Add New File Use Case', () => {
     payload = {
       name: 'my-test-file',
       size: 1000,
-      type: 'text/plain',
+      type: 'image/png',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'png',
@@ -48,7 +48,7 @@ describe('Add New File Use Case', () => {
       id: 'any-id',
       name: payload.name,
       size: payload.size,
-      type: payload.type,
+      type: 'image',
       encoding: payload.encoding,
       extension: payload.extension,
       albumId: 'album-id',
@@ -71,7 +71,7 @@ describe('Add New File Use Case', () => {
       name: payload.name,
       content: payload.content,
       encoding: payload.encoding,
-      type: payload.type,
+      type: 'image',
       userId: payload.userId,
       fileId: 'any-id'
     })
@@ -79,7 +79,7 @@ describe('Add New File Use Case', () => {
       id: 'any-id',
       name: payload.name,
       size: payload.size,
-      type: payload.type,
+      type: 'image',
       encoding: payload.encoding,
       extension: payload.extension,
       albumId: 'album-id',
@@ -116,7 +116,7 @@ describe('Add New File Use Case', () => {
   it('should return nok if a domain error is thrown', async () => {
     const payload: any = {
       size: 1000,
-      type: 'text/plain',
+      type: 'image/png',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'png',
@@ -134,7 +134,7 @@ describe('Add New File Use Case', () => {
     const payload: AddNewFileParams = {
       name: 'my-test-file',
       size: 1000,
-      type: 'text/plain',
+      type: 'image/png',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'js',
@@ -152,7 +152,7 @@ describe('Add New File Use Case', () => {
     const payload: AddNewFileParams = {
       name: 'my-test-file',
       size: 1000 * 1000 * 1000,
-      type: 'text/plain',
+      type: 'image/png',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'png',
@@ -172,7 +172,7 @@ describe('Add New File Use Case', () => {
     const payload: AddNewFileParams = {
       name: 'my-test-file',
       size: 1048577,
-      type: 'text/plain',
+      type: 'image/png',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'png',
@@ -192,7 +192,7 @@ describe('Add New File Use Case', () => {
     const payload: AddNewFileParams = {
       name: 'my-test-file',
       size: 1048577,
-      type: 'text/plain',
+      type: 'image/png',
       content: Buffer.from('any-content'),
       encoding: 'utf-8',
       extension: 'png',
