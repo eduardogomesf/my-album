@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import Image from 'next/image'
 import { Calendar, CheckCircle, Circle, PlayCircle } from 'phosphor-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { File } from '@/app/api/get-album-files'
 import { formatDate } from '@/app/util/date'
@@ -19,6 +19,11 @@ export function FileCard({
 }: FileCardProps) {
   const [isSelected, setIsSelected] = useState(false)
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  const isImage = file.type === 'image'
+
   function handleSelect() {
     setIsSelected(!isSelected)
     onSelect(file.id)
@@ -28,8 +33,33 @@ export function FileCard({
     console.log('clicked')
   }
 
+  const handleMouseOver = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      timeoutId = setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.pause();
+        }
+      }, 3000);
+    }
+  };
+
+  const handleMouseOut = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    }
+  };
+
   return (
-    <div className={clsx('group relative flex flex-col justify-start gap-1')}>
+    <div className={clsx(
+      'group relative flex flex-col justify-start gap-1',
+      isImage ? 'col-span-1' : 'col-span-2'
+    )}>
       <span
         className={clsx(
           'flex items-center gap-1 text-sm font-normal text-gray-900',
@@ -41,18 +71,34 @@ export function FileCard({
       </span>
 
       <button className="relative h-80 w-full" onClick={handleClick}>
-        <Image
-          src={file.url.replace('s3', 'localhost')}
-          alt={file.name}
-          className={clsx(
-            'rounded-lg transition-opacity duration-300 hover:opacity-80',
-            isSelected && 'border border-gray-500 opacity-70',
-          )}
-          fill={true}
-          style={{ objectFit: 'cover' }}
-          priority
-          sizes="100%"
-        />
+        {isImage ? (
+          <Image
+            src={file.url.replace('s3', 'localhost')}
+            alt={file.name}
+            className={clsx(
+              'rounded-lg transition-opacity duration-300 hover:opacity-80',
+              isSelected && 'border border-gray-500 opacity-70',
+            )}
+            fill={true}
+            style={{ objectFit: 'cover' }}
+            priority
+            sizes="100%"
+          />
+        ) : (
+          <video
+            className={clsx(
+              'block h-80 rounded-lg transition-opacity duration-300 hover:opacity-80 bg-black',
+              isSelected && 'border border-gray-500 opacity-70',
+            )}
+            muted
+            ref={videoRef}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+          >
+            <source src={file.url.replace('s3', 'localhost')} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
       </button>
 
       <button
@@ -71,7 +117,7 @@ export function FileCard({
 
       {file.type === 'video' && (
         <div className="absolute right-5 top-8">
-          <PlayCircle className="h-8 w-8" />
+          <PlayCircle className="h-8 w-8 text-gray-300" />
         </div>
       )}
     </div>
