@@ -1,13 +1,13 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { SignOut } from 'phosphor-react'
-
-import { AvatarSkeleton } from './skeleton/avatar-skeleton'
 import { toast } from 'sonner'
-import { Progress } from './progress'
+
 import { getCurrentUsage } from '../api/get-current-usage'
-import { useQuery } from '@tanstack/react-query'
 import { bytesToMB } from '../util/converter'
+import { Progress } from './progress'
+import { AvatarSkeleton } from './skeleton/avatar-skeleton'
 
 interface AvatarProps {
   firstName: string
@@ -21,7 +21,7 @@ export function Avatar({ firstName, email }: AvatarProps) {
 
   const { data: currentUsage } = useQuery({
     queryKey: ['current-usage'],
-    queryFn: getCurrentUsage
+    queryFn: getCurrentUsage,
   })
 
   function handleSignOut() {
@@ -56,32 +56,38 @@ export function Avatar({ firstName, email }: AvatarProps) {
         >
           <DropdownMenu.Arrow className="fill-gray-200" />
 
-          <DropdownMenu.Label className='w-full flex flex-col items-center justify-center'>
-            <span className="text-gray-700 font-medium text-md">
-              Hi, {' '}
-              <span className="text-gray-800 font-semibold">{firstName}</span>!
+          <DropdownMenu.Label className="flex w-full flex-col items-center justify-center">
+            <span className="text-md font-medium text-gray-700">
+              Hi,{' '}
+              <span className="font-semibold text-gray-800">{firstName}</span>!
             </span>
 
-            <span className='text-sm text-gray-500'>({email})</span>
+            <span className="text-sm text-gray-500">({email})</span>
           </DropdownMenu.Label>
 
-          <DropdownMenu.Separator className='h-[1px] bg-gray-300 w-full' />
+          <DropdownMenu.Separator className="h-[1px] w-full bg-gray-300" />
 
-          <div className='flex flex-col items-center mx-auto gap-1'>
-            <DropdownMenu.Label className='w-full flex items-center justify-center'>
-              <span className="text-gray-500 font-medium text-sm">
-                Usage
-              </span>
+          <div className="mx-auto flex flex-col items-center gap-1">
+            <DropdownMenu.Label className="flex w-full items-center justify-center">
+              <span className="text-sm font-medium text-gray-500">Usage</span>
             </DropdownMenu.Label>
-            <div className="flex items-center flex-col gap-1 ">
-              <Progress progress={currentUsage?.maxStorage ? (currentUsage?.currentUsage / currentUsage?.maxStorage) * 100 : 0} />
-              <span className="text-sm text-gray-600 font-normal">
-                {bytesToMB(currentUsage?.currentUsage ?? 0)} MB of {bytesToMB(currentUsage?.maxStorage ?? 0)} MB used
+            <div className="flex flex-col items-center gap-1">
+              <Progress
+                progress={
+                  currentUsage?.maxStorage
+                    ? (currentUsage?.currentUsage / currentUsage?.maxStorage) *
+                      100
+                    : 0
+                }
+              />
+              <span className="text-sm font-normal text-gray-600">
+                {bytesToMB(currentUsage?.currentUsage ?? 0)} MB of{' '}
+                {bytesToMB(currentUsage?.maxStorage ?? 0)} MB used
               </span>
             </div>
           </div>
 
-          <DropdownMenu.Separator className='h-[1px] bg-gray-300 w-full' />
+          <DropdownMenu.Separator className="h-[1px] w-full bg-gray-300" />
 
           {options.map((option) => (
             <DropdownMenu.Item

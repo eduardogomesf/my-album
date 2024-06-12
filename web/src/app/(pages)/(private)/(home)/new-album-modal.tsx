@@ -9,9 +9,9 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { createNewAlbum } from '@/app/api/create-new-album'
+import { Button } from '@/app/components/button'
 import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
-import { Button } from '@/app/components/button'
 
 export interface NewAlbumModalProps {
   children: React.ReactNode
@@ -43,7 +43,7 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
       queryClient.invalidateQueries({
         queryKey: ['albums'],
       })
-    }
+    },
   })
 
   async function handleNewAlbum(data: NewAlbumSchema) {
@@ -92,9 +92,7 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
             />
 
             <div className="mt-5 flex justify-end">
-              <Button type="submit">
-                Create
-              </Button>
+              <Button type="submit">Create</Button>
             </div>
           </form>
 

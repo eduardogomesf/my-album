@@ -1,4 +1,4 @@
-import { api } from "../lib/axios"
+import { api } from '../lib/axios'
 
 interface GetAlbumFilesParams {
   albumId: string
@@ -7,14 +7,14 @@ interface GetAlbumFilesParams {
 }
 
 export interface File {
-  id: string,
-  name: string,
-  size: number,
-  encoding: string,
-  type: "image" | "video",
-  extension: string,
-  albumId: string,
-  url: string,
+  id: string
+  name: string
+  size: number
+  encoding: string
+  type: 'image' | 'video'
+  extension: string
+  albumId: string
+  url: string
   updatedAt: string
 }
 
@@ -26,16 +26,18 @@ export interface FilesAndCounts {
   totalOfPages: number
   album: {
     id: string
-    name: string  
+    name: string
   }
 }
 
-export async function getAlbumFiles(params: GetAlbumFilesParams): Promise<FilesAndCounts> {
+export async function getAlbumFiles(
+  params: GetAlbumFilesParams,
+): Promise<FilesAndCounts> {
   const response = await api.get(`/albums/${params.albumId}/files`, {
     params: {
       page: params.page ?? 0,
-      limit: params.limit ?? 10
-    }
+      limit: params.limit ?? 10,
+    },
   })
 
   return response.data

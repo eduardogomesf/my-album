@@ -1,16 +1,18 @@
 'use client'
 
-import { Link } from "phosphor-react";
+import { Link } from 'phosphor-react'
 
 export function Footer() {
   return (
     <footer className="absolute bottom-0 w-full border-t-2 bg-white px-8 py-4">
-      <div className="w-full flex flex-col md:flex-row gap-3 items-center justify-around" >
+      <div className="flex w-full flex-col items-center justify-around gap-3 md:flex-row">
         <div className="flex flex-col items-center gap-1">
-          <span className="text-sm text-red-600 font-medium">This website is a personal project and not a real product.</span>
+          <span className="text-sm font-medium text-red-600">
+            This website is a personal project and not a real product.
+          </span>
         </div>
 
-        <span className="text-sm text-gray-600 font-medium">
+        <span className="text-sm font-medium text-gray-600">
           © {new Date().getFullYear()} MyAlbum. All rights reserved.
         </span>
 
@@ -18,13 +20,14 @@ export function Footer() {
           <a
             href="https://github.com/eduardogomesf/my-album"
             target="_blank"
-            className="text-sm text-gray-800 md:text-gray-600 font-medium hover:text-gray-800 hover:underline transition duration-300 ease-in-out"
+            className="text-sm font-medium text-gray-800 transition duration-300 ease-in-out hover:text-gray-800 hover:underline md:text-gray-600"
+            rel="noreferrer"
           >
             See project on Github
           </a>
-          <Link className="w-4 h-4 text-gray-800 md:text-gray-600 font-medium hover:text-gray-800" />
+          <Link className="h-4 w-4 font-medium text-gray-800 hover:text-gray-800 md:text-gray-600" />
         </div>
       </div>
-    </footer >
+    </footer>
   )
 }

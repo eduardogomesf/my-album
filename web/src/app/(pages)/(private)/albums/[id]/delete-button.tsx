@@ -1,50 +1,55 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Trash } from "phosphor-react";
-import { deleteFiles } from "@/app/api/delete-files";
-import { toast } from "sonner";
-import { ConfirmActionModal } from "@/app/components/confirm-action-modal";
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Trash } from 'phosphor-react'
+import { toast } from 'sonner'
+
+import { deleteFiles } from '@/app/api/delete-files'
+import { ConfirmActionModal } from '@/app/components/confirm-action-modal'
 
 interface DeleteButtonProps {
-  filesIds: string[];
-  albumId: string;
-  cleanSelectedFiles: () => void;
+  filesIds: string[]
+  albumId: string
+  cleanSelectedFiles: () => void
 }
 
-export function DeleteButton({ albumId, filesIds, cleanSelectedFiles }: DeleteButtonProps) {
+export function DeleteButton({
+  albumId,
+  filesIds,
+  cleanSelectedFiles,
+}: DeleteButtonProps) {
   const queryClient = useQueryClient()
 
   const { mutateAsync: deleteFilesMutation } = useMutation({
     mutationFn: deleteFiles,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['album-files']
+        queryKey: ['album-files'],
       })
       queryClient.invalidateQueries({
-        queryKey: ['current-usage']
+        queryKey: ['current-usage'],
       })
       queryClient.invalidateQueries({
-        queryKey: ['albums']
+        queryKey: ['albums'],
       })
-    }
+    },
   })
 
   async function handleDelete() {
     try {
       if (filesIds.length === 0) {
-        toast.error("Select files to delete")
+        toast.error('Select files to delete')
         return
       }
 
       await deleteFilesMutation({
         filesIds,
-        albumId
+        albumId,
       })
 
       cleanSelectedFiles()
 
-      toast.success("Files deleted successfully")
+      toast.success('Files deleted successfully')
     } catch (error) {
-      toast.error("Error deleting files")
+      toast.error('Error deleting files')
     }
   }
 

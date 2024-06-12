@@ -1,4 +1,4 @@
-import { api } from "../lib/axios"
+import { api } from '../lib/axios'
 
 interface UploadFileParams {
   file: File
@@ -7,7 +7,7 @@ interface UploadFileParams {
 
 export function uploadFile(params: UploadFileParams) {
   const formData = new FormData()
-  
+
   formData.append('file', params.file)
   formData.append('albumId', params.albumId)
 

@@ -1,8 +1,9 @@
-import clsx from "clsx"
+import clsx from 'clsx'
 
-import { Album } from "@/app/api/get-albums"
-import { AlbumCard } from "./album-card"
-import { AlbumCardSkeleton } from "./album-card-skeleton"
+import { Album } from '@/app/api/get-albums'
+
+import { AlbumCard } from './album-card'
+import { AlbumCardSkeleton } from './album-card-skeleton'
 
 interface AlbumsGridProps {
   albums: Album[]
@@ -10,11 +11,10 @@ interface AlbumsGridProps {
 }
 
 export function AlbumsGrid({ isLoading, albums }: AlbumsGridProps) {
-
   if (albums && albums.length === 0 && !isLoading) {
     return (
-      <div className="flex items-center justify-center my-32">
-        <p className="text-center text-gray-600 text-lg">No albums found</p>
+      <div className="my-32 flex items-center justify-center">
+        <p className="text-center text-lg text-gray-600">No albums found</p>
       </div>
     )
   }
@@ -22,22 +22,20 @@ export function AlbumsGrid({ isLoading, albums }: AlbumsGridProps) {
   return (
     <div
       className={clsx(
-        'mt-4 h-auto grid grid-cols-1 gap-6 md:grid-cols-5 auto-rows-auto',
+        'mt-4 grid h-auto auto-rows-auto grid-cols-1 gap-6 md:grid-cols-5',
         albums &&
-        albums.length === 0 &&
-        !isLoading &&
-        'mt-[150px] md:grid-cols-1',
+          albums.length === 0 &&
+          !isLoading &&
+          'mt-[150px] md:grid-cols-1',
       )}
     >
-      {isLoading ? (
-        Array.from({ length: 5 }).map((_: unknown, index: number) => (
-          <AlbumCardSkeleton key={index} />
-        ))
-      ) : (
-        albums.map((album: any) => (
-          <AlbumCard key={album.id} album={album} />
-        ))
-      )}
+      {isLoading
+        ? Array.from({ length: 5 }).map((_: unknown, index: number) => (
+            <AlbumCardSkeleton key={index} />
+          ))
+        : albums.map((album: any) => (
+            <AlbumCard key={album.id} album={album} />
+          ))}
     </div>
   )
 }

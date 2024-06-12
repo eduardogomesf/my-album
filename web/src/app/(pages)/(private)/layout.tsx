@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { Header } from '@/app/components/header'
 import { Footer } from '@/app/components/footer'
+import { Header } from '@/app/components/header'
 
 interface PrivateLayoutProps {
   children: ReactNode
@@ -9,7 +9,7 @@ interface PrivateLayoutProps {
 
 export default function PrivateLayout(props: PrivateLayoutProps) {
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       <Header />
       {props.children}
       <Footer />

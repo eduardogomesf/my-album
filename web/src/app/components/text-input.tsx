@@ -14,7 +14,7 @@ type InputProps = InputCustomProps & InputHTMLAttributes<HTMLInputElement>
 const TextInput = forwardRef<HTMLInputElement, InputProps>(
   ({ label, labelId, error, ...props }, ref) => {
     return (
-      <div className="flex flex-col items-start gap-1 w-full">
+      <div className="flex w-full flex-col items-start gap-1">
         {label && <Label htmlFor={labelId}>{label}</Label>}
         <input
           className="w-full rounded-md border bg-white p-3 text-sm focus:border-gray-800 focus:outline-none"

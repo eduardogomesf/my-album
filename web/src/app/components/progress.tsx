@@ -9,11 +9,11 @@ type ProgressProps = {
 export function Progress({ progress = 50 }: ProgressProps) {
   return (
     <RadixProgress.Root
-      className="relative h-2 w-full overflow-hidden rounded-full bg-02 md:max-w-[300px] bg-gray-400"
+      className="bg-02 relative h-2 w-full overflow-hidden rounded-full bg-gray-400 md:max-w-[300px]"
       value={progress}
     >
       <RadixProgress.Indicator
-        className="h-full w-full bg-12 bg-gray-500"
+        className="bg-12 h-full w-full bg-gray-500"
         style={{ transform: `translateX(-${100 - progress}%)` }}
       />
     </RadixProgress.Root>

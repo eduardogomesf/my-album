@@ -10,9 +10,9 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { signUp } from '@/app/api/sign-up'
+import { Button } from '@/app/components/button'
 import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
-import { Button } from '@/app/components/button'
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, { message: 'First name is required' }),
@@ -136,11 +136,7 @@ export default function SignUp() {
             error={errors.password?.message}
           />
 
-          <Button
-            className='py-2'
-            type="submit"
-            disabled={isSubmitting}
-          >
+          <Button className="py-2" type="submit" disabled={isSubmitting}>
             Sign up
           </Button>
         </form>

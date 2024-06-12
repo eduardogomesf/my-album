@@ -10,9 +10,9 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { signIn } from '@/app/api/sign-in'
+import { Button } from '@/app/components/button'
 import { TextInput } from '@/app/components/text-input'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
-import { Button } from '@/app/components/button'
 
 const signInSchema = z.object({
   email: z.string().email({ message: 'Invalid email' }),
@@ -96,11 +96,7 @@ export default function SignIn() {
             error={errors.password?.message}
           />
 
-          <Button
-            className='py-2'
-            type="submit"
-            disabled={isSubmitting}
-          >
+          <Button className="py-2" type="submit" disabled={isSubmitting}>
             Sign in
           </Button>
         </form>

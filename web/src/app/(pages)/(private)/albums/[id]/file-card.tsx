@@ -1,10 +1,10 @@
-import Image from "next/image"
+import clsx from 'clsx'
+import Image from 'next/image'
+import { Calendar, CheckCircle, Circle, PlayCircle } from 'phosphor-react'
+import { useState } from 'react'
 
-import { File } from "@/app/api/get-album-files"
-import { formatDate } from "@/app/util/date"
-import { Calendar, CheckCircle, Circle, PlayCircle } from "phosphor-react"
-import clsx from "clsx"
-import { useState } from "react"
+import { File } from '@/app/api/get-album-files'
+import { formatDate } from '@/app/util/date'
 
 interface FileCardProps {
   file: File
@@ -12,7 +12,11 @@ interface FileCardProps {
   onSelect: (id: string) => void
 }
 
-export function FileCard({ file, hasSameDateAsPrevious, onSelect }: FileCardProps) {
+export function FileCard({
+  file,
+  hasSameDateAsPrevious,
+  onSelect,
+}: FileCardProps) {
   const [isSelected, setIsSelected] = useState(false)
 
   function handleSelect() {
@@ -25,34 +29,27 @@ export function FileCard({ file, hasSameDateAsPrevious, onSelect }: FileCardProp
   }
 
   return (
-    <div
-      className={clsx(
-        "flex justify-start gap-1 flex-col relative group",
-      )}
-    >
+    <div className={clsx('group relative flex flex-col justify-start gap-1')}>
       <span
         className={clsx(
-          "text-sm text-gray-900 font-normal flex items-center gap-1",
-          hasSameDateAsPrevious && "invisible",
+          'flex items-center gap-1 text-sm font-normal text-gray-900',
+          hasSameDateAsPrevious && 'invisible',
         )}
       >
-        <Calendar className="text-gray-900 w-4 h-4" />
+        <Calendar className="h-4 w-4 text-gray-900" />
         {formatDate(file.updatedAt)}
       </span>
 
-      <button
-        className="relative h-80 w-full"
-        onClick={handleClick}
-      >
+      <button className="relative h-80 w-full" onClick={handleClick}>
         <Image
           src={file.url.replace('s3', 'localhost')}
           alt={file.name}
           className={clsx(
-            "rounded-lg hover:opacity-80 duration-300 transition-opacity",
-            isSelected && "opacity-70 border border-gray-500"
+            'rounded-lg transition-opacity duration-300 hover:opacity-80',
+            isSelected && 'border border-gray-500 opacity-70',
           )}
           fill={true}
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: 'cover' }}
           priority
           sizes="100%"
         />
@@ -61,24 +58,20 @@ export function FileCard({ file, hasSameDateAsPrevious, onSelect }: FileCardProp
       <button
         onClick={handleSelect}
         className={clsx(
-          "absolute top-8 left-2 group-hover:block",
+          'absolute left-2 top-8 group-hover:block',
           isSelected ? 'block' : 'hidden',
         )}
       >
-        {
-          isSelected ? (
-            <CheckCircle className="w-6 h-6" />
-          ) : (
-            <Circle className="w-6 h-6" />
-          )
-        }
+        {isSelected ? (
+          <CheckCircle className="h-6 w-6" />
+        ) : (
+          <Circle className="h-6 w-6" />
+        )}
       </button>
 
       {file.type === 'video' && (
-        <div
-          className="absolute top-8 right-5"
-        >
-          <PlayCircle className="w-8 h-8" />
+        <div className="absolute right-5 top-8">
+          <PlayCircle className="h-8 w-8" />
         </div>
       )}
     </div>

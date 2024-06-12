@@ -29,10 +29,7 @@ export function Header() {
           <span className="text-lg font-semibold text-gray-900">MyAlbum</span>
         </Link>
 
-        <Avatar
-          firstName={user?.firstName ?? ''}
-          email={user?.email ?? ''}
-        />
+        <Avatar firstName={user?.firstName ?? ''} email={user?.email ?? ''} />
       </header>
     </div>
   )

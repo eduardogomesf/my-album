@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRef } from "react"
-import { toast } from "sonner"
-import { uploadFile } from "@/app/api/upload-file"
-import { Plus } from "phosphor-react"
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Plus } from 'phosphor-react'
+import { useRef } from 'react'
+import { toast } from 'sonner'
+
+import { uploadFile } from '@/app/api/upload-file'
 
 interface UploadButtonProps {
   albumId: string
@@ -24,30 +25,28 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       const filesArray = Array.from(files)
 
       await Promise.all(
-        filesArray.map(
-          async (file) => {
-            try {
-              await uploadFileMutation({
-                file,
-                albumId: albumId
-              })
-            } catch (error) {
-              toast.error(`Error uploading file ${file.name}`)
-            }
+        filesArray.map(async (file) => {
+          try {
+            await uploadFileMutation({
+              file,
+              albumId,
+            })
+          } catch (error) {
+            toast.error(`Error uploading file ${file.name}`)
           }
-        )
+        }),
       )
 
       await queryClient.invalidateQueries({
-        queryKey: ['album-files']
+        queryKey: ['album-files'],
       })
 
       await queryClient.invalidateQueries({
-        queryKey: ['current-usage']
+        queryKey: ['current-usage'],
       })
 
       await queryClient.invalidateQueries({
-        queryKey: ['albums']
+        queryKey: ['albums'],
       })
 
       toast.success('Files uploaded successfully')
@@ -63,9 +62,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         onChange={handleFileChange}
         multiple
       />
-      <button
-        onClick={() => inputFileRef.current?.click()}
-      >
+      <button onClick={() => inputFileRef.current?.click()}>
         <Plus className="h-6 w-6" />
       </button>
     </>

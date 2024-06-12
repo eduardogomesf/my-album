@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'phosphor-react'
 import { useRef } from 'react'
+
 import { Button } from './button'
 
 interface ConfirmActionModalProps {
@@ -11,7 +12,13 @@ interface ConfirmActionModalProps {
   onConfirm: () => Promise<void>
 }
 
-export function ConfirmActionModal({ children, title, description, additionalNote, onConfirm }: ConfirmActionModalProps) {
+export function ConfirmActionModal({
+  children,
+  title,
+  description,
+  additionalNote,
+  onConfirm,
+}: ConfirmActionModalProps) {
   const btnRef = useRef<HTMLButtonElement>(null)
 
   function handleCancel() {
@@ -26,9 +33,7 @@ export function ConfirmActionModal({ children, title, description, additionalNot
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger asChild>
-        {children}
-      </Dialog.Trigger>
+      <Dialog.Trigger asChild>{children}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 animate-fade-in-down bg-overlay" />
 
@@ -37,26 +42,17 @@ export function ConfirmActionModal({ children, title, description, additionalNot
             {title}
           </Dialog.Title>
 
-          <span className='text-sm text-gray-500 mt-2'>
-            {additionalNote}
-          </span>
+          <span className="mt-2 text-sm text-gray-500">{additionalNote}</span>
 
-          <Dialog.Description className="text-md text-gray-700 mt-2">
+          <Dialog.Description className="text-md mt-2 text-gray-700">
             {description}
           </Dialog.Description>
 
-          <div className='flex justify-end items-center gap-2 mt-6'>
-            <Button
-              type="button"
-              onClick={handleCancel}
-              contrast={true}
-            >
+          <div className="mt-6 flex items-center justify-end gap-2">
+            <Button type="button" onClick={handleCancel} contrast={true}>
               Cancel
             </Button>
-            <Button
-              type="button"
-              onClick={handleConfirm}
-            >
+            <Button type="button" onClick={handleConfirm}>
               Confirm
             </Button>
           </div>
