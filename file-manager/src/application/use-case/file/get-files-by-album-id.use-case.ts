@@ -55,7 +55,7 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
         extension: file.extension,
         albumId: file.albumId,
         url,
-        updatedAt: file.updatedAt ? new Date(file.updatedAt).toISOString() : ''
+        createdAt: file.createdAt ? new Date(file.createdAt).toISOString() : ''
       }
     }))
 

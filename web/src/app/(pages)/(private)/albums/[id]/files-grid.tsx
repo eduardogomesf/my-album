@@ -45,8 +45,8 @@ export function FilesGrid({ isLoading, files, onSelect, selectedFiles }: FilesGr
             file={file}
             key={file.id}
             hasSameDateAsPrevious={isSameDate(
-              file.updatedAt,
-              files[index - 1]?.updatedAt,
+              file.createdAt,
+              files[index - 1]?.createdAt,
             )}
             onSelect={onSelect}
             isSelected={selectedFiles.includes(file.id)}

@@ -641,7 +641,7 @@
           "type": "string",
           "format": "uri"
         },
-        "updatedAt": {
+        "createdAt": {
           "type": "string",
           "format": "date-time"
         }

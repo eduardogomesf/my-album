@@ -15,7 +15,7 @@ export interface File {
   extension: string
   albumId: string
   url: string
-  updatedAt: string
+  createdAt: string
 }
 
 export interface FilesAndCounts {

@@ -38,7 +38,7 @@ implements
         skip: offset,
         take: limit,
         orderBy: {
-          updatedAt: 'desc'
+          createdAt: 'desc'
         }
       })
       return files.map(file => FileMapper.toEntity(file))

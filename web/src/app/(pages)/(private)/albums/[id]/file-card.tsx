@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import Image from 'next/image'
 import { Calendar, CheckCircle, Circle, PlayCircle } from 'phosphor-react'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import { File } from '@/app/api/get-album-files'
 import { formatDate } from '@/app/util/date'
@@ -67,7 +67,7 @@ export function FileCard({
         )}
       >
         <Calendar className="h-4 w-4 text-gray-900" />
-        {formatDate(file.updatedAt)}
+        {formatDate(file.createdAt)}
       </span>
 
       <button className="relative h-80 w-full" onClick={handleClick}>
