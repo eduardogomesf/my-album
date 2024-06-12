@@ -46,6 +46,10 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         queryKey: ['current-usage']
       })
 
+      await queryClient.invalidateQueries({
+        queryKey: ['albums']
+      })
+
       toast.success('Files uploaded successfully')
     }
   }

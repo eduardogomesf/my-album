@@ -22,6 +22,9 @@ export function DeleteButton({ albumId, filesIds, cleanSelectedFiles }: DeleteBu
       queryClient.invalidateQueries({
         queryKey: ['current-usage']
       })
+      queryClient.invalidateQueries({
+        queryKey: ['albums']
+      })
     }
   })
 
