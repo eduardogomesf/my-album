@@ -24,6 +24,10 @@ export interface FilesAndCounts {
   page: number
   total: number
   totalOfPages: number
+  album: {
+    id: string
+    name: string  
+  }
 }
 
 export async function getAlbumFiles(params: GetAlbumFilesParams): Promise<FilesAndCounts> {

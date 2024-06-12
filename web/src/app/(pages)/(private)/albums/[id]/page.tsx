@@ -27,7 +27,7 @@ export default function Album() {
 
   const { id: albumId } = useParams<{ id: string }>()
 
-  const { data: files = {} as FilesAndCounts, isLoading: isFilesLoading } = useQuery({
+  const { data: filesResult = {} as FilesAndCounts, isLoading: isFilesLoading } = useQuery({
     queryKey: ['album-files', { albumId }],
     queryFn: async () => getAlbumFiles({ albumId, page: 0, limit: 10 })
   })
@@ -40,7 +40,7 @@ export default function Album() {
 
       <main className="mt-8">
         <div className="w-full flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Album name</h2>
+          <h2 className="text-2xl font-bold">{filesResult?.album?.name ?? 'Album name...'}</h2>
 
           <div className="flex items-center gap-4">
             {selectedFiles.length === 0 && <UploadButton albumId={albumId} />}
@@ -56,11 +56,11 @@ export default function Album() {
 
         <FilesGrid
           isLoading={isFilesLoading}
-          files={files?.files}
-          limit={files?.limit}
-          page={files?.page}
-          total={files?.total}
-          totalOfPages={files?.totalOfPages}
+          files={filesResult?.files}
+          limit={filesResult?.limit}
+          page={filesResult?.page}
+          total={filesResult?.total}
+          totalOfPages={filesResult?.totalOfPages}
           onSelect={handleSelectFile}
         />
       </main>
