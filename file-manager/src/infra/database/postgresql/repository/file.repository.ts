@@ -1,4 +1,4 @@
-import { OutboxType } from '@prisma/client'
+import { OutboxType, Prisma } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import {
   type GetFilesByAlbumIdRepository,
@@ -147,11 +147,14 @@ implements
     userId: string
   ): Promise<File[]> {
     try {
-      const fieldsInParams = PrismaQueryHelper.formatInParam(filesIds)
+      const fieldsInParams = Prisma.join(filesIds)
 
       const rawFiles = await prisma.$queryRaw<any[]>`
         SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id IN (${fieldsInParams}) and a.user_id = ${userId} and a.id = ${albumId}
       `
+
+      console.log('fieldsInParams', fieldsInParams)
+      console.log('rawFiles', rawFiles)
 
       if (!rawFiles?.length) {
         return []
