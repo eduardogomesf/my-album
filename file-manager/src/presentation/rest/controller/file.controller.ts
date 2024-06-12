@@ -21,44 +21,53 @@ export class FileController {
     private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase
   ) {}
 
-  async add(request: Request, response: Response): Promise<Response> {
+  async add(request: Request, response: Response): Promise<void> {
     const correlationId = request.tracking.correlationId
 
-    let fullPath = ''
+    const filePaths = [] as string[]
 
-    this.logger.info('Add file request received', correlationId)
+    this.logger.info('Add files request received', correlationId)
 
     try {
-      if (!request?.file) {
-        this.logger.warn('File not found in the request', correlationId)
-        return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'File not found in the request'
+      if (!request.files || !Array.isArray(request.files) || request.files.length === 0) {
+        this.logger.warn('Files not found in the request', correlationId)
+        response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: 'Files not found in the request'
         })
+        return
       }
 
-      const { size, mimetype, encoding, originalname, path } = request?.file
       const { albumId } = request.body
       const { userId } = request.auth
 
-      fullPath = path
+      const rawFiles = Array.from(request.files)
 
-      const extension = getFileExtension(originalname)
+      const files = rawFiles.map(raw => {
+        const { originalname, size, mimetype, encoding, path } = raw
 
-      const file = await fs.readFile(path)
+        filePaths.push(path)
+
+        const extension = getFileExtension(originalname)
+
+        return {
+          size,
+          encoding,
+          type: mimetype,
+          content: null,
+          name: originalname,
+          extension,
+          filepath: path
+        }
+      })
 
       const createUserResult = await this.addNewFileUseCase.execute({
-        size,
-        encoding,
-        type: mimetype,
-        content: file,
-        name: originalname,
-        extension,
-        userId,
-        albumId
+        files,
+        albumId,
+        userId
       })
 
       if (!createUserResult.ok) {
-        this.logger.warn(`File not created: ${createUserResult.message}`, correlationId)
+        this.logger.warn(`Files not uploaded: ${createUserResult.message}`, correlationId)
 
         const httpError = convertErrorToHttpError(
           [{
@@ -68,22 +77,26 @@ export class FileController {
           createUserResult.message ?? HTTP_CODES.BAD_REQUEST.message
         )
 
-        return response.status(httpError.httpCode).json({
+        response.status(httpError.httpCode).json({
           message: httpError.message
         })
+        return
       }
 
-      await fs.rm(fullPath, { force: true }).catch(() => { this.logger.error('Error removing file') })
+      this.logger.info('Files created successfully', correlationId)
 
-      this.logger.info('File created successfully', correlationId)
-
-      return response.status(201).send()
+      response.status(201).json(createUserResult.data)
     } catch (error) {
-      await fs.rm(fullPath, { force: true }).catch(() => { this.logger.error('Error removing file') })
-      this.logger.error('Error uploading file', correlationId)
+      this.logger.error('Error uploading files', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
-      return response.status(500).send()
+      response.status(500).send()
+    } finally {
+      for (const filePath of filePaths) {
+        await fs.rm(filePath, { force: true }).catch(() => {
+          this.logger.error('Error removing file from disk', correlationId)
+        })
+      }
     }
   }
 

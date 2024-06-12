@@ -11,14 +11,16 @@ import {
 import { ERROR_MESSAGES } from '../../constant'
 
 export interface AddNewFileParams {
-  name: string
+  files: Array<{
+    name: string
+    size: number
+    encoding: string
+    type: string
+    extension: string
+    filepath: string
+  }>
   albumId: string
-  size: number
-  encoding: string
-  type: string
-  extension: string
   userId: string
-  content: Buffer
 }
 
 export class AddNewFileUseCase implements UseCase {

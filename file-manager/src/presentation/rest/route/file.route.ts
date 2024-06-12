@@ -37,7 +37,7 @@ export function getFileRouter(useCases: UseCases): Router {
 
   router.post(
     '/files',
-    upload.single('file'),
+    upload.array('files', 50),
     getAuthInfoFromHeaders,
     fileController.add.bind(fileController)
   )
