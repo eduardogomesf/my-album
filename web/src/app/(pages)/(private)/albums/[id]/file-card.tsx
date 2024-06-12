@@ -10,14 +10,15 @@ interface FileCardProps {
   file: File
   hasSameDateAsPrevious: boolean
   onSelect: (id: string) => void
+  isSelected: boolean
 }
 
 export function FileCard({
   file,
   hasSameDateAsPrevious,
   onSelect,
+  isSelected,
 }: FileCardProps) {
-  const [isSelected, setIsSelected] = useState(false)
 
   const videoRef = useRef<HTMLVideoElement>(null);
   let timeoutId: NodeJS.Timeout | null = null;
@@ -25,7 +26,6 @@ export function FileCard({
   const isImage = file.type === 'image'
 
   function handleSelect() {
-    setIsSelected(!isSelected)
     onSelect(file.id)
   }
 

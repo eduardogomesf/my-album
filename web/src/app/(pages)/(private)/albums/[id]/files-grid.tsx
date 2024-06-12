@@ -14,9 +14,10 @@ interface FilesGrid {
   total: number
   totalOfPages: number
   onSelect: (id: string) => void
+  selectedFiles: string[]
 }
 
-export function FilesGrid({ isLoading, files, onSelect }: FilesGrid) {
+export function FilesGrid({ isLoading, files, onSelect, selectedFiles }: FilesGrid) {
   if (files && files.length === 0 && !isLoading) {
     return (
       <div className="my-40 flex items-center justify-center">
@@ -48,6 +49,7 @@ export function FilesGrid({ isLoading, files, onSelect }: FilesGrid) {
               files[index - 1]?.updatedAt,
             )}
             onSelect={onSelect}
+            isSelected={selectedFiles.includes(file.id)}
           />
         ))}
     </div>

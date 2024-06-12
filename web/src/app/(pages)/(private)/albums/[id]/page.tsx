@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { ArrowLeft } from 'phosphor-react'
+import { ArrowLeft, XCircle } from 'phosphor-react'
 import { useState } from 'react'
 
 import { FilesAndCounts, getAlbumFiles } from '@/app/api/get-album-files'
@@ -45,9 +45,22 @@ export default function Album() {
 
       <main className="mt-8">
         <div className="flex w-full items-center justify-between">
-          <h2 className="text-2xl font-bold">
-            {filesResult?.album?.name ?? 'Album name...'}
-          </h2>
+          <div className='flex items-center gap-2'>
+            <h2 className="text-2xl font-bold">
+              {filesResult?.album?.name ?? 'Album name...'}
+            </h2>
+
+            <div className='flex items-center gap-1'>
+              <span className="text-sm text-gray-600 font-normal">
+                {selectedFiles.length > 0 ? `(${selectedFiles.length} of ${filesResult.total} files selected)` : `(${filesResult.total} files)`}
+              </span>
+              {selectedFiles.length > 0 && (
+                <button onClick={cleanSelectedFiles}>
+                  <XCircle className='w-4 h-4 text-gray-600' />
+                </button>
+              )}
+            </div>
+          </div>
 
           <div className="flex items-center gap-4">
             {selectedFiles.length === 0 && <UploadButton albumId={albumId} />}
@@ -69,6 +82,7 @@ export default function Album() {
           total={filesResult?.total}
           totalOfPages={filesResult?.totalOfPages}
           onSelect={handleSelectFile}
+          selectedFiles={selectedFiles}
         />
       </main>
     </div>
