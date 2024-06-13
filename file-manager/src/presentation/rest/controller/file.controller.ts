@@ -9,7 +9,7 @@ import { Logger } from '@/shared'
 import { MissingFieldsHelper, convertErrorToHttpError } from '../helper'
 import { HTTP_CODES } from '../constant'
 import { ERROR_MESSAGES } from '@/application/constant'
-import { type FilesMetadata } from '@/application/interface'
+import { type FileMetadata } from '@/application/interface'
 
 export class FileController {
   private readonly logger = new Logger('FileController')
@@ -28,7 +28,7 @@ export class FileController {
 
     try {
       const {
-        files = [] as FilesMetadata[],
+        files = [] as FileMetadata[],
         albumId
       } = request.body
 

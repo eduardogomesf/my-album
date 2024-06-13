@@ -7,7 +7,7 @@ import {
 } from '../factory/repository'
 import {
   generateAddNewAlbumUseCase,
-  generateAddNewFileUseCase,
+  generatePreUploadAnalysisUseCase,
   generateAddNewUserUseCase,
   generateDeleteAlbumUseCase,
   generateDeleteFileUseCase,
@@ -48,11 +48,10 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
 
   // use-cases
   const addNewUserUseCase = generateAddNewUserUseCase(userRepository, userRepository)
-  const addNewFileUseCase = generateAddNewFileUseCase(
+  const preUploadAnalysisUseCase = generatePreUploadAnalysisUseCase(
+    albumRepository,
     fileRepository,
-    fileStorageService,
-    fileRepository,
-    albumRepository
+    fileStorageService
   )
   const addNewAlbumUseCase = generateAddNewAlbumUseCase(userRepository, albumRepository, albumRepository)
   const getAlbumsUseCase = generateGetAlbumsUseCase(albumRepository)
@@ -65,7 +64,7 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
 
   return {
     addNewUserUseCase,
-    addNewFileUseCase,
+    preUploadAnalysisUseCase,
     addNewAlbumUseCase,
     getAlbumsUseCase,
     getFilesByAlbumIdUseCase,
