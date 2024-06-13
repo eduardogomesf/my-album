@@ -1,21 +1,20 @@
 import {
-  type SaveFileStorageServiceDTO,
-  type SaveFileStorageService,
-  type GetFileUrlService,
-  type DeleteFileFromStorageService
-} from '@/application/protocol'
-import {
-  PutObjectCommand,
   S3Client,
-  type StorageClass,
-  CreateBucketCommand,
   GetObjectCommand,
   type GetObjectCommandInput,
-  DeleteObjectCommand
+  DeleteObjectCommand,
+  PutObjectCommand
 } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
+import {
+  type GetFileUrlService,
+  type DeleteFileFromStorageService,
+  type GenerateUploadUrlService,
+  type GenerateUploadUrlServiceDTO
+} from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { ENVS } from '@/shared'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import {
   type DeleteOneByIdOutboxRepository,
   type GetOneByAggregateIdAndTypeOutboxRepository,
@@ -23,7 +22,7 @@ import {
 } from './interface'
 import { OutboxType } from '@prisma/client'
 
-export class S3FileStorage implements SaveFileStorageService, GetFileUrlService, DeleteFileFromStorageService {
+export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageService, GenerateUploadUrlService {
   private readonly client: S3Client
 
   constructor(
@@ -42,24 +41,25 @@ export class S3FileStorage implements SaveFileStorageService, GetFileUrlService,
     })
   }
 
-  async save(params: SaveFileStorageServiceDTO): Promise<null> {
-    await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
+  async generateUploadUrl (params: GenerateUploadUrlServiceDTO): Promise<string> {
+    const expiration = 60 * ENVS.S3.UPLOAD_URL_EXPIRATION_IN_MINUTES
 
-    const key = `${params.userId}/${params.fileId}`
-
-    const command = new PutObjectCommand({
+    const payload = new PutObjectCommand({
       Bucket: ENVS.S3.BUCKET_NAME,
-      Key: key,
-      Body: params.content,
-      ContentType: params.type,
+      Key: `${params.userId}/${params.id}`,
+      ContentType: params.mimetype,
+      ContentLength: params.size,
       ContentEncoding: params.encoding,
-      ACL: 'private',
-      StorageClass: ENVS.S3.STORAGE_CLASS as StorageClass
+      ACL: 'private'
     })
 
-    await this.client.send(command)
+    const url = await getSignedUrl(
+      this.client,
+      payload,
+      { expiresIn: expiration }
+    )
 
-    return null
+    return url
   }
 
   async getFileUrl(file: File, userId: string): Promise<string> {

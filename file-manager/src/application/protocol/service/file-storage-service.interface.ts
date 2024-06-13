@@ -10,7 +10,7 @@ export interface DeleteFileFromStorageService {
   delete: (file: File, userId: string) => Promise<boolean>
 }
 
-type GenerateUploadUrlServiceDTO = FileMetadata & { userId: string }
+export type GenerateUploadUrlServiceDTO = FileMetadata & { userId: string }
 
 export interface GenerateUploadUrlService {
   generateUploadUrl: (params: GenerateUploadUrlServiceDTO) => Promise<string>
