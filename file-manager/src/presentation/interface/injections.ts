@@ -1,6 +1,5 @@
 import {
   type AddNewAlbumUseCase,
-  type AddNewFileUseCase,
   type AddNewUserUseCase,
   type GetFilesByAlbumIdUseCase,
   type GetAlbumsUseCase,
@@ -8,13 +7,13 @@ import {
   type DeleteFilesUseCase,
   type DeleteAlbumUseCase,
   type RestoreAlbumUseCase,
-  type GetAvailableStorageUseCase
+  type GetAvailableStorageUseCase,
+  type PreUploadAnalysisUseCase
 } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 
 export interface UseCases {
   addNewUserUseCase: AddNewUserUseCase
-  addNewFileUseCase: AddNewFileUseCase
   addNewAlbumUseCase: AddNewAlbumUseCase
   getAlbumsUseCase: GetAlbumsUseCase
   getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase
@@ -23,6 +22,7 @@ export interface UseCases {
   deleteAlbumUseCase: DeleteAlbumUseCase
   restoreAlbumUseCase: RestoreAlbumUseCase
   getAvailableStorageUseCase: GetAvailableStorageUseCase
+  preUploadAnalysisUseCase: PreUploadAnalysisUseCase
 }
 
 export interface Injections extends UseCases {

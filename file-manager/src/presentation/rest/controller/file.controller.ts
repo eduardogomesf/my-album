@@ -1,35 +1,38 @@
 import { type Request, type Response } from 'express'
-import * as fs from 'node:fs/promises'
 import {
   type MoveFilesToOtherAlbumUseCase,
-  type AddNewFileUseCase,
   type DeleteFilesUseCase,
-  type GetAvailableStorageUseCase
+  type GetAvailableStorageUseCase,
+  type PreUploadAnalysisUseCase
 } from '@/application/use-case'
 import { Logger } from '@/shared'
-import { MissingFieldsHelper, convertErrorToHttpError, getFileExtension } from '../helper'
+import { MissingFieldsHelper, convertErrorToHttpError } from '../helper'
 import { HTTP_CODES } from '../constant'
 import { ERROR_MESSAGES } from '@/application/constant'
+import { type FilesMetadata } from '@/application/interface'
 
 export class FileController {
   private readonly logger = new Logger('FileController')
 
   constructor(
-    private readonly addNewFileUseCase: AddNewFileUseCase,
+    private readonly preUploadAnalysisUseCase: PreUploadAnalysisUseCase,
     private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase,
     private readonly deleteFileUseCase: DeleteFilesUseCase,
     private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase
   ) {}
 
-  async add(request: Request, response: Response): Promise<void> {
+  async preUpload(request: Request, response: Response): Promise<void> {
     const correlationId = request.tracking.correlationId
 
-    const filePaths = [] as string[]
-
-    this.logger.info('Add files request received', correlationId)
+    this.logger.info('Pre upload analysis request received', correlationId)
 
     try {
-      if (!request.files || !Array.isArray(request.files) || request.files.length === 0) {
+      const {
+        files = [] as FilesMetadata[],
+        albumId
+      } = request.body
+
+      if (files?.length === 0) {
         this.logger.warn('Files not found in the request', correlationId)
         response.status(HTTP_CODES.BAD_REQUEST.code).json({
           message: 'Files not found in the request'
@@ -37,44 +40,23 @@ export class FileController {
         return
       }
 
-      const { albumId } = request.body
       const { userId } = request.auth
 
-      const rawFiles = Array.from(request.files)
-
-      const files = rawFiles.map(raw => {
-        const { originalname, size, mimetype, encoding, path } = raw
-
-        filePaths.push(path)
-
-        const extension = getFileExtension(originalname)
-
-        return {
-          size,
-          encoding,
-          type: mimetype,
-          content: null,
-          name: originalname,
-          extension,
-          filepath: path
-        }
-      })
-
-      const createUserResult = await this.addNewFileUseCase.execute({
+      const preUploadAnalysisResult = await this.preUploadAnalysisUseCase.execute({
         files,
         albumId,
         userId
       })
 
-      if (!createUserResult.ok) {
-        this.logger.warn(`Files not uploaded: ${createUserResult.message}`, correlationId)
+      if (!preUploadAnalysisResult.ok) {
+        this.logger.warn(`Files pre upload analysis not finished: ${preUploadAnalysisResult.message}`, correlationId)
 
         const httpError = convertErrorToHttpError(
           [{
             message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
             httpCode: HTTP_CODES.NOT_FOUND.code
           }],
-          createUserResult.message ?? HTTP_CODES.BAD_REQUEST.message
+          preUploadAnalysisResult.message ?? HTTP_CODES.BAD_REQUEST.message
         )
 
         response.status(httpError.httpCode).json({
@@ -83,20 +65,14 @@ export class FileController {
         return
       }
 
-      this.logger.info('Files created successfully', correlationId)
+      this.logger.info('Files pre upload analysis finished successfully', correlationId)
 
-      response.status(201).json(createUserResult.data)
+      response.status(200).json(preUploadAnalysisResult.data)
     } catch (error) {
-      this.logger.error('Error uploading files', correlationId)
+      this.logger.error('Error performing pre upload analysis', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       response.status(500).send()
-    } finally {
-      for (const filePath of filePaths) {
-        await fs.rm(filePath, { force: true }).catch(() => {
-          this.logger.error('Error removing file from disk', correlationId)
-        })
-      }
     }
   }
 

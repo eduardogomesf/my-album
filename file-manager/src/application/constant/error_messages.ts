@@ -1,3 +1,5 @@
+import { ENVS } from '../../shared'
+
 export const ERROR_MESSAGES = {
   USER: {
     NOT_FOUND: 'User not found'
@@ -16,6 +18,8 @@ export const ERROR_MESSAGES = {
   FILE: {
     NOT_FOUND: 'File not found',
     INVALID_EXTENSION: 'Invalid extension',
-    MANY_NOT_FOUND: 'Files not found'
+    MANY_NOT_FOUND: 'Files not found',
+    NO_FREE_SPACE: 'No free space available',
+    TOO_LARGE: `The file is too large. Max ${ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB} MB`
   }
 } as const
