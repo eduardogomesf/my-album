@@ -96,8 +96,8 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
-      - name: add-file
-        paths: ["/files"]
+      - name: pre-upload
+        paths: ["/files/pre-upload"]
         methods: ["POST", "OPTIONS"]
         https_redirect_status_code: 426
         strip_path: false
