@@ -153,7 +153,7 @@ implements
       const fieldsInParams = Prisma.join(filesIds)
 
       const rawFiles = await prisma.$queryRaw<any[]>`
-        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id IN (${fieldsInParams}) and a.user_id = ${userId} and a.id = ${albumId} and f.uploaded = true
+        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id IN (${fieldsInParams}) and a.user_id = ${userId} and a.id = ${albumId}
       `
 
       if (!rawFiles?.length) {

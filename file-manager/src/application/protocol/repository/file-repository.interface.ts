@@ -55,3 +55,7 @@ export interface GetFilesByIdsAndAlbumIdRepository {
     userId: string
   ) => Promise<File[]>
 }
+
+export interface MarkFilesAsUploadedRepository {
+  markAsUploaded: (filesIds: string[]) => Promise<void>
+}
