@@ -33,7 +33,8 @@ implements
     try {
       const files = await prisma.file.findMany({
         where: {
-          albumId
+          albumId,
+          uploaded: true
         },
         skip: offset,
         take: limit,
@@ -56,6 +57,7 @@ implements
           name: file.name,
           size: file.size,
           type: file.type,
+          uploaded: file.uploaded,
           encoding: file.encoding,
           extension: file.extension,
           albumId: file.albumId
@@ -70,7 +72,7 @@ implements
   async getUsage(userId: string): Promise<{ usage: number }> {
     try {
       const usageRaw = await prisma.$queryRaw<Array<{ usage: number }>>`
-        SELECT SUM(size) as usage FROM "files" WHERE "album_id" IN (SELECT id FROM "albums" WHERE "user_id" = ${userId})
+        SELECT SUM(size) as usage FROM "files" f WHERE "album_id" IN (SELECT id FROM "albums" WHERE "user_id" = ${userId}) and f.uploaded = true
       `
 
       const usage = usageRaw[0]?.usage ? Number(usageRaw[0]?.usage) : 0
@@ -131,7 +133,8 @@ implements
     try {
       const numberOfFiles = await prisma.file.count({
         where: {
-          albumId
+          albumId,
+          uploaded: true
         }
       })
       return numberOfFiles
@@ -150,11 +153,8 @@ implements
       const fieldsInParams = Prisma.join(filesIds)
 
       const rawFiles = await prisma.$queryRaw<any[]>`
-        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id IN (${fieldsInParams}) and a.user_id = ${userId} and a.id = ${albumId}
+        SELECT f.* FROM files f JOIN albums a ON f.album_id = a.id WHERE f.id IN (${fieldsInParams}) and a.user_id = ${userId} and a.id = ${albumId} and f.uploaded = true
       `
-
-      console.log('fieldsInParams', fieldsInParams)
-      console.log('rawFiles', rawFiles)
 
       if (!rawFiles?.length) {
         return []

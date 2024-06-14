@@ -51,7 +51,8 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const preUploadAnalysisUseCase = generatePreUploadAnalysisUseCase(
     albumRepository,
     fileRepository,
-    fileStorageService
+    fileStorageService,
+    fileRepository
   )
   const addNewAlbumUseCase = generateAddNewAlbumUseCase(userRepository, albumRepository, albumRepository)
   const getAlbumsUseCase = generateGetAlbumsUseCase(albumRepository)

@@ -11,6 +11,7 @@ export class FileMapper {
       type: file.type,
       extension: file.extension,
       albumId: file.albumId,
+      uploaded: file.uploaded,
       createdAt: file.createdAt,
       updatedAt: file.updatedAt
     })

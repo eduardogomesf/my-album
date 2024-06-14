@@ -3,7 +3,8 @@ import {
   GetObjectCommand,
   type GetObjectCommandInput,
   DeleteObjectCommand,
-  PutObjectCommand
+  PutObjectCommand,
+  CreateBucketCommand
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -42,6 +43,8 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
   }
 
   async generateUploadUrl (params: GenerateUploadUrlServiceDTO): Promise<string> {
+    await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
+
     const expiration = 60 * ENVS.S3.UPLOAD_URL_EXPIRATION_IN_MINUTES
 
     const payload = new PutObjectCommand({
@@ -51,6 +54,7 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
       ContentLength: params.size,
       ContentEncoding: params.encoding,
       ACL: 'private'
+
     })
 
     const url = await getSignedUrl(

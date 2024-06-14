@@ -16,15 +16,24 @@ import {
 import {
   type GetCurrentStorageUsageRepository,
   type GetAlbumByIdRepository,
-  type GenerateUploadUrlService
+  type GenerateUploadUrlService,
+  type SaveFileRepository
 } from '../../protocol'
-import { megaBytesToBytes, getFileExtension, isValidFileExtension, hasValidFileSize } from '../../helper'
+import {
+  megaBytesToBytes,
+  getFileExtension,
+  isValidFileExtension,
+  hasValidFileSize,
+  getFileTypeFromMimeType
+} from '../../helper'
+import { File } from '@/domain/entity'
 
 export class PreUploadAnalysisUseCase implements UseCase {
   constructor(
     private readonly getAlbumByIdRepository: GetAlbumByIdRepository,
     private readonly getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository,
-    private readonly generateUploadUrlService: GenerateUploadUrlService
+    private readonly generateUploadUrlService: GenerateUploadUrlService,
+    private readonly saveFileRepository: SaveFileRepository
   ) {}
 
   async execute (params: PreUploadAnalysisUseCaseParams): Promise<UseCaseResponse<PreUploadAnalysisUseCaseResponse>> {
@@ -67,7 +76,7 @@ export class PreUploadAnalysisUseCase implements UseCase {
       notAllowedDueToAvailableStorage,
       notAllowedDueToExtension,
       notAllowedDueToSize
-    } = await this.analyzeFiles(orderedFiles, freeSpace, params.userId)
+    } = await this.analyzeFiles(orderedFiles, freeSpace, params.userId, params.albumId)
 
     return {
       ok: true,
@@ -80,7 +89,7 @@ export class PreUploadAnalysisUseCase implements UseCase {
     }
   }
 
-  private async analyzeFiles(files: FileMetadata[], freeSpace: number, userId: string): Promise<PreUploadAnalysisUseCaseResponse> {
+  private async analyzeFiles(files: FileMetadata[], freeSpace: number, userId: string, albumId: string): Promise<PreUploadAnalysisUseCaseResponse> {
     const allowed: AllowedFile[] = []
     const notAllowedDueToExtension: NotAllowedFile[] = []
     const notAllowedDueToSize: NotAllowedFile[] = []
@@ -121,18 +130,31 @@ export class PreUploadAnalysisUseCase implements UseCase {
 
       expectedUsage += file.size
 
-      const url = await this.generateUploadUrlService.generateUploadUrl({
-        id: file.id,
-        originalName: file.originalName,
-        size: file.size,
-        mimetype: file.mimetype,
+      const newFile = new File({
+        albumId,
         encoding: file.encoding,
+        type: getFileTypeFromMimeType(file.mimetype),
+        name: file.originalName,
+        extension,
+        size: file.size,
+        uploaded: false
+      })
+
+      const url = await this.generateUploadUrlService.generateUploadUrl({
+        id: newFile.id,
+        originalName: newFile.name,
+        size: newFile.size,
+        mimetype: file.mimetype,
+        encoding: newFile.encoding,
         userId
       })
 
+      await this.saveFileRepository.save(newFile)
+
       allowed.push({
-        id: file.id,
-        uploadUrl: url
+        id: newFile.id,
+        uploadUrl: url,
+        fileId: newFile.id
       })
     }
 

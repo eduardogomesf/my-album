@@ -15,6 +15,7 @@ export interface PreUploadAnalysisUseCaseParams {
 export interface AllowedFile {
   id: string
   uploadUrl: string
+  fileId: string
 }
 
 export interface NotAllowedFile {
