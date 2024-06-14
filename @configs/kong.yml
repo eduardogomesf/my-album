@@ -104,6 +104,14 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
+      - name: post-upload
+        paths: ["/files/post-upload"]
+        methods: ["POST", "OPTIONS"]
+        https_redirect_status_code: 426
+        strip_path: false
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
       - name: move-files
         paths: ["/files/move"]
         methods: ["PUT", "OPTIONS"]
