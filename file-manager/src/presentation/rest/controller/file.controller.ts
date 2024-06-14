@@ -3,7 +3,8 @@ import {
   type MoveFilesToOtherAlbumUseCase,
   type DeleteFilesUseCase,
   type GetAvailableStorageUseCase,
-  type PreUploadAnalysisUseCase
+  type PreUploadAnalysisUseCase,
+  type PostUploadUseCase
 } from '@/application/use-case'
 import { Logger } from '@/shared'
 import { MissingFieldsHelper, convertErrorToHttpError } from '../helper'
@@ -18,7 +19,8 @@ export class FileController {
     private readonly preUploadAnalysisUseCase: PreUploadAnalysisUseCase,
     private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase,
     private readonly deleteFileUseCase: DeleteFilesUseCase,
-    private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase
+    private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase,
+    private readonly postUploadUseCase: PostUploadUseCase
   ) {}
 
   async preUpload(request: Request, response: Response): Promise<void> {
@@ -206,6 +208,61 @@ export class FileController {
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(500).send()
+    }
+  }
+
+  async postUpload(request: Request, response: Response): Promise<void> {
+    const correlationId = request.tracking.correlationId
+
+    this.logger.info('Post upload request received', correlationId)
+
+    try {
+      const {
+        filesIds = [] as string[],
+        albumId
+      } = request.body
+
+      if (filesIds?.length === 0) {
+        this.logger.warn('Files ids not found in the request', correlationId)
+        response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: 'Files ids not found in the request'
+        })
+        return
+      }
+
+      const { userId } = request.auth
+
+      const postUploadResult = await this.postUploadUseCase.execute({
+        filesIds,
+        albumId,
+        userId
+      })
+
+      if (!postUploadResult.ok) {
+        this.logger.warn(`Post uploaded not finished: ${postUploadResult.message}`, correlationId)
+
+        const httpError = convertErrorToHttpError(
+          [{
+            message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND,
+            httpCode: HTTP_CODES.NOT_FOUND.code
+          }],
+          postUploadResult.message ?? HTTP_CODES.BAD_REQUEST.message
+        )
+
+        response.status(httpError.httpCode).json({
+          message: httpError.message
+        })
+        return
+      }
+
+      this.logger.info('Post upload finished successfully', correlationId)
+
+      response.status(200).send()
+    } catch (error) {
+      this.logger.error('Error performing pre upload analysis', correlationId)
+      this.logger.error(error, correlationId)
+      this.logger.error(error.stack, correlationId)
+      response.status(500).send()
     }
   }
 }

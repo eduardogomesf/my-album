@@ -11,13 +11,20 @@ export function getFileRouter(useCases: UseCases): Router {
     useCases.preUploadAnalysisUseCase,
     useCases.moveFilesToOtherAlbumUseCase,
     useCases.deleteFileUseCase,
-    useCases.getAvailableStorageUseCase
+    useCases.getAvailableStorageUseCase,
+    useCases.postUploadUseCase
   )
 
   router.post(
     '/files/pre-upload',
     getAuthInfoFromHeaders,
     fileController.preUpload.bind(fileController)
+  )
+
+  router.post(
+    '/files/post-upload',
+    getAuthInfoFromHeaders,
+    fileController.postUpload.bind(fileController)
   )
 
   router.put(
