@@ -58,6 +58,8 @@ implements
           name: file.name,
           size: file.size,
           type: file.type,
+          mimeType: file.mimeType,
+          contentHash: file.contentHash,
           uploaded: file.uploaded,
           encoding: file.encoding,
           extension: file.extension,

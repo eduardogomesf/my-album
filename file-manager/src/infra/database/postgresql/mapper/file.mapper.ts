@@ -10,6 +10,8 @@ export class FileMapper {
       encoding: file.encoding,
       type: file.type,
       extension: file.extension,
+      mimeType: file.mimeType,
+      contentHash: file.contentHash,
       albumId: file.albumId,
       uploaded: file.uploaded,
       createdAt: file.createdAt,
