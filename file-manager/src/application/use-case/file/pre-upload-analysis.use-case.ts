@@ -151,7 +151,7 @@ export class PreUploadAnalysisUseCase implements UseCase {
       await this.saveFileRepository.save(newFile)
 
       allowed.push({
-        id: newFile.id,
+        id: file.id,
         uploadUrl: uploadUrlDetails.url,
         fileId: newFile.id,
         fields: uploadUrlDetails.fields
