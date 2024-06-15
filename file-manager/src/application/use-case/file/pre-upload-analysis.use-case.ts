@@ -134,6 +134,8 @@ export class PreUploadAnalysisUseCase implements UseCase {
         albumId,
         encoding: file.encoding,
         type: getFileTypeFromMimeType(file.mimetype),
+        mimeType: file.mimetype,
+        contentHash: file.md5Hash,
         name: file.originalName,
         extension,
         size: file.size,
@@ -144,10 +146,10 @@ export class PreUploadAnalysisUseCase implements UseCase {
         id: newFile.id,
         originalName: newFile.name,
         size: newFile.size,
-        mimetype: file.mimetype,
+        mimetype: newFile.mimeType,
         encoding: newFile.encoding,
-        userId,
-        md5Hash: file.md5Hash
+        md5Hash: newFile.contentHash,
+        userId
       })
 
       await this.saveFileRepository.save(newFile)

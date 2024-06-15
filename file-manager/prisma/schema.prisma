@@ -39,16 +39,18 @@ enum AlbumStatus {
 }
 
 model File {
-  id        String   @id @default(uuid())
-  name      String
-  size      BigInt
-  encoding  String
-  type      String
-  extension String
-  albumId   String   @map("album_id")
-  uploaded  Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  name        String
+  size        BigInt
+  encoding    String
+  type        String
+  mimeType    String   @map("mime_type")
+  contentHash String   @map("content_hash")
+  extension   String
+  albumId     String   @map("album_id")
+  uploaded    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   album Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
 
