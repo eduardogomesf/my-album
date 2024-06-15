@@ -135,7 +135,7 @@ export class PreUploadAnalysisUseCase implements UseCase {
         encoding: file.encoding,
         type: getFileTypeFromMimeType(file.mimetype),
         mimeType: file.mimetype,
-        contentHash: file.md5Hash,
+        contentHash: file.hash,
         name: file.originalName,
         extension,
         size: file.size,
@@ -148,7 +148,7 @@ export class PreUploadAnalysisUseCase implements UseCase {
         size: newFile.size,
         mimetype: newFile.mimeType,
         encoding: newFile.encoding,
-        md5Hash: newFile.contentHash,
+        hash: newFile.contentHash,
         userId
       })
 

@@ -58,10 +58,10 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
         ['starts-with', '$Content-Type', 'image/'],
         ['starts-with', '$Content-Type', 'video/'],
         ['eq', '$key', key],
-        ['eq', '$x-amz-meta-md5-hash', params.md5Hash]
+        ['eq', '$x-amz-meta-hash', params.hash]
       ],
       Fields: {
-        'x-amz-meta-md5-hash': params.md5Hash
+        'x-amz-meta-hash': params.hash
       }
     }
 

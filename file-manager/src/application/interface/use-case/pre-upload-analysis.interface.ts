@@ -4,7 +4,7 @@ export interface FileMetadata {
   size: number
   mimetype: string
   encoding: string
-  md5Hash: string
+  hash: string
 }
 
 export interface PreUploadAnalysisUseCaseParams {
