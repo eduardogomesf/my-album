@@ -23,7 +23,6 @@ import {
   type UpdateOneByIdOutboxRepository
 } from './interface'
 import { OutboxType } from '@prisma/client'
-import { megaBytesToBytes } from '../../application/helper'
 
 export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageService, GenerateUploadUrlService {
   private readonly client: S3Client
@@ -48,7 +47,6 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
     await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
 
     const expiration = 60 * ENVS.S3.UPLOAD_URL_EXPIRATION_IN_MINUTES
-    const maxFileSize = megaBytesToBytes(ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB)
     const key = `${params.userId}/${params.id}`
 
     const payload: PresignedPostOptions = {
@@ -56,7 +54,7 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
       Key: key,
       Expires: expiration,
       Conditions: [
-        ['content-length-range', 0, maxFileSize],
+        ['content-length-range', params.size, params.size],
         ['starts-with', '$Content-Type', 'image/'],
         ['starts-with', '$Content-Type', 'video/'],
         ['eq', '$key', key],
