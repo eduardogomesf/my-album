@@ -3,7 +3,8 @@ import {
   GetObjectCommand,
   type GetObjectCommandInput,
   DeleteObjectCommand,
-  CreateBucketCommand
+  CreateBucketCommand,
+  PutBucketCorsCommand
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { type PresignedPostOptions, createPresignedPost } from '@aws-sdk/s3-presigned-post'
@@ -44,7 +45,7 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
   }
 
   async generateUploadUrl (params: GenerateUploadUrlServiceDTO): Promise<GenerateUploadUrlServiceResponse> {
-    await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
+    await this.createBucket()
 
     const expiration = 60 * ENVS.S3.UPLOAD_URL_EXPIRATION_IN_MINUTES
     const key = `${params.userId}/${params.id}`
@@ -134,5 +135,23 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
     } catch (error) {
       return false
     }
+  }
+
+  private async createBucket(): Promise<void> {
+    await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
+
+    await this.client.send(new PutBucketCorsCommand({
+      Bucket: ENVS.S3.BUCKET_NAME,
+      CORSConfiguration: {
+        CORSRules: [
+          {
+            AllowedHeaders: ['*'],
+            AllowedMethods: ['PUT', 'POST', 'DELETE', 'GET', 'HEAD'],
+            AllowedOrigins: ['*'],
+            MaxAgeSeconds: 3000
+          }
+        ]
+      }
+    }))
   }
 }
