@@ -164,6 +164,7 @@ implements
       const files = rawFiles.map((rawFile) => {
         return FileMapper.toEntity({
           ...rawFile,
+          mimeType: rawFile.mime_type,
           userId: rawFile.user_id,
           albumId: rawFile.album_id,
           createdAt: rawFile.created_at,
