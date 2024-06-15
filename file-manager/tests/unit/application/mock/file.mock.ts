@@ -2,7 +2,6 @@ export const getFileMock = () => ({
   id: 'any-id',
   name: 'any-file',
   size: 1000,
-  encoding: '7bit',
   type: 'image/jpeg',
   extension: 'jpeg',
   albumId: 'any-album-id',

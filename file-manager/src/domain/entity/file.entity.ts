@@ -6,10 +6,8 @@ interface CreateFileDTO {
   id?: string
   name: string
   size: number
-  encoding: string
   type: string
   mimeType: string
-  contentHash: string
   extension: string
   albumId: string
   uploaded: boolean
@@ -20,10 +18,8 @@ interface CreateFileDTO {
 export class File extends BaseEntity {
   name: string
   size: number
-  encoding: string
   type: string
   mimeType: string
-  contentHash: string
   extension: string
   albumId: string
   uploaded: boolean
@@ -34,10 +30,8 @@ export class File extends BaseEntity {
     super(data.id)
     this.name = data.name
     this.size = data.size
-    this.encoding = data.encoding
     this.type = data.type
     this.mimeType = data.mimeType
-    this.contentHash = data.contentHash
     this.extension = data.extension
     this.albumId = data.albumId
     this.uploaded = data.uploaded ?? false
@@ -49,7 +43,7 @@ export class File extends BaseEntity {
 
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
-      ['name', 'size', 'extension', 'type', 'encoding', 'albumId', 'mimeType', 'contentHash'],
+      ['name', 'size', 'extension', 'type', 'albumId', 'mimeType'],
       this
     )
 

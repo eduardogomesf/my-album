@@ -50,7 +50,6 @@ export class GetFilesByAlbumIdUseCase implements UseCase {
         id: file.id,
         name: file.name,
         size: file.size,
-        encoding: file.encoding,
         type: file.type,
         extension: file.extension,
         albumId: file.albumId,

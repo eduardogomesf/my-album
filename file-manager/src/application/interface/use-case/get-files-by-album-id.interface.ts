@@ -14,7 +14,6 @@ export interface GetFilesByAlbumIdFile {
   id: string
   name: string
   size: number
-  encoding: string
   type: string
   extension: string
   albumId: string

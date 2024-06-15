@@ -132,10 +132,8 @@ export class PreUploadAnalysisUseCase implements UseCase {
 
       const newFile = new File({
         albumId,
-        encoding: file.encoding,
         type: getFileTypeFromMimeType(file.mimetype),
         mimeType: file.mimetype,
-        contentHash: file.hash,
         name: file.originalName,
         extension,
         size: file.size,
@@ -147,8 +145,6 @@ export class PreUploadAnalysisUseCase implements UseCase {
         originalName: newFile.name,
         size: newFile.size,
         mimetype: newFile.mimeType,
-        encoding: newFile.encoding,
-        hash: newFile.contentHash,
         userId
       })
 

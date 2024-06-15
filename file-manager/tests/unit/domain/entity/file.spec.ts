@@ -6,10 +6,8 @@ describe('File Entity', () => {
       name: 'file.png',
       size: 1024,
       extension: 'png',
-      encoding: 'utf-8',
       type: 'image',
       uploaded: false,
-      contentHash: 'hash',
       mimeType: 'image/png',
       albumId: 'album-id',
       createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
@@ -20,10 +18,8 @@ describe('File Entity', () => {
     expect(file.name).toBe('file.png')
     expect(file.size).toBe(1024)
     expect(file.extension).toBe('png')
-    expect(file.encoding).toBe('utf-8')
     expect(file.type).toBe('image')
     expect(file.uploaded).toBe(false)
-    expect(file.contentHash).toBe('hash')
     expect(file.mimeType).toBe('image/png')
     expect(file.albumId).toBe('album-id')
     expect(file.createdAt).toBe('2021-01-01T00:00:00.000Z')
@@ -36,7 +32,7 @@ describe('File Entity', () => {
         createdAt: '2021-01-01T00:00:00.000Z',
         updatedAt: '2021-01-01T00:00:00.000Z'
       } as any)
-    }).toThrow(new DomainError('fields name, size, extension, type, encoding, albumId, mimeType, contentHash can not be empty'))
+    }).toThrow(new DomainError('fields name, size, extension, type, albumId, mimeType can not be empty'))
   })
 
   it('should not be able to create a new file with invalid size', () => {
@@ -45,9 +41,7 @@ describe('File Entity', () => {
         name: 'file.png',
         size: 0,
         extension: 'png',
-        encoding: 'utf-8',
         type: 'image/png',
-        contentHash: 'hash',
         mimeType: 'image/png',
         uploaded: false,
         albumId: 'album-id',

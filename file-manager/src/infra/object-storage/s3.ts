@@ -57,12 +57,8 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
         ['content-length-range', params.size, params.size],
         ['starts-with', '$Content-Type', 'image/'],
         ['starts-with', '$Content-Type', 'video/'],
-        ['eq', '$key', key],
-        ['eq', '$x-amz-meta-hash', params.hash]
-      ],
-      Fields: {
-        'x-amz-meta-hash': params.hash
-      }
+        ['eq', '$key', key]
+      ]
     }
 
     const { url, fields } = await createPresignedPost(

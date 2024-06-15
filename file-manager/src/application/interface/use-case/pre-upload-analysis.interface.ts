@@ -3,8 +3,6 @@ export interface FileMetadata {
   originalName: string
   size: number
   mimetype: string
-  encoding: string
-  hash: string
 }
 
 export interface PreUploadAnalysisUseCaseParams {
