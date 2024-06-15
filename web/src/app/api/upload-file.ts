@@ -1,15 +1,19 @@
-import { api } from '../lib/axios'
-
+import axios from 'axios'
 interface UploadFileParams {
   file: File
-  albumId: string
+  url: string
+  fields: Record<string, string>
 }
 
-export function uploadFile(params: UploadFileParams) {
+export async function uploadFile(params: UploadFileParams) {
   const formData = new FormData()
 
+  Object.entries(params.fields).forEach(([key, value]) => {
+    formData.append(key, value)
+  })
   formData.append('file', params.file)
-  formData.append('albumId', params.albumId)
 
-  return api.post('/files', formData)
+  const response = await axios.post(params.url.replace('s3', 'localhost'), formData)
+
+  return response.data
 }

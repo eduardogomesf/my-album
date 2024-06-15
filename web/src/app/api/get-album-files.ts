@@ -10,7 +10,6 @@ export interface File {
   id: string
   name: string
   size: number
-  encoding: string
   type: 'image' | 'video'
   extension: string
   albumId: string
