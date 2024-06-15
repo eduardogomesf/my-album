@@ -140,21 +140,23 @@ export class PreUploadAnalysisUseCase implements UseCase {
         uploaded: false
       })
 
-      const url = await this.generateUploadUrlService.generateUploadUrl({
+      const uploadUrlDetails = await this.generateUploadUrlService.generateUploadUrl({
         id: newFile.id,
         originalName: newFile.name,
         size: newFile.size,
         mimetype: file.mimetype,
         encoding: newFile.encoding,
-        userId
+        userId,
+        md5Hash: file.md5Hash
       })
 
       await this.saveFileRepository.save(newFile)
 
       allowed.push({
         id: newFile.id,
-        uploadUrl: url,
-        fileId: newFile.id
+        uploadUrl: uploadUrlDetails.url,
+        fileId: newFile.id,
+        fields: uploadUrlDetails.fields
       })
     }
 

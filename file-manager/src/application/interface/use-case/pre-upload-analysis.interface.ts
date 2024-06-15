@@ -4,6 +4,7 @@ export interface FileMetadata {
   size: number
   mimetype: string
   encoding: string
+  md5Hash: string
 }
 
 export interface PreUploadAnalysisUseCaseParams {
@@ -16,6 +17,7 @@ export interface AllowedFile {
   id: string
   uploadUrl: string
   fileId: string
+  fields: Record<string, string>
 }
 
 export interface NotAllowedFile {

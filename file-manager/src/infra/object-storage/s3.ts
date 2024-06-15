@@ -3,16 +3,17 @@ import {
   GetObjectCommand,
   type GetObjectCommandInput,
   DeleteObjectCommand,
-  PutObjectCommand,
   CreateBucketCommand
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { type PresignedPostOptions, createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
 import {
   type GetFileUrlService,
   type DeleteFileFromStorageService,
   type GenerateUploadUrlService,
-  type GenerateUploadUrlServiceDTO
+  type GenerateUploadUrlServiceDTO,
+  type GenerateUploadUrlServiceResponse
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { ENVS } from '@/shared'
@@ -22,6 +23,7 @@ import {
   type UpdateOneByIdOutboxRepository
 } from './interface'
 import { OutboxType } from '@prisma/client'
+import { megaBytesToBytes } from '../../application/helper'
 
 export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageService, GenerateUploadUrlService {
   private readonly client: S3Client
@@ -42,28 +44,38 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
     })
   }
 
-  async generateUploadUrl (params: GenerateUploadUrlServiceDTO): Promise<string> {
+  async generateUploadUrl (params: GenerateUploadUrlServiceDTO): Promise<GenerateUploadUrlServiceResponse> {
     await this.client.send(new CreateBucketCommand({ Bucket: ENVS.S3.BUCKET_NAME }))
 
     const expiration = 60 * ENVS.S3.UPLOAD_URL_EXPIRATION_IN_MINUTES
+    const maxFileSize = megaBytesToBytes(ENVS.FILE_CONFIGS.MAX_FILE_SIZE_IN_MB)
+    const key = `${params.userId}/${params.id}`
 
-    const payload = new PutObjectCommand({
+    const payload: PresignedPostOptions = {
       Bucket: ENVS.S3.BUCKET_NAME,
-      Key: `${params.userId}/${params.id}`,
-      ContentType: params.mimetype,
-      ContentLength: params.size,
-      ContentEncoding: params.encoding,
-      ACL: 'private'
+      Key: key,
+      Expires: expiration,
+      Conditions: [
+        ['content-length-range', 0, maxFileSize],
+        ['starts-with', '$Content-Type', 'image/'],
+        ['starts-with', '$Content-Type', 'video/'],
+        ['eq', '$key', key],
+        ['eq', '$x-amz-meta-md5-hash', params.md5Hash]
+      ],
+      Fields: {
+        'x-amz-meta-md5-hash': params.md5Hash
+      }
+    }
 
-    })
-
-    const url = await getSignedUrl(
+    const { url, fields } = await createPresignedPost(
       this.client,
-      payload,
-      { expiresIn: expiration }
+      payload
     )
 
-    return url
+    return {
+      url,
+      fields
+    }
   }
 
   async getFileUrl(file: File, userId: string): Promise<string> {
