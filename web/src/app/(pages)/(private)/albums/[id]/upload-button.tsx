@@ -1,18 +1,38 @@
 import { v4 as uuid } from 'uuid'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus } from 'phosphor-react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { uploadFile } from '@/app/api/upload-file'
-import { FileMetadata, preUpload } from '@/app/api/pre-upload'
+import { AllowedFile, FileMetadata, preUpload } from '@/app/api/pre-upload'
 import { postUpload } from '@/app/api/post-upload'
+import { UploadOverlay } from './upload-overlay'
+import { UploadStatus } from './upload-item'
+
+export interface FileWithId {
+  id: string
+  file: File
+  status: UploadStatus
+}
 
 interface UploadButtonProps {
   albumId: string
 }
 
 export function UploadButton({ albumId }: UploadButtonProps) {
+  const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false)
+  const [filesWithIds, setFilesWithIds] = useState<FileWithId[]>([])
+  const [totalNumberOfFiles, setTotalNumberOfFiles] = useState(0)
+  const [finishedNumberOfFiles, setFinishedNumberOfFiles] = useState(0)
+
+  function closeUploadOverLay() {
+    setTotalNumberOfFiles(0)
+    setFilesWithIds([])
+    setFinishedNumberOfFiles(0)
+    setIsUploadOverlayOpen(false)
+  }
+
   const queryClient = useQueryClient()
 
   const inputFileRef = useRef<HTMLInputElement>(null)
@@ -29,6 +49,47 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     mutationFn: postUpload,
   })
 
+  async function uploadFilesToS3(filesToUpload: AllowedFile[], allFiles: FileWithId[]) {
+    const successUploadsIds: string[] = []
+    const failedUploadsIds: string[] = []
+
+    const result = await Promise.all(filesToUpload.map(async (allowedFile) => {
+      const { uploadUrl, fields } = allowedFile
+
+      const fileWithId = allFiles.find((file) => file.id === allowedFile.id)
+
+
+      if (!fileWithId) {
+        return null
+      }
+
+      let uploadedWithSuccess = true
+
+      await uploadFileMutation({
+        file: fileWithId?.file,
+        url: uploadUrl,
+        fields
+      }).catch(() => {
+        uploadedWithSuccess = false
+      })
+
+      if (uploadedWithSuccess) {
+        setFinishedNumberOfFiles((prev) => prev + 1)
+        successUploadsIds.push(allowedFile.id)
+      } else {
+        failedUploadsIds.push(allowedFile.id)
+      }
+
+      return null
+    }))
+
+    return {
+      successUploadsIds,
+      failedUploadsIds,
+      result
+    }
+  }
+
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files
 
@@ -38,77 +99,80 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
     const filesArray = Array.from(files)
 
+    setTotalNumberOfFiles(filesArray.length)
+    setFilesWithIds([])
+    setFinishedNumberOfFiles(0)
+
     const filesMetaData: FileMetadata[] = []
 
-    const filesWithIds = filesArray.map((file) => {
-      const id = uuid()
+    const formattedFiles = filesArray.map(
+      (file) => {
+        const id = uuid()
+        const status = UploadStatus.Uploading
 
-      filesMetaData.push({
-        id,
-        originalName: file.name,
-        size: file.size,
-        mimetype: file.type,
+        filesMetaData.push({
+          id,
+          originalName: file.name,
+          size: file.size,
+          mimetype: file.type,
+        })
+
+        return {
+          file,
+          id,
+          status
+        }
       })
 
-      return {
-        file,
-        id,
-      }
-    })
+    setFilesWithIds(formattedFiles)
+    setIsUploadOverlayOpen(true)
 
     const uploadResult = await preUploadMutation({
       files: filesMetaData,
       albumId
     })
 
-    const uploadsResult = await Promise.all(
-      uploadResult.allowed.map(async (allowedFile) => {
-        const { uploadUrl, fields } = allowedFile
+    const filesWithValidationsErrors = [...uploadResult.notAllowedDueToExtension, ...uploadResult.notAllowedDueToSize]
 
-        const fileWithId = filesWithIds.find((file) => file.id === allowedFile.id)
+    const filesUpdatedWithErrors = formattedFiles.map((file) => {
+      const fileWithValidationErrors = filesWithValidationsErrors.find((notAllowedFile) => notAllowedFile.id === file.id)
 
-        if (!fileWithId) {
-          return null
-        }
-
-        let uploadFailed = false
-
-        await uploadFileMutation({
-          file: fileWithId?.file,
-          url: uploadUrl,
-          fields
-        }).catch(() => {
-          uploadFailed = true
-
-        })
-
-        return {
-          fileId: allowedFile.fileId,
-          success: !uploadFailed
-        }
-      })
-    )
-
-    const uploadToS3Results = uploadsResult.reduce((accumulator, current) => {
-      if (current?.success === true) {
-        accumulator.successUploadsIds.push(current.fileId)
-      } else if (current?.success === false) {
-        accumulator.failedUploadsIds.push(current.fileId)
+      if (fileWithValidationErrors) {
+        file.status = UploadStatus.Failed
       }
 
-      return accumulator
-    }, {
-      successUploadsIds: [] as string[],
-      failedUploadsIds: [] as string[]
+      return file
     })
 
-    if (uploadToS3Results?.successUploadsIds.length === 0) {
-      toast.error('Failed to upload files')
+    setFilesWithIds(prev => [...filesUpdatedWithErrors])
+
+    const { successUploadsIds } = await uploadFilesToS3(uploadResult.allowed, filesUpdatedWithErrors)
+
+    const filesWithPostUploadStatus = filesUpdatedWithErrors.map((file) => {
+      if (successUploadsIds.includes(file.id)) {
+        file.status = UploadStatus.Completed
+      } else if (uploadResult.notAllowedDueToAvailableStorage.find((notAllowedFile) => notAllowedFile.id === file.id)) {
+        file.status = UploadStatus.Failed
+      } else {
+        file.status = UploadStatus.Failed
+      }
+
+      return file
+    })
+
+    setFilesWithIds(prev => [...filesWithPostUploadStatus])
+
+    if (successUploadsIds.length === 0) {
+      toast.error('Failed to upload files. Please try again.', {
+        duration: 5000
+      })
       return
     }
 
+    const filesIdsForPostUpload = uploadResult.allowed.filter((file) => successUploadsIds.includes(file.id)).map((file) => file.fileId)
+
     await postUploadMutation({
-      filesIds: uploadToS3Results.successUploadsIds,
+      filesIds: filesIdsForPostUpload,
       albumId
     })
 
@@ -124,7 +188,12 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       })
     ])
 
-    toast.success('Upload complete!')
+    const allFilesUploaded = filesIdsForPostUpload.length === files.length ?
+      'Upload complete! All files have been uploaded.' : 'Upload complete! Some files were not uploaded.'
+
+    toast.success(allFilesUploaded, {
+      duration: 5000
+    })
   }
 
   return (
@@ -135,11 +204,18 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         className="hidden"
         onChange={handleFileChange}
         multiple
-        accept='image/*, video/*'
+      // accept='image/*, video/*'
       />
       <button onClick={() => inputFileRef.current?.click()}>
         <Plus className="h-6 w-6" />
       </button>
+      <UploadOverlay
+        open={isUploadOverlayOpen}
+        onClose={closeUploadOverLay}
+        totalNumberOfFiles={totalNumberOfFiles}
+        finishedNumberOfFiles={finishedNumberOfFiles}
+        filesToBeUploaded={filesWithIds}
+      />
     </>
   )
 }
