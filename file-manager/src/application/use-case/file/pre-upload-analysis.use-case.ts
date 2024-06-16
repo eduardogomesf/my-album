@@ -10,8 +10,7 @@ import {
   type PreUploadAnalysisUseCaseResponse,
   type PreUploadAnalysisUseCaseParams,
   type FileMetadata,
-  type AllowedFile,
-  type NotAllowedFile
+  type FileAfterAnalysis
 } from '../../interface/use-case'
 import {
   type GetCurrentStorageUsageRepository,
@@ -37,6 +36,13 @@ export class PreUploadAnalysisUseCase implements UseCase {
   ) {}
 
   async execute (params: PreUploadAnalysisUseCaseParams): Promise<UseCaseResponse<PreUploadAnalysisUseCaseResponse>> {
+    if (params.files.length === 0) {
+      return {
+        ok: false,
+        message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND
+      }
+    }
+
     const album = await this.getAlbumByIdRepository.getById(params.albumId, params.userId)
 
     if (!album) {
@@ -53,13 +59,6 @@ export class PreUploadAnalysisUseCase implements UseCase {
       }
     }
 
-    if (params.files.length === 0) {
-      return {
-        ok: false,
-        message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND
-      }
-    }
-
     const { hasFreeSpace, freeSpace } = await this.canAddMoreFiles(params.userId)
 
     if (!hasFreeSpace) {
@@ -71,29 +70,16 @@ export class PreUploadAnalysisUseCase implements UseCase {
 
     const orderedFiles = this.orderBySize(params.files)
 
-    const {
-      allowed,
-      notAllowedDueToAvailableStorage,
-      notAllowedDueToExtension,
-      notAllowedDueToSize
-    } = await this.analyzeFiles(orderedFiles, freeSpace, params.userId, params.albumId)
+    const filesAfterAnalysis = await this.analyzeFiles(orderedFiles, freeSpace, params.userId, params.albumId)
 
     return {
       ok: true,
-      data: {
-        allowed,
-        notAllowedDueToAvailableStorage,
-        notAllowedDueToExtension,
-        notAllowedDueToSize
-      }
+      data: filesAfterAnalysis
     }
   }
 
   private async analyzeFiles(files: FileMetadata[], freeSpace: number, userId: string, albumId: string): Promise<PreUploadAnalysisUseCaseResponse> {
-    const allowed: AllowedFile[] = []
-    const notAllowedDueToExtension: NotAllowedFile[] = []
-    const notAllowedDueToSize: NotAllowedFile[] = []
-    const notAllowedDueToAvailableStorage: NotAllowedFile[] = []
+    const filesAfterAnalysis: FileAfterAnalysis[] = []
 
     let expectedUsage = 0
 
@@ -103,9 +89,10 @@ export class PreUploadAnalysisUseCase implements UseCase {
       const validExtension = isValidFileExtension(extension)
 
       if (!validExtension) {
-        notAllowedDueToExtension.push({
+        filesAfterAnalysis.push({
           id: file.id,
-          reason: ERROR_MESSAGES.FILE.INVALID_EXTENSION
+          reason: ERROR_MESSAGES.FILE.INVALID_EXTENSION,
+          allowed: false
         })
         continue
       }
@@ -113,17 +100,19 @@ export class PreUploadAnalysisUseCase implements UseCase {
       const hasValidSize = hasValidFileSize(file.size)
 
       if (!hasValidSize) {
-        notAllowedDueToSize.push({
+        filesAfterAnalysis.push({
           id: file.id,
-          reason: ERROR_MESSAGES.FILE.TOO_LARGE
+          reason: ERROR_MESSAGES.FILE.TOO_LARGE,
+          allowed: false
         })
         continue
       }
 
       if (expectedUsage + file.size > freeSpace) {
-        notAllowedDueToAvailableStorage.push({
+        filesAfterAnalysis.push({
           id: file.id,
-          reason: ERROR_MESSAGES.FILE.NO_FREE_SPACE
+          reason: ERROR_MESSAGES.FILE.NO_FREE_SPACE,
+          allowed: false
         })
         continue
       }
@@ -150,20 +139,16 @@ export class PreUploadAnalysisUseCase implements UseCase {
 
       await this.saveFileRepository.save(newFile)
 
-      allowed.push({
+      filesAfterAnalysis.push({
         id: file.id,
         uploadUrl: uploadUrlDetails.url,
         fileId: newFile.id,
-        fields: uploadUrlDetails.fields
+        fields: uploadUrlDetails.fields,
+        allowed: true
       })
     }
 
-    return {
-      allowed,
-      notAllowedDueToExtension,
-      notAllowedDueToSize,
-      notAllowedDueToAvailableStorage
-    }
+    return filesAfterAnalysis
   }
 
   private orderBySize(files: FileMetadata[]): FileMetadata[] {

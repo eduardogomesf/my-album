@@ -11,21 +11,12 @@ export interface PreUploadAnalysisUseCaseParams {
   userId: string
 }
 
-export interface AllowedFile {
+export interface FileAfterAnalysis {
   id: string
-  uploadUrl: string
-  fileId: string
-  fields: Record<string, string>
+  allowed: boolean
+  reason?: string
+  uploadUrl?: string
+  fileId?: string
+  fields?: Record<string, string>
 }
-
-export interface NotAllowedFile {
-  id: string
-  reason: string
-}
-
-export interface PreUploadAnalysisUseCaseResponse {
-  allowed: AllowedFile[]
-  notAllowedDueToExtension: NotAllowedFile[]
-  notAllowedDueToSize: NotAllowedFile[]
-  notAllowedDueToAvailableStorage: NotAllowedFile[]
-}
+export type PreUploadAnalysisUseCaseResponse = FileAfterAnalysis[]
