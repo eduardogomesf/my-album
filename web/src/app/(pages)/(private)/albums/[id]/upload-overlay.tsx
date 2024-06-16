@@ -15,7 +15,7 @@ export function UploadOverlay({ filesToBeUploaded, open, onClose, totalNumberOfF
   return (
     <Dialog.Root open={open}>
       <Dialog.Portal>
-        <Dialog.Content className="fixed left-10 bottom-20 rounded-md bg-white py-2 px-2 focus:outline-none w-10/12 h-[300px] md:w-[400px]">
+        <Dialog.Content className="fixed left-10 bottom-20 rounded-md bg-white py-2 px-2 focus:outline-none w-10/12 h-[300px] md:w-[400px] animate-fade-in-down">
           <div className='flex items-center gap-1 px-2'>
             <Dialog.Title className="text-lg font-semibold text-gray-800">
               Media Upload

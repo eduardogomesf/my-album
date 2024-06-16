@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { uploadFile } from '@/app/api/upload-file'
-import { AllowedFile, FileMetadata, preUpload } from '@/app/api/pre-upload'
+import { FileAfterAnalysis, FileMetadata, preUpload } from '@/app/api/pre-upload'
 import { postUpload } from '@/app/api/post-upload'
 import { UploadOverlay } from './upload-overlay'
 import { UploadStatus } from './upload-item'
@@ -49,7 +49,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     mutationFn: postUpload,
   })
 
-  async function uploadFilesToS3(filesToUpload: AllowedFile[], allFiles: FileWithId[]) {
+  async function uploadFilesToS3(filesToUpload: FileAfterAnalysis[], allFiles: FileWithId[]) {
     const successUploadsIds: string[] = []
     const failedUploadsIds: string[] = []
 
@@ -59,7 +59,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       const fileWithId = allFiles.find((file) => file.id === allowedFile.id)
 
 
-      if (!fileWithId) {
+      if (!fileWithId || !uploadUrl || !fields) {
         return null
       }
 
@@ -68,7 +68,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       await uploadFileMutation({
         file: fileWithId?.file,
         url: uploadUrl,
-        fields
+        fields: fields
       }).catch(() => {
         uploadedWithSuccess = false
       })
@@ -127,33 +127,33 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     setFilesWithIds(formattedFiles)
     setIsUploadOverlayOpen(true)
 
-    const uploadResult = await preUploadMutation({
+    const preUploadFiles = await preUploadMutation({
       files: filesMetaData,
       albumId
     })
 
-    const filesWithValidationsErrors = [...uploadResult.notAllowedDueToExtension, ...uploadResult.notAllowedDueToSize]
+    const allowedFiles: FileAfterAnalysis[] = []
 
-    const filesUpdatedWithErrors = formattedFiles.map((file) => {
-      const fileWithValidationErrors = filesWithValidationsErrors.find((notAllowedFile) => notAllowedFile.id === file.id)
+    const filesAfterPreUploadAnalysis = formattedFiles.map((file) => {
+      const preUploadFile = preUploadFiles.find((preUploadFile) => preUploadFile.id === file.id)
 
-      if (fileWithValidationErrors) {
+      if (!preUploadFile?.allowed && preUploadFile?.reason) {
         file.status = UploadStatus.Failed
+      } else if (preUploadFile?.allowed) {
+        allowedFiles.push(preUploadFile)
       }
 
       return file
     })
 
-    setFilesWithIds(prev => [...filesUpdatedWithErrors])
+    setFilesWithIds(prev => [...filesAfterPreUploadAnalysis])
 
-    const { successUploadsIds } = await uploadFilesToS3(uploadResult.allowed, filesUpdatedWithErrors)
+    const { successUploadsIds, failedUploadsIds } = await uploadFilesToS3(allowedFiles, filesAfterPreUploadAnalysis)
 
-    const filesWithPostUploadStatus = filesUpdatedWithErrors.map((file) => {
+    const filesWithPostUploadStatus = filesAfterPreUploadAnalysis.map((file) => {
       if (successUploadsIds.includes(file.id)) {
         file.status = UploadStatus.Completed
-      } else if (uploadResult.notAllowedDueToAvailableStorage.find((notAllowedFile) => notAllowedFile.id === file.id)) {
-        file.status = UploadStatus.Failed
-      } else {
+      } else if (failedUploadsIds.includes(file.id)) {
         file.status = UploadStatus.Failed
       }
 
@@ -169,7 +169,13 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       return
     }
 
-    const filesIdsForPostUpload = uploadResult.allowed.filter((file) => successUploadsIds.includes(file.id)).map((file) => file.fileId)
+    const filesIdsForPostUpload = allowedFiles.reduce((accumulator, allowedFile) => {
+      if (successUploadsIds.includes(allowedFile.id) && allowedFile.fileId) {
+        accumulator.push(allowedFile.fileId)
+      }
+
+      return accumulator
+    }, [] as string[])
 
     await postUploadMutation({
       filesIds: filesIdsForPostUpload,
@@ -194,6 +200,10 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     toast.success(allFilesUploaded, {
       duration: 5000
     })
+
+    setTimeout(() => {
+      closeUploadOverLay()
+    }, 5000)
   }
 
   return (
@@ -204,7 +214,8 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         className="hidden"
         onChange={handleFileChange}
         multiple
-      // accept='image/*, video/*'
+        accept='image/*, video/*'
+
       />
       <button onClick={() => inputFileRef.current?.click()}>
         <Plus className="h-6 w-6" />
