@@ -1,33 +1,38 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { ArrowLeft, CaretLeft, CaretRight, Info } from 'phosphor-react'
+import { File } from '@/app/api/get-album-files'
 
 interface MediaViewerProps {
-  children: React.ReactNode
   isImage: boolean
   url: string
+  isOpen: boolean
+  onClose: () => void
+  onNext: () => void
+  onPrevious: () => void
 }
 
-export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
-
-  const treatedUrl = url.replace('s3', 'localhost')
-
+export function MediaViewer(
+  {
+    url,
+    isImage,
+    isOpen,
+    onClose,
+    onNext,
+    onPrevious
+  }: MediaViewerProps
+) {
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        {children}
-      </Dialog.Trigger>
-
+    <Dialog.Root open={isOpen}>
       <Dialog.Portal>
         <Dialog.Content className="fixed inset-0 p-2 bg-black animate-fade-in-down">
-          <Dialog.Close asChild>
-            <button
-              className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
-              aria-label="Close"
-            >
-              <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
-            </button>
-          </Dialog.Close>
+          <button
+            className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
+          </button>
 
           <div className='group z-50 absolute right-4 top-4 flex'>
             <button className='flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out'>
@@ -41,6 +46,7 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
               flex items-center justify-center 
               transition duration-150 ease-in-out 
             `}
+            onClick={onPrevious}
           >
             <CaretLeft
               className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
@@ -53,6 +59,7 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
               flex items-center justify-center 
               transition duration-150 ease-in-out 
             `}
+            onClick={onNext}
           >
             <CaretRight
               className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
@@ -61,7 +68,7 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
 
           {isImage ? (
             <Image
-              src={treatedUrl}
+              src={url}
               alt={'Media'}
               className='mx-auto w-full md:max-w-[85%] opacity-95'
               fill={true}
@@ -74,7 +81,10 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
               className='block mx-auto h-full w-full md:max-w-[85%] opacity-95'
               controls
             >
-              <source src={treatedUrl} type="video/mp4" />
+              <source
+                src={url}
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           )}

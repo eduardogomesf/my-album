@@ -5,13 +5,13 @@ import { useRef } from 'react'
 
 import { File } from '@/app/api/get-album-files'
 import { formatDate } from '@/app/util/date'
-import { MediaViewer } from './media-viewer'
 
 interface FileCardProps {
   file: File
   hasSameDateAsPrevious: boolean
   onSelect: (id: string) => void
   isSelected: boolean
+  onSelectFileForMediaOverlay: (file: File) => void
 }
 
 export function FileCard({
@@ -19,6 +19,7 @@ export function FileCard({
   hasSameDateAsPrevious,
   onSelect,
   isSelected,
+  onSelectFileForMediaOverlay
 }: FileCardProps) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -31,7 +32,7 @@ export function FileCard({
   }
 
   function handleClick() {
-    console.log('clicked')
+    onSelectFileForMediaOverlay(file)
   }
 
   const handleMouseOver = () => {
@@ -71,41 +72,36 @@ export function FileCard({
         {formatDate(file.createdAt)}
       </span>
 
-      <MediaViewer
-        isImage={isImage}
-        url={file.url.replace('s3', 'localhost')}
-      >
-        <button className="relative h-80 w-full" onClick={handleClick}>
-          {isImage ? (
-            <Image
-              src={file.url.replace('s3', 'localhost')}
-              alt={file.name}
-              className={clsx(
-                'rounded-lg transition-opacity duration-300 hover:opacity-80',
-                isSelected && 'border border-gray-500 opacity-70',
-              )}
-              fill={true}
-              style={{ objectFit: 'cover' }}
-              priority
-              sizes="100%"
-            />
-          ) : (
-            <video
-              className={clsx(
-                'block h-80 rounded-lg transition-opacity duration-300 hover:opacity-80 bg-black',
-                isSelected && 'border border-gray-500 opacity-70',
-              )}
-              muted
-              ref={videoRef}
-              onMouseOver={handleMouseOver}
-              onMouseOut={handleMouseOut}
-            >
-              <source src={file.url.replace('s3', 'localhost')} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          )}
-        </button>
-      </MediaViewer>
+      <button className="relative h-80 w-full" onClick={handleClick}>
+        {isImage ? (
+          <Image
+            src={file.url.replace('s3', 'localhost')}
+            alt={file.name}
+            className={clsx(
+              'rounded-lg transition-opacity duration-300 hover:opacity-80',
+              isSelected && 'border border-gray-500 opacity-70',
+            )}
+            fill={true}
+            style={{ objectFit: 'cover' }}
+            priority
+            sizes="100%"
+          />
+        ) : (
+          <video
+            className={clsx(
+              'block h-80 rounded-lg transition-opacity duration-300 hover:opacity-80 bg-black',
+              isSelected && 'border border-gray-500 opacity-70',
+            )}
+            muted
+            ref={videoRef}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+          >
+            <source src={file.url.replace('s3', 'localhost')} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+      </button>
 
       <button
         onClick={handleSelect}
