@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
-import { ArrowLeft } from 'phosphor-react'
+import { ArrowLeft, Info } from 'phosphor-react'
 
 interface MediaViewerProps {
   children: React.ReactNode
@@ -22,18 +22,24 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
         <Dialog.Content className="fixed inset-0 p-2 bg-black animate-fade-in-down">
           <Dialog.Close asChild>
             <button
-              className="group z-50 absolute left-4 top-4 flex h-7 w-7 items-center justify-center rounded-full transition duration-150 ease-in-out hover:bg-gray-600"
+              className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out hover:bg-gray-700"
               aria-label="Close"
             >
-              <ArrowLeft className="h-5 w-5 text-gray-100 transition duration-150 ease-in-out group-hover:text-gray-200" />
+              <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-200" />
             </button>
           </Dialog.Close>
+
+          <div className='group z-50 absolute right-4 top-4 flex'>
+            <button className='flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out hover:bg-gray-700'>
+              <Info className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-200" />
+            </button>
+          </div>
 
           {isImage ? (
             <Image
               src={treatedUrl}
               alt={'Media'}
-              className='mx-auto max-w-[85%] opacity-95'
+              className='mx-auto w-full md:max-w-[85%] opacity-95'
               fill={true}
               style={{ objectFit: 'contain' }}
               priority
@@ -41,7 +47,7 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
             />
           ) : (
             <video
-              className='block mx-auto h-full max-w-[85%] opacity-95'
+              className='block mx-auto h-full w-full md:max-w-[85%] opacity-95'
               controls
             >
               <source src={treatedUrl} type="video/mp4" />
