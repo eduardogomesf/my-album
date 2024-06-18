@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
-import { ArrowLeft, Info } from 'phosphor-react'
+import { ArrowLeft, CaretLeft, CaretRight, Info } from 'phosphor-react'
 
 interface MediaViewerProps {
   children: React.ReactNode
@@ -22,18 +22,42 @@ export function MediaViewer({ children, url, isImage }: MediaViewerProps) {
         <Dialog.Content className="fixed inset-0 p-2 bg-black animate-fade-in-down">
           <Dialog.Close asChild>
             <button
-              className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out hover:bg-gray-700"
+              className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
               aria-label="Close"
             >
-              <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-200" />
+              <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
             </button>
           </Dialog.Close>
 
           <div className='group z-50 absolute right-4 top-4 flex'>
-            <button className='flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out hover:bg-gray-700'>
-              <Info className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-200" />
+            <button className='flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out'>
+              <Info className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
             </button>
           </div>
+
+          <button
+            className={`
+              group z-50 absolute top-1/2 -translate-y-1/2 left-6 opacity-0 hover:opacity-100 bg-transparent h-20 w-20
+              flex items-center justify-center 
+              transition duration-150 ease-in-out 
+            `}
+          >
+            <CaretLeft
+              className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
+            />
+          </button>
+
+          <button
+            className={`
+              group z-50 absolute top-1/2 -translate-y-1/2 right-6 opacity-0 hover:opacity-100 bg-transparent h-20 w-20
+              flex items-center justify-center 
+              transition duration-150 ease-in-out 
+            `}
+          >
+            <CaretRight
+              className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
+            />
+          </button>
 
           {isImage ? (
             <Image
