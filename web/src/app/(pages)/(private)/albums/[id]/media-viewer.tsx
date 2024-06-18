@@ -22,10 +22,19 @@ export function MediaViewer(
     onPrevious
   }: MediaViewerProps
 ) {
+
+  function handleModalKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'ArrowRight') {
+      onNext()
+    } else if (event.key === 'ArrowLeft') {
+      onPrevious()
+    }
+  }
+
   return (
     <Dialog.Root open={isOpen}>
       <Dialog.Portal>
-        <Dialog.Content className="fixed inset-0 p-2 bg-black animate-fade-in-down">
+        <Dialog.Content className="fixed inset-0 p-2 bg-black animate-fade-in-down" onKeyDown={handleModalKeyDown}>
           <button
             className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
             onClick={onClose}
@@ -60,6 +69,7 @@ export function MediaViewer(
               transition duration-150 ease-in-out 
             `}
             onClick={onNext}
+            onKeyPress={onNext}
           >
             <CaretRight
               className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
