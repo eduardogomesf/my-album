@@ -46,20 +46,28 @@ export default function Album() {
       <main className="mt-8">
         <div className="flex w-full items-center justify-between">
           <div className='flex items-center gap-2'>
-            <h2 className="text-2xl font-bold">
-              {filesResult?.album?.name ?? 'Album name...'}
-            </h2>
+            {
+              filesResult?.album?.name ? (
+                <h2 className="text-2xl font-bold">
+                  {filesResult?.album?.name}
+                </h2>
+              ) : (
+                <div className='w-32 h-6 rounded-full animate-pulse bg-gray-300' />
+              )
+            }
 
-            <div className='flex items-center gap-1'>
-              <span className="text-sm text-gray-600 font-normal">
-                {selectedFiles.length > 0 ? `(${selectedFiles.length} of ${filesResult.total} files selected)` : `(${filesResult.total} files)`}
-              </span>
-              {selectedFiles.length > 0 && (
-                <button onClick={cleanSelectedFiles}>
-                  <XCircle className='w-4 h-4 text-gray-600' />
-                </button>
-              )}
-            </div>
+            {selectedFiles?.length > 0 &&
+              (<div className='flex items-center gap-1'>
+                <span className="text-sm text-gray-600 font-normal">
+                  {selectedFiles.length > 0 ? `(${selectedFiles.length} of ${filesResult.total} files selected)` : `(${filesResult.total} files)`}
+                </span>
+                {selectedFiles.length > 0 && (
+                  <button onClick={cleanSelectedFiles}>
+                    <XCircle className='w-4 h-4 text-gray-600' />
+                  </button>
+                )}
+              </div>)
+            }
           </div>
 
           <div className="flex items-center gap-4">
