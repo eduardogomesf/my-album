@@ -1,7 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { ArrowLeft, CaretLeft, CaretRight, Info } from 'phosphor-react'
-import { File } from '@/app/api/get-album-files'
 
 interface MediaViewerProps {
   isImage: boolean
@@ -69,7 +68,6 @@ export function MediaViewer(
               transition duration-150 ease-in-out 
             `}
             onClick={onNext}
-            onKeyPress={onNext}
           >
             <CaretRight
               className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
