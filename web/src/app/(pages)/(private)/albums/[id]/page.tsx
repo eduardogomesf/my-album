@@ -11,6 +11,7 @@ import { FilesAndCounts, getAlbumFiles } from '@/app/api/get-album-files'
 import { DeleteButton } from './delete-button'
 import { FilesGrid } from './files-grid'
 import { UploadButton } from './upload-button'
+import { MoveFilesButton } from './move-files-button'
 
 export default function Album() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
@@ -33,7 +34,7 @@ export default function Album() {
     data: filesResult = {} as FilesAndCounts,
     isLoading: isFilesLoading,
   } = useQuery({
-    queryKey: ['album-files', { albumId }],
+    queryKey: ['album-files', albumId],
     queryFn: async () => getAlbumFiles({ albumId, page: 0, limit: 10 }),
   })
 
@@ -56,7 +57,7 @@ export default function Album() {
               )
             }
 
-            {selectedFiles?.length > 0 &&
+            {filesResult.total > 0 &&
               (<div className='flex items-center gap-1'>
                 <span className="text-sm text-gray-600 font-normal">
                   {selectedFiles.length > 0 ? `(${selectedFiles.length} of ${filesResult.total} files selected)` : `(${filesResult.total} files)`}
@@ -72,6 +73,13 @@ export default function Album() {
 
           <div className="flex items-center gap-4">
             {selectedFiles.length === 0 && <UploadButton albumId={albumId} />}
+            {selectedFiles.length > 0 && (
+              <MoveFilesButton
+                filesIds={selectedFiles}
+                cleanSelectedFiles={cleanSelectedFiles}
+                albumId={albumId}
+              />
+            )}
             {selectedFiles.length > 0 && (
               <DeleteButton
                 albumId={albumId}
