@@ -195,7 +195,7 @@ implements
           data: files.map(file => ({
             id: uuid(),
             type: OutboxType.FILE_DELETED,
-            payload: JSON.stringify(file),
+            payload: JSON.stringify({ ...file, size: file.size.toString() }),
             aggregateId: file.id
           }))
         })

@@ -118,6 +118,10 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
 
       const rawResult = albumsWithCounts.length > 0 ? albumsWithCounts[0] : null
 
+      if (rawResult) {
+        rawResult.numberOfFiles = Number(rawResult.numberOfFiles)
+      }
+
       return rawResult
     } catch (error) {
       logger.error(error.message)
@@ -164,7 +168,7 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
       const formattedFiles = files.map(file => ({
         id: uuid(),
         type: OutboxType.FILE_DELETED,
-        payload: JSON.stringify(file),
+        payload: JSON.stringify({ ...file, size: file.size.toString() }),
         aggregateId: file.id
       }))
 
