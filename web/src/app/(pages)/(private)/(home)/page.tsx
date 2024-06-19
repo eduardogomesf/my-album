@@ -43,7 +43,11 @@ export default function Home() {
           <h2 className="text-2xl font-bold">Deleted Albums</h2>
         </div>
 
-        <AlbumsGrid albums={deletedAlbums} isLoading={isDeletedAlbumsLoading} />
+        <AlbumsGrid
+          albums={deletedAlbums}
+          isLoading={isDeletedAlbumsLoading}
+          isDeletedAlbum={true}
+        />
       </section>
     </main>
   )

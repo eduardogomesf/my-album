@@ -24,25 +24,29 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
 
   const { mutateAsync: deleteCurrentAlbum } = useMutation({
     mutationFn: deleteAlbum,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['albums'],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['deleted-albums'],
-      })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['albums'],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['deleted-albums'],
+        })
+      ])
     },
   })
 
   const { mutateAsync: restoreCurrentAlbum } = useMutation({
     mutationFn: restoreAlbum,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['albums'],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['deleted-albums'],
-      })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['albums'],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['deleted-albums'],
+        })
+      ])
     },
   })
 
