@@ -12,6 +12,7 @@ import { DeleteButton } from './delete-button'
 import { FilesGrid } from './files-grid'
 import { UploadButton } from './upload-button'
 import { MoveFilesButton } from './move-files-button'
+import { DownloadButton } from './download-button'
 
 export default function Album() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
@@ -74,18 +75,23 @@ export default function Album() {
           <div className="flex items-center gap-4">
             {selectedFiles.length === 0 && <UploadButton albumId={albumId} />}
             {selectedFiles.length > 0 && (
-              <MoveFilesButton
-                filesIds={selectedFiles}
-                cleanSelectedFiles={cleanSelectedFiles}
-                albumId={albumId}
-              />
-            )}
-            {selectedFiles.length > 0 && (
-              <DeleteButton
-                albumId={albumId}
-                filesIds={selectedFiles}
-                cleanSelectedFiles={cleanSelectedFiles}
-              />
+              <>
+                <DownloadButton
+                  filesIds={selectedFiles}
+                  albumId={albumId}
+                  cleanSelectedFiles={cleanSelectedFiles}
+                />
+                <MoveFilesButton
+                  filesIds={selectedFiles}
+                  cleanSelectedFiles={cleanSelectedFiles}
+                  albumId={albumId}
+                />
+                <DeleteButton
+                  albumId={albumId}
+                  filesIds={selectedFiles}
+                  cleanSelectedFiles={cleanSelectedFiles}
+                />
+              </>
             )}
           </div>
         </div>
