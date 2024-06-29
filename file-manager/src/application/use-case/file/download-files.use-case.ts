@@ -38,8 +38,7 @@ export class DownloadFilesUseCase implements UseCase {
 
     for (const file of files) {
       const fileStream = await this.getFileStreamFromStorageService.getFileStream(file, params.userId)
-      const name = `${file.name}-${file.id}`
-      params.archiver.append(fileStream, { name })
+      params.archiver.append(fileStream, { name: `${file.name}` })
     }
 
     return {
