@@ -9,7 +9,8 @@ import {
   type RestoreAlbumUseCase,
   type GetAvailableStorageUseCase,
   type PreUploadAnalysisUseCase,
-  type PostUploadUseCase
+  type PostUploadUseCase,
+  type DownloadFilesUseCase
 } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 
@@ -25,6 +26,7 @@ export interface UseCases {
   getAvailableStorageUseCase: GetAvailableStorageUseCase
   preUploadAnalysisUseCase: PreUploadAnalysisUseCase
   postUploadUseCase: PostUploadUseCase
+  downloadFilesUseCase: DownloadFilesUseCase
 }
 
 export interface Injections extends UseCases {

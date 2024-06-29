@@ -12,7 +12,8 @@ export function getFileRouter(useCases: UseCases): Router {
     useCases.moveFilesToOtherAlbumUseCase,
     useCases.deleteFileUseCase,
     useCases.getAvailableStorageUseCase,
-    useCases.postUploadUseCase
+    useCases.postUploadUseCase,
+    useCases.downloadFilesUseCase
   )
 
   router.post(
@@ -36,6 +37,8 @@ export function getFileRouter(useCases: UseCases): Router {
   router.post('/files/delete', getAuthInfoFromHeaders, fileController.delete.bind(fileController))
 
   router.get('/storage', getAuthInfoFromHeaders, fileController.getAvailableStorage.bind(fileController))
+
+  router.post('/files/download', getAuthInfoFromHeaders, fileController.downloadFiles.bind(fileController))
 
   return router
 }

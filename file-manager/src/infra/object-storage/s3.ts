@@ -4,7 +4,8 @@ import {
   type GetObjectCommandInput,
   DeleteObjectCommand,
   CreateBucketCommand,
-  PutBucketCorsCommand
+  PutBucketCorsCommand,
+  type GetObjectCommandOutput
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { type PresignedPostOptions, createPresignedPost } from '@aws-sdk/s3-presigned-post'
@@ -14,7 +15,8 @@ import {
   type DeleteFileFromStorageService,
   type GenerateUploadUrlService,
   type GenerateUploadUrlServiceDTO,
-  type GenerateUploadUrlServiceResponse
+  type GenerateUploadUrlServiceResponse,
+  type GetFileStreamFromStorageService
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { ENVS } from '@/shared'
@@ -24,8 +26,9 @@ import {
   type UpdateOneByIdOutboxRepository
 } from './interface'
 import { OutboxType } from '@prisma/client'
+import { type Readable } from 'stream'
 
-export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageService, GenerateUploadUrlService {
+export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageService, GenerateUploadUrlService, GetFileStreamFromStorageService {
   private readonly client: S3Client
 
   constructor(
@@ -135,6 +138,17 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
     } catch (error) {
       return false
     }
+  }
+
+  async getFileStream (file: File, userId: string): Promise<Readable> {
+    const key = `${userId}/${file.id}`
+    const command = new GetObjectCommand({
+      Bucket: ENVS.S3.BUCKET_NAME,
+      Key: key
+    })
+    const data: GetObjectCommandOutput = await this.client.send(command)
+    const fileStream = data.Body as Readable
+    return fileStream
   }
 
   private async createBucket(): Promise<void> {

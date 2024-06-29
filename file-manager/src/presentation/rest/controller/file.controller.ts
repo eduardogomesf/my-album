@@ -4,13 +4,15 @@ import {
   type DeleteFilesUseCase,
   type GetAvailableStorageUseCase,
   type PreUploadAnalysisUseCase,
-  type PostUploadUseCase
+  type PostUploadUseCase,
+  type DownloadFilesUseCase
 } from '@/application/use-case'
 import { Logger } from '@/shared'
 import { MissingFieldsHelper, convertErrorToHttpError } from '../helper'
 import { HTTP_CODES } from '../constant'
 import { ERROR_MESSAGES } from '@/application/constant'
 import { type FileMetadata } from '@/application/interface'
+import * as archiver from 'archiver'
 
 export class FileController {
   private readonly logger = new Logger('FileController')
@@ -20,7 +22,8 @@ export class FileController {
     private readonly moveFilesUseCase: MoveFilesToOtherAlbumUseCase,
     private readonly deleteFileUseCase: DeleteFilesUseCase,
     private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase,
-    private readonly postUploadUseCase: PostUploadUseCase
+    private readonly postUploadUseCase: PostUploadUseCase,
+    private readonly downloadFilesUseCase: DownloadFilesUseCase
   ) {}
 
   async preUpload(request: Request, response: Response): Promise<void> {
@@ -260,6 +263,57 @@ export class FileController {
       response.status(200).send()
     } catch (error) {
       this.logger.error('Error performing pre upload analysis', correlationId)
+      this.logger.error(error, correlationId)
+      this.logger.error(error.stack, correlationId)
+      response.status(500).send()
+    }
+  }
+
+  async downloadFiles(request: Request, response: Response): Promise<void> {
+    const correlationId = request.tracking.correlationId
+
+    this.logger.info('Download files request received', correlationId)
+
+    try {
+      const { filesIds = [], albumId } = request.body
+      const { userId } = request.auth
+
+      if (!filesIds.length) {
+        this.logger.warn('Files ids not found in the request', correlationId)
+        response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: 'Files ids not found in the request'
+        })
+        return
+      }
+
+      if (!albumId) {
+        this.logger.warn('Album id not found in the request', correlationId)
+        response.status(HTTP_CODES.BAD_REQUEST.code).json({
+          message: 'Album id not found in the request'
+        })
+        return
+      }
+
+      const arch = archiver('zip', { zlib: { level: 9 } })
+
+      const nowTime = new Date().getTime()
+
+      response.attachment(`files-${nowTime}.zip`)
+
+      arch.pipe(response)
+
+      await this.downloadFilesUseCase.execute({
+        filesIds,
+        userId,
+        archiver: arch,
+        albumId
+      })
+
+      await arch.finalize()
+
+      this.logger.info('Download files finished successfully', correlationId)
+    } catch (error) {
+      this.logger.error('Error performing files download', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       response.status(500).send()

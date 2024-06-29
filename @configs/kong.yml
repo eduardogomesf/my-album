@@ -160,7 +160,14 @@ services:
         request_buffering: true
         response_buffering: true
         tags: ["file-manager-service"]
-
+      - name: download-files
+        paths: ["/files/download"]
+        methods: ["POST", "OPTIONS"]
+        https_redirect_status_code: 426
+        strip_path: false
+        request_buffering: true
+        response_buffering: true
+        tags: ["file-manager-service"]
 plugins:
   - name: correlation-id
     config:

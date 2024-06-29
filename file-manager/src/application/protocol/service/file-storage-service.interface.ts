@@ -1,6 +1,7 @@
 import { type File } from '@/domain/entity'
 
 import { type FileMetadata } from '../../interface'
+import { type Readable } from 'stream'
 
 export interface GetFileUrlService {
   getFileUrl: (file: File, userId: string) => Promise<string>
@@ -19,4 +20,8 @@ export interface GenerateUploadUrlServiceResponse {
 
 export interface GenerateUploadUrlService {
   generateUploadUrl: (params: GenerateUploadUrlServiceDTO) => Promise<GenerateUploadUrlServiceResponse>
+}
+
+export interface GetFileStreamFromStorageService {
+  getFileStream: (file: File, userId: string) => Promise<Readable>
 }
