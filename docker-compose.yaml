@@ -97,30 +97,6 @@ services:
     volumes:
       - ./@configs/kong.yml:/etc/kong/kong.yml # Mount the declarative config file from your host
 
-  # Notification Service  
-  notification-service:
-    container_name: notification-service-app
-    restart: always
-    build:
-      context: ./notification
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
-    working_dir: /usr/app
-    command: [ "npm", "start" ]
-    depends_on:
-      mailhog:
-        condition: service_started
-      kafka:
-        condition: service_started
-
-  mailhog:
-    image: mailhog/mailhog
-    container_name: mailhog
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-
   # File Manager Service
   file-manager-postgres:
     image: postgres:9.6
