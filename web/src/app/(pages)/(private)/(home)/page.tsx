@@ -38,7 +38,7 @@ export default function Home() {
         <AlbumsGrid albums={albums} isLoading={isAlbumsLoading} />
       </section>
 
-      <section className="mt-20 h-full">
+      <section className="mt-10 h-full">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Deleted Albums</h2>
         </div>
