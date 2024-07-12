@@ -176,8 +176,8 @@ plugins:
       echo_downstream: true
   - name: cors
     config:
-      origins: 
-        - http://localhost:3003
+      origins:
+        - "*"
       methods:
         - GET
         - HEAD
@@ -186,7 +186,7 @@ plugins:
         - POST
         - DELETE
         - OPTIONS
-      headers: [] 
+      headers: []
       exposed_headers: []
       max_age: 3600
       credentials: true
