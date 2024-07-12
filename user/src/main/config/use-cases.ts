@@ -7,7 +7,6 @@ import {
   generateBcryptPasswordValidator,
   generateBcryptHashPassword,
   generateJwtTokenGenerator,
-  generateSendEmailNotificationUtil,
   generateJwtTokenValidator
 } from '../factory/util'
 import { Subscriber } from '@/application/interface'
@@ -33,16 +32,12 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     ENVS.KAFKA.TOPICS.USER.CREATED,
     unpublishedMessagesRepository
   )
-  const sendWelcomeNotification = await generateSendEmailNotificationUtil(
-    unpublishedMessagesRepository
-  )
 
   // Use cases
   const createNewUser = generateCreateNewUserUseCase(
     userRepository,
     hashPassword,
-    userRepository,
-    sendWelcomeNotification
+    userRepository
   )
   const userLogin = generateUserLoginUseCase(
     userRepository,

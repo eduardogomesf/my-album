@@ -2,8 +2,7 @@ import { CreateNewUserUseCase } from '@/application/use-case'
 import {
   type CreateUserRepository,
   type FindUserByEmailRepository,
-  type HashPassword,
-  type SendEmailNotification
+  type HashPassword
 } from '@/application/protocol'
 
 jest.mock('uuid', () => ({
@@ -15,19 +14,16 @@ describe('Create New User Use Case', () => {
   let mockFindUserByEmailRepository: FindUserByEmailRepository
   let mockHashPassword: HashPassword
   let mockCreateUserRepository: CreateUserRepository
-  let sendWelcomeNotification: SendEmailNotification
 
   beforeEach(() => {
     mockFindUserByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
     mockHashPassword = { hash: jest.fn().mockResolvedValue('hashed-password') }
     mockCreateUserRepository = { create: jest.fn().mockResolvedValue(null) }
-    sendWelcomeNotification = { send: jest.fn().mockResolvedValue(true) }
 
     sut = new CreateNewUserUseCase(
       mockFindUserByEmailRepository,
       mockHashPassword,
-      mockCreateUserRepository,
-      sendWelcomeNotification
+      mockCreateUserRepository
     )
   })
 
@@ -57,7 +53,6 @@ describe('Create New User Use Case', () => {
     const findByEmailSpy = jest.spyOn(mockFindUserByEmailRepository, 'findByEmail')
     const hashSpy = jest.spyOn(mockHashPassword, 'hash')
     const createSpy = jest.spyOn(mockCreateUserRepository, 'create')
-    const sendWelcomeNotificationSpy = jest.spyOn(sendWelcomeNotification, 'send')
 
     await sut.execute(payload)
 
@@ -70,12 +65,6 @@ describe('Create New User Use Case', () => {
       email: payload.email,
       cellphone: payload.cellphone,
       password: 'hashed-password'
-    })
-    expect(sendWelcomeNotificationSpy).toHaveBeenCalledWith({
-      sourceEmail: 'test@test.com',
-      targetEmail: payload.email,
-      subject: 'Welcome to our platform',
-      body: '<p>Hello, welcome to our platform.</p>'
     })
   })
 

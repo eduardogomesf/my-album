@@ -3,8 +3,7 @@ import { type UseCase, type UseCaseResponse } from '../interface'
 import {
   type HashPassword,
   type FindUserByEmailRepository,
-  type CreateUserRepository,
-  type SendEmailNotification
+  type CreateUserRepository
 } from '../protocol'
 import { Publisher } from '../interface/observer.interface'
 import { ERROR_MESSAGES } from '../constant'
@@ -21,8 +20,7 @@ export class CreateNewUserUseCase extends Publisher implements UseCase {
   constructor(
     private readonly findUserByEmailRepository: FindUserByEmailRepository,
     private readonly hashPassword: HashPassword,
-    private readonly createUserRepository: CreateUserRepository,
-    private readonly sendEmailNotification: SendEmailNotification
+    private readonly createUserRepository: CreateUserRepository
   ) {
     super(CreateNewUserUseCase.name)
   }
@@ -48,13 +46,6 @@ export class CreateNewUserUseCase extends Publisher implements UseCase {
     })
 
     await this.createUserRepository.create(user)
-
-    await this.sendEmailNotification.send({
-      sourceEmail: 'test@test.com',
-      targetEmail: payload.email,
-      subject: 'Welcome to our platform',
-      body: '<p>Hello, welcome to our platform.</p>'
-    })
 
     this.notifySubscribers({
       id: user.id,
