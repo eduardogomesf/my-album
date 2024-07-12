@@ -30,20 +30,6 @@ services:
       kafka:
         condition: service_started
 
-  user-service-relay:
-    container_name: user-service-relay-app
-    restart: always
-    build:
-      context: ./user-service-relay
-      dockerfile: Dockerfile
-    working_dir: /usr/app
-    command: [ "npm", "start" ]
-    depends_on:
-      user-service-mongodb:
-        condition: service_started
-      kafka:
-        condition: service_started
-
   # Kafka
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
