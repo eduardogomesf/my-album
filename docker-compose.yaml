@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # User Management Service
@@ -21,9 +21,9 @@ services:
       context: ./user
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3001"
     working_dir: /usr/app
-    command: [ "npm", "start" ]
+    command: ["npm", "start"]
     depends_on:
       user-service-mongodb:
         condition: service_started
@@ -126,7 +126,7 @@ services:
     ports:
       - "3002:3002"
     working_dir: /usr/app
-    command: [ "npm", "start" ]
+    command: ["npm", "start"]
     depends_on:
       file-manager-postgres:
         condition: service_started
