@@ -137,6 +137,19 @@ services:
       kafka:
         condition: service_started
 
+  # Web
+  web-app:
+    container_name: web-app
+    restart: always
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=http://kong:8000
+    ports:
+      - "3000:3000"
+    working_dir: /usr/app
+    command: ["npm", "start"]
 volumes:
   mongodb_data:
   kong-db:
