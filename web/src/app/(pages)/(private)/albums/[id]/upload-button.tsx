@@ -1,14 +1,19 @@
-import { v4 as uuid } from 'uuid'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus } from 'phosphor-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { v4 as uuid } from 'uuid'
 
-import { uploadFile } from '@/app/api/upload-file'
-import { FileAfterAnalysis, FileMetadata, preUpload } from '@/app/api/pre-upload'
 import { postUpload } from '@/app/api/post-upload'
-import { UploadOverlay } from './upload-overlay'
+import {
+  FileAfterAnalysis,
+  FileMetadata,
+  preUpload,
+} from '@/app/api/pre-upload'
+import { uploadFile } from '@/app/api/upload-file'
+
 import { UploadStatus } from './upload-item'
+import { UploadOverlay } from './upload-overlay'
 
 export interface FileWithId {
   id: string
@@ -49,44 +54,48 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     mutationFn: postUpload,
   })
 
-  async function uploadFilesToS3(filesToUpload: FileAfterAnalysis[], allFiles: FileWithId[]) {
+  async function uploadFilesToS3(
+    filesToUpload: FileAfterAnalysis[],
+    allFiles: FileWithId[],
+  ) {
     const successUploadsIds: string[] = []
     const failedUploadsIds: string[] = []
 
-    const result = await Promise.all(filesToUpload.map(async (allowedFile) => {
-      const { uploadUrl, fields } = allowedFile
+    const result = await Promise.all(
+      filesToUpload.map(async (allowedFile) => {
+        const { uploadUrl, fields } = allowedFile
 
-      const fileWithId = allFiles.find((file) => file.id === allowedFile.id)
+        const fileWithId = allFiles.find((file) => file.id === allowedFile.id)
 
+        if (!fileWithId || !uploadUrl || !fields) {
+          return null
+        }
 
-      if (!fileWithId || !uploadUrl || !fields) {
+        let uploadedWithSuccess = true
+
+        await uploadFileMutation({
+          file: fileWithId?.file,
+          url: uploadUrl,
+          fields,
+        }).catch(() => {
+          uploadedWithSuccess = false
+        })
+
+        if (uploadedWithSuccess) {
+          setFinishedNumberOfFiles((prev) => prev + 1)
+          successUploadsIds.push(allowedFile.id)
+        } else {
+          failedUploadsIds.push(allowedFile.id)
+        }
+
         return null
-      }
-
-      let uploadedWithSuccess = true
-
-      await uploadFileMutation({
-        file: fileWithId?.file,
-        url: uploadUrl,
-        fields: fields
-      }).catch(() => {
-        uploadedWithSuccess = false
-      })
-
-      if (uploadedWithSuccess) {
-        setFinishedNumberOfFiles((prev) => prev + 1)
-        successUploadsIds.push(allowedFile.id)
-      } else {
-        failedUploadsIds.push(allowedFile.id)
-      }
-
-      return null
-    }))
+      }),
+    )
 
     return {
       successUploadsIds,
       failedUploadsIds,
-      result
+      result,
     }
   }
 
@@ -105,37 +114,38 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
     const filesMetaData: FileMetadata[] = []
 
-    const formattedFiles = filesArray.map(
-      (file) => {
-        const id = uuid()
-        const status = UploadStatus.Uploading
+    const formattedFiles = filesArray.map((file) => {
+      const id = uuid()
+      const status = UploadStatus.Uploading
 
-        filesMetaData.push({
-          id,
-          originalName: file.name,
-          size: file.size,
-          mimetype: file.type,
-        })
-
-        return {
-          file,
-          id,
-          status
-        }
+      filesMetaData.push({
+        id,
+        originalName: file.name,
+        size: file.size,
+        mimetype: file.type,
       })
+
+      return {
+        file,
+        id,
+        status,
+      }
+    })
 
     setFilesWithIds(formattedFiles)
     setIsUploadOverlayOpen(true)
 
     const preUploadFiles = await preUploadMutation({
       files: filesMetaData,
-      albumId
+      albumId,
     })
 
     const allowedFiles: FileAfterAnalysis[] = []
 
     const filesAfterPreUploadAnalysis = formattedFiles.map((file) => {
-      const preUploadFile = preUploadFiles.find((preUploadFile) => preUploadFile.id === file.id)
+      const preUploadFile = preUploadFiles.find(
+        (preUploadFile) => preUploadFile.id === file.id,
+      )
 
       if (!preUploadFile?.allowed && preUploadFile?.reason) {
         file.status = UploadStatus.Failed
@@ -146,40 +156,48 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       return file
     })
 
-    setFilesWithIds(prev => [...filesAfterPreUploadAnalysis])
+    setFilesWithIds(() => [...filesAfterPreUploadAnalysis])
 
-    const { successUploadsIds, failedUploadsIds } = await uploadFilesToS3(allowedFiles, filesAfterPreUploadAnalysis)
+    const { successUploadsIds, failedUploadsIds } = await uploadFilesToS3(
+      allowedFiles,
+      filesAfterPreUploadAnalysis,
+    )
 
-    const filesWithPostUploadStatus = filesAfterPreUploadAnalysis.map((file) => {
-      if (successUploadsIds.includes(file.id)) {
-        file.status = UploadStatus.Completed
-      } else if (failedUploadsIds.includes(file.id)) {
-        file.status = UploadStatus.Failed
-      }
+    const filesWithPostUploadStatus = filesAfterPreUploadAnalysis.map(
+      (file) => {
+        if (successUploadsIds.includes(file.id)) {
+          file.status = UploadStatus.Completed
+        } else if (failedUploadsIds.includes(file.id)) {
+          file.status = UploadStatus.Failed
+        }
 
-      return file
-    })
+        return file
+      },
+    )
 
-    setFilesWithIds(prev => [...filesWithPostUploadStatus])
+    setFilesWithIds(() => [...filesWithPostUploadStatus])
 
     if (successUploadsIds.length === 0) {
       toast.error('Failed to upload files. Please try again.', {
-        duration: 5000
+        duration: 5000,
       })
       return
     }
 
-    const filesIdsForPostUpload = allowedFiles.reduce((accumulator, allowedFile) => {
-      if (successUploadsIds.includes(allowedFile.id) && allowedFile.fileId) {
-        accumulator.push(allowedFile.fileId)
-      }
+    const filesIdsForPostUpload = allowedFiles.reduce(
+      (accumulator, allowedFile) => {
+        if (successUploadsIds.includes(allowedFile.id) && allowedFile.fileId) {
+          accumulator.push(allowedFile.fileId)
+        }
 
-      return accumulator
-    }, [] as string[])
+        return accumulator
+      },
+      [] as string[],
+    )
 
     await postUploadMutation({
       filesIds: filesIdsForPostUpload,
-      albumId
+      albumId,
     })
 
     await Promise.all([
@@ -191,14 +209,16 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       }),
       queryClient.invalidateQueries({
         queryKey: ['albums'],
-      })
+      }),
     ])
 
-    const allFilesUploaded = filesIdsForPostUpload.length === files.length ?
-      'Upload complete! All files have been uploaded.' : 'Upload complete! Some files were not uploaded.'
+    const allFilesUploaded =
+      filesIdsForPostUpload.length === files.length
+        ? 'Upload complete! All files have been uploaded.'
+        : 'Upload complete! Some files were not uploaded.'
 
     toast.success(allFilesUploaded, {
-      duration: 5000
+      duration: 5000,
     })
 
     setTimeout(() => {
@@ -214,8 +234,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         className="hidden"
         onChange={handleFileChange}
         multiple
-        accept='image/*, video/*'
-
+        accept="image/*, video/*"
       />
       <button onClick={() => inputFileRef.current?.click()}>
         <Plus className="h-6 w-6" />

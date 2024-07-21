@@ -13,7 +13,10 @@ export async function uploadFile(params: UploadFileParams) {
   })
   formData.append('file', params.file)
 
-  const response = await axios.post(params.url.replace('s3', 'localhost'), formData)
+  const response = await axios.post(
+    params.url.replace('s3', 'localhost'),
+    formData,
+  )
 
   return response.data
 }

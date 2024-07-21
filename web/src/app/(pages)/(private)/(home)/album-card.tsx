@@ -31,7 +31,7 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         }),
         queryClient.invalidateQueries({
           queryKey: ['deleted-albums'],
-        })
+        }),
       ])
     },
   })
@@ -45,7 +45,7 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         }),
         queryClient.invalidateQueries({
           queryKey: ['deleted-albums'],
-        })
+        }),
       ])
     },
   })
@@ -114,7 +114,10 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         className="flex w-full flex-1 items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out hover:bg-gray-300"
         onClick={handleRedirect}
       >
-        <Image className="h-10 w-10 text-gray-800" />
+        <Image
+          className="h-10 w-10 text-gray-800"
+          alt="Album card background"
+        />
       </button>
 
       <div className="group relative flex flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">

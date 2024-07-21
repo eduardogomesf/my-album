@@ -31,17 +31,17 @@ export function DownloadButton({
         albumId,
       })
 
-      const url = window.URL.createObjectURL(new Blob([response]));
+      const url = window.URL.createObjectURL(new Blob([response]))
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${albumId}-${new Date().getTime()}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${albumId}-${new Date().getTime()}.zip`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
 
       // Revoke the temporary URL to free up resources
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(url)
 
       cleanSelectedFiles()
 
@@ -52,10 +52,7 @@ export function DownloadButton({
   }
 
   return (
-    <button
-      disabled={filesIds.length === 0}
-      onClick={handleDownload}
-    >
+    <button disabled={filesIds.length === 0} onClick={handleDownload}>
       <DownloadSimple className="h-6 w-6" />
     </button>
   )

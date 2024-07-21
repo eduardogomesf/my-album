@@ -11,17 +11,14 @@ interface MediaViewerProps {
   onPrevious: () => void
 }
 
-export function MediaViewer(
-  {
-    url,
-    isImage,
-    isOpen,
-    onClose,
-    onNext,
-    onPrevious
-  }: MediaViewerProps
-) {
-
+export function MediaViewer({
+  url,
+  isImage,
+  isOpen,
+  onClose,
+  onNext,
+  onPrevious,
+}: MediaViewerProps) {
   function handleModalKeyDown(event: React.KeyboardEvent) {
     if (event.key === 'ArrowRight') {
       onNext()
@@ -33,52 +30,43 @@ export function MediaViewer(
   return (
     <Dialog.Root open={isOpen}>
       <Dialog.Portal>
-        <Dialog.Content className="fixed inset-0 p-2 bg-black animate-fade-in-down" onKeyDown={handleModalKeyDown}>
+        <Dialog.Content
+          className="fixed inset-0 animate-fade-in-down bg-black p-2"
+          onKeyDown={handleModalKeyDown}
+        >
           <button
-            className="group z-50 absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
+            className="group absolute left-4 top-4 z-50 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
             onClick={onClose}
             aria-label="Close"
           >
             <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
           </button>
 
-          <div className='group z-50 absolute right-4 top-4 flex'>
-            <button className='flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out'>
+          <div className="group absolute right-4 top-4 z-50 flex">
+            <button className="flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out">
               <Info className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
             </button>
           </div>
 
           <button
-            className={`
-              group z-50 absolute top-1/2 -translate-y-1/2 left-6 opacity-0 hover:opacity-100 bg-transparent h-20 w-20
-              flex items-center justify-center 
-              transition duration-150 ease-in-out 
-            `}
+            className={`group absolute left-6 top-1/2 z-50 flex h-20 w-20 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition duration-150 ease-in-out hover:opacity-100`}
             onClick={onPrevious}
           >
-            <CaretLeft
-              className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
-            />
+            <CaretLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
           </button>
 
           <button
-            className={`
-              group z-50 absolute top-1/2 -translate-y-1/2 right-6 opacity-0 hover:opacity-100 bg-transparent h-20 w-20
-              flex items-center justify-center 
-              transition duration-150 ease-in-out 
-            `}
+            className={`group absolute right-6 top-1/2 z-50 flex h-20 w-20 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition duration-150 ease-in-out hover:opacity-100`}
             onClick={onNext}
           >
-            <CaretRight
-              className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400"
-            />
+            <CaretRight className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
           </button>
 
           {isImage ? (
             <Image
               src={url}
               alt={'Media'}
-              className='mx-auto w-full md:max-w-[85%] opacity-95'
+              className="mx-auto w-full opacity-95 md:max-w-[85%]"
               fill={true}
               style={{ objectFit: 'contain' }}
               priority
@@ -86,17 +74,13 @@ export function MediaViewer(
             />
           ) : (
             <video
-              className='block mx-auto h-full w-full md:max-w-[85%] opacity-95'
+              className="mx-auto block h-full w-full opacity-95 md:max-w-[85%]"
               controls
             >
-              <source
-                src={url}
-                type="video/mp4"
-              />
+              <source src={url} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           )}
-
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

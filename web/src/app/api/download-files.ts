@@ -6,6 +6,8 @@ type DownloadFilesParams = {
 }
 
 export async function downloadFiles(payload: DownloadFilesParams) {
-  const response = await api.post('/files/download', payload, { responseType: 'blob'})
+  const response = await api.post('/files/download', payload, {
+    responseType: 'blob',
+  })
   return response.data
 }

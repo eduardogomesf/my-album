@@ -21,8 +21,14 @@ interface FilesGrid {
 
 type FileForMediaOverlay = File & { listPosition: number }
 
-export function FilesGrid({ isLoading, files, onSelect, selectedFiles }: FilesGrid) {
-  const [fileForMediaOverlay, setFileForMediaOverlay] = useState<FileForMediaOverlay | null>(null)
+export function FilesGrid({
+  isLoading,
+  files,
+  onSelect,
+  selectedFiles,
+}: FilesGrid) {
+  const [fileForMediaOverlay, setFileForMediaOverlay] =
+    useState<FileForMediaOverlay | null>(null)
 
   function onCloseModalOverlay() {
     setFileForMediaOverlay(null)
@@ -78,9 +84,9 @@ export function FilesGrid({ isLoading, files, onSelect, selectedFiles }: FilesGr
       className={clsx(
         'mt-4 grid h-auto auto-rows-auto grid-cols-1 gap-2 md:grid-cols-5 lg:grid-cols-8',
         files &&
-        files.length === 0 &&
-        !isLoading &&
-        'mt-[150px] md:grid-cols-1',
+          files.length === 0 &&
+          !isLoading &&
+          'mt-[150px] md:grid-cols-1',
       )}
     >
       {fileForMediaOverlay && (
@@ -96,21 +102,21 @@ export function FilesGrid({ isLoading, files, onSelect, selectedFiles }: FilesGr
 
       {isLoading
         ? Array.from({ length: 10 }).map((_: unknown, index: number) => (
-          <FileCardSkeleton key={index} />
-        ))
+            <FileCardSkeleton key={index} />
+          ))
         : files.map((file: File, index) => (
-          <FileCard
-            file={file}
-            key={file.id}
-            hasSameDateAsPrevious={isSameDate(
-              file.createdAt,
-              files[index - 1]?.createdAt,
-            )}
-            onSelect={onSelect}
-            isSelected={selectedFiles.includes(file.id)}
-            onSelectFileForMediaOverlay={handleSelectFileForMediaOverlay}
-          />
-        ))}
+            <FileCard
+              file={file}
+              key={file.id}
+              hasSameDateAsPrevious={isSameDate(
+                file.createdAt,
+                files[index - 1]?.createdAt,
+              )}
+              onSelect={onSelect}
+              isSelected={selectedFiles.includes(file.id)}
+              onSelectFileForMediaOverlay={handleSelectFileForMediaOverlay}
+            />
+          ))}
     </div>
   )
 }

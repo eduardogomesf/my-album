@@ -9,10 +9,10 @@ import { useState } from 'react'
 import { FilesAndCounts, getAlbumFiles } from '@/app/api/get-album-files'
 
 import { DeleteButton } from './delete-button'
-import { FilesGrid } from './files-grid'
-import { UploadButton } from './upload-button'
-import { MoveFilesButton } from './move-files-button'
 import { DownloadButton } from './download-button'
+import { FilesGrid } from './files-grid'
+import { MoveFilesButton } from './move-files-button'
+import { UploadButton } from './upload-button'
 
 export default function Album() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
@@ -47,29 +47,27 @@ export default function Album() {
 
       <main className="mt-8">
         <div className="flex w-full items-center justify-between">
-          <div className='flex items-center gap-2'>
-            {
-              filesResult?.album?.name ? (
-                <h2 className="text-2xl font-bold">
-                  {filesResult?.album?.name}
-                </h2>
-              ) : (
-                <div className='w-32 h-6 rounded-full animate-pulse bg-gray-300' />
-              )
-            }
+          <div className="flex items-center gap-2">
+            {filesResult?.album?.name ? (
+              <h2 className="text-2xl font-bold">{filesResult?.album?.name}</h2>
+            ) : (
+              <div className="h-6 w-32 animate-pulse rounded-full bg-gray-300" />
+            )}
 
-            {filesResult.total > 0 &&
-              (<div className='flex items-center gap-1'>
-                <span className="text-sm text-gray-600 font-normal">
-                  {selectedFiles.length > 0 ? `(${selectedFiles.length} of ${filesResult.total} files selected)` : `(${filesResult.total} files)`}
+            {filesResult.total > 0 && (
+              <div className="flex items-center gap-1">
+                <span className="text-sm font-normal text-gray-600">
+                  {selectedFiles.length > 0
+                    ? `(${selectedFiles.length} of ${filesResult.total} files selected)`
+                    : `(${filesResult.total} files)`}
                 </span>
                 {selectedFiles.length > 0 && (
                   <button onClick={cleanSelectedFiles}>
-                    <XCircle className='w-4 h-4 text-gray-600' />
+                    <XCircle className="h-4 w-4 text-gray-600" />
                   </button>
                 )}
-              </div>)
-            }
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-4">

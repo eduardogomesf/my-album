@@ -19,11 +19,10 @@ export function FileCard({
   hasSameDateAsPrevious,
   onSelect,
   isSelected,
-  onSelectFileForMediaOverlay
+  onSelectFileForMediaOverlay,
 }: FileCardProps) {
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-  let timeoutId: NodeJS.Timeout | null = null;
+  const videoRef = useRef<HTMLVideoElement>(null)
+  let timeoutId: NodeJS.Timeout | null = null
 
   const isImage = file.type === 'image'
 
@@ -37,31 +36,33 @@ export function FileCard({
 
   const handleMouseOver = () => {
     if (videoRef.current) {
-      videoRef.current.play();
+      videoRef.current.play()
       timeoutId = setTimeout(() => {
         if (videoRef.current) {
-          videoRef.current.pause();
+          videoRef.current.pause()
         }
-      }, 3000);
+      }, 3000)
     }
-  };
+  }
 
   const handleMouseOut = () => {
     if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
       if (timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
+        clearTimeout(timeoutId)
+        timeoutId = null
       }
     }
-  };
+  }
 
   return (
-    <div className={clsx(
-      'group relative flex flex-col justify-start gap-1',
-      isImage ? 'col-span-1' : 'col-span-2'
-    )}>
+    <div
+      className={clsx(
+        'group relative flex flex-col justify-start gap-1',
+        isImage ? 'col-span-1' : 'col-span-2',
+      )}
+    >
       <span
         className={clsx(
           'flex items-center gap-1 text-sm font-normal text-gray-900',
@@ -89,7 +90,7 @@ export function FileCard({
         ) : (
           <video
             className={clsx(
-              'block h-80 rounded-lg transition-opacity duration-300 hover:opacity-80 bg-black',
+              'block h-80 rounded-lg bg-black transition-opacity duration-300 hover:opacity-80',
               isSelected && 'border border-gray-500 opacity-70',
             )}
             muted
@@ -97,7 +98,10 @@ export function FileCard({
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
           >
-            <source src={file.url.replace('s3', 'localhost')} type="video/mp4" />
+            <source
+              src={file.url.replace('s3', 'localhost')}
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
         )}
