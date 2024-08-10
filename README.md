@@ -41,7 +41,7 @@ The **Web app** is the frontend web application that allow users to interact wit
 [Docker Compose](https://docs.docker.com/compose/)  
 [Jest](https://jestjs.io/pt-BR/)
 
-## Patterns and Design Principles applied
+## Patterns and Design Principles
 
 [Microservices](https://martinfowler.com/articles/microservices.html)  
 [Observer](https://refactoring.guru/design-patterns/observer)  
@@ -80,6 +80,7 @@ I recommend using a swagger editor like [this](https://editor.swagger.io/) to vi
 - Upload a file to an album
 - Delete a file from an album
 - Move files from one album to another
+- Download files
 
 ## Possible improvements
 
@@ -91,7 +92,6 @@ I recommend using a swagger editor like [this](https://editor.swagger.io/) to vi
 - Update password feature
 - Add monitoring services
 - Add infinite scroll feature
-
 ---
 
 🛠️ Created by [eduardogomesf](https://eduardogomesf.dev)
