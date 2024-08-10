@@ -28,7 +28,6 @@ export class User extends BaseEntity {
   }
 
   private validate() {
-    if (!this.id) throw new Error('ID should not be empty')
     if (!this.firstName) throw new Error('First name should not be empty')
     if (!this.lastName) throw new Error('Last name should not be empty')
     if (!this.email) throw new Error('E-mail should not be empty')
