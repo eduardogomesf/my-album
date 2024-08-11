@@ -458,6 +458,146 @@
           }
         }
       }
+    },
+    "/files/pre-upload": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Perform pre upload analysis",
+        "operationId": "preUploadAnalysis",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PreUploadAnalysisBody"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Cookie",
+            "required": true,
+            "type": "string",
+            "description": "Cookies: accessToken, refreshToken, userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pre upload analysis completed successfully",
+            "schema": {
+              "$ref": "#/definitions/PreUploadAnalysisResponse"
+            }
+          },
+          "404": {
+            "description": "Album not found"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/files/post-upload": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Perform post upload actions",
+        "operationId": "postUpload",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostUploadBody"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Cookie",
+            "required": true,
+            "type": "string",
+            "description": "Cookies: accessToken, refreshToken, userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post upload actions performed successfully"
+          },
+          "404": {
+            "description": "Files not found"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/files/download": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Download files",
+        "operationId": "downloadFiles",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/zip"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DownloadFilesBody"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Cookie",
+            "required": true,
+            "type": "string",
+            "description": "Cookies: accessToken, refreshToken, userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ZIP file generated successfully",
+            "schema": {
+              "type": "string",
+              "format": "binary",
+              "example": "files.zip"
+            },
+            "headers": {
+              "Content-Disposition": {
+                "type": "string",
+                "description": "Indicates that the response should be treated as a file download"
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "403": {
+            "description": "You dont have permissiont to perform this action"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -697,6 +837,100 @@
         },
         "canAddMore": {
           "type": "boolean"
+        }
+      }
+    },
+    "PreUploadAnalysisBody": {
+      "type": "object",
+      "required": [
+        "albumId",
+        "files"
+      ],
+      "properties": {
+        "albumId": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "originalName": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "PreUploadAnalysisResponse": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "allowed": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "uploadUrl": {
+            "type": "string"
+          },
+          "fileId": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "PostUploadBody": {
+      "type": "object",
+      "required": [
+        "albumId",
+        "filesIds"
+      ],
+      "properties": {
+        "albumId": {
+          "type": "string"
+        },
+        "filesIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DownloadFilesBody": {
+      "type": "object",
+      "required": [
+        "albumId",
+        "filesIds"
+      ],
+      "properties": {
+        "albumId": {
+          "type": "string"
+        },
+        "filesIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }
