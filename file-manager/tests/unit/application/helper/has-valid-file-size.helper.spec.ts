@@ -11,7 +11,6 @@ jest.mock('@/shared/env.ts', () => {
 })
 
 describe('Has Valid File Size Helper', () => {
-
   it('should get size as valid since it is smaller than max size', () => {
     const hasValidSize = hasValidFileSize(3145728)
     expect(hasValidSize).toBe(true)
@@ -21,5 +20,4 @@ describe('Has Valid File Size Helper', () => {
     const hasValidSize = hasValidFileSize(10485760)
     expect(hasValidSize).toBe(false)
   })
-
 })

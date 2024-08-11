@@ -1,7 +1,6 @@
 import { getFileTypeFromMimeType } from '@/application/helper'
 
 describe('Get File Type From Mimetype Helper', () => {
-
   it('should get the file type as image for image/jpeg mimetype', () => {
     const fileType = getFileTypeFromMimeType('image/jpeg')
     expect(fileType).toBe('image')

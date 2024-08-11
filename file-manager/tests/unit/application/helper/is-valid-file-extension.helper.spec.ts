@@ -11,7 +11,6 @@ jest.mock('@/shared/env.ts', () => {
 })
 
 describe('Is Valid File Extension Helper', () => {
-
   it('should get file extesion as valid for jpg', () => {
     const isValidExtesion = isValidFileExtension('jpg')
     expect(isValidExtesion).toBe(true)
