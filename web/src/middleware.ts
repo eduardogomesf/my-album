@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { api } from './app/lib/axios'
@@ -27,7 +28,7 @@ async function refreshToken(
         },
       },
     )
-    .catch((error) => {
+    .catch((error: AxiosError) => {
       console.log(error?.response?.data)
       tokenWasRefreshed = false
     })
