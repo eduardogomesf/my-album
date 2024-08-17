@@ -35,18 +35,12 @@ export function MediaViewer({
           onKeyDown={handleModalKeyDown}
         >
           <button
-            className="group absolute left-4 top-4 z-50 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out"
+            className="group absolute left-4 top-4 z-50 flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out focus:outline-none"
             onClick={onClose}
             aria-label="Close"
           >
-            <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
+            <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400 focus:outline-none" />
           </button>
-
-          <div className="group absolute right-4 top-4 z-50 flex">
-            <button className="flex h-8 w-8 items-center justify-center rounded-full transition duration-150 ease-in-out">
-              <Info className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400" />
-            </button>
-          </div>
 
           <button
             className={`group absolute left-6 top-1/2 z-50 flex h-20 w-20 -translate-y-1/2 items-center justify-center bg-transparent opacity-0 transition duration-150 ease-in-out hover:opacity-100`}
