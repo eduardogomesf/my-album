@@ -92,7 +92,7 @@ export function FilesGrid({
       {fileForMediaOverlay && (
         <MediaViewer
           isImage={fileForMediaOverlay.type === 'image'}
-          url={fileForMediaOverlay.url.replace('s3', 'localhost')}
+          url={fileForMediaOverlay.url}
           isOpen={!!fileForMediaOverlay}
           onClose={onCloseModalOverlay}
           onNext={handleNextFile}
