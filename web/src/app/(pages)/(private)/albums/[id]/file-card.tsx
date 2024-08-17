@@ -76,7 +76,7 @@ export function FileCard({
       <button className="relative h-80 w-full" onClick={handleClick}>
         {isImage ? (
           <Image
-            src={file.url.replace('s3', 'localhost')}
+            src={file.url}
             alt={file.name}
             className={clsx(
               'rounded-lg transition-opacity duration-300 hover:opacity-80',
@@ -98,10 +98,7 @@ export function FileCard({
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
           >
-            <source
-              src={file.url.replace('s3', 'localhost')}
-              type="video/mp4"
-            />
+            <source src={file.url} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         )}

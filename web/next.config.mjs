@@ -8,6 +8,12 @@ const nextConfig = {
         port: '4566',
         pathname: '**',
       },
+      {
+        protocol: 'http',
+        hostname: 's3',
+        port: '4566',
+        pathname: '**',
+      },
     ],
   },
 };
