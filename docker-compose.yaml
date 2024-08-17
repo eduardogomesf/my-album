@@ -48,6 +48,7 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
+    restart: always
     environment:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://kafka:9093,OUTSIDE://0.0.0.0:9092
