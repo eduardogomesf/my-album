@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
-import { ArrowLeft, CaretLeft, CaretRight, Info } from 'phosphor-react'
+import { ArrowLeft, CaretLeft, CaretRight } from 'phosphor-react'
 
 interface MediaViewerProps {
   isImage: boolean
@@ -39,7 +39,7 @@ export function MediaViewer({
             onClick={onClose}
             aria-label="Close"
           >
-            <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out group-hover:text-gray-400 focus:outline-none" />
+            <ArrowLeft className="h-6 w-6 text-white transition duration-150 ease-in-out focus:outline-none group-hover:text-gray-400" />
           </button>
 
           <button
