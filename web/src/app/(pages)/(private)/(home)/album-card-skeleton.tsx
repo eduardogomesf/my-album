@@ -1,6 +1,6 @@
 export function AlbumCardSkeleton() {
   return (
-    <div className="group h-40 w-full max-w-[300px] animate-pulse cursor-pointer rounded-md">
+    <div className="group mb-20 h-40 w-full max-w-[300px] animate-pulse cursor-pointer rounded-md">
       <div className="flex h-5/6 w-full items-center justify-center rounded-t-lg bg-gray-300" />
 
       <div></div>

@@ -19,6 +19,7 @@ export interface FileWithId {
   id: string
   file: File
   status: UploadStatus
+  failureReason?: string
 }
 
 interface UploadButtonProps {
@@ -129,6 +130,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         file,
         id,
         status,
+        failureReason: '',
       }
     })
 
@@ -149,6 +151,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
       if (!preUploadFile?.allowed && preUploadFile?.reason) {
         file.status = UploadStatus.Failed
+        file.failureReason = preUploadFile.reason
       } else if (preUploadFile?.allowed) {
         allowedFiles.push(preUploadFile)
       }

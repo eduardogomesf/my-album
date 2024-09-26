@@ -52,6 +52,7 @@ export function UploadOverlay({
                   key={index}
                   name={fileToBeUploaded.file.name}
                   status={fileToBeUploaded.status}
+                  failureReason={fileToBeUploaded.failureReason}
                 />
               ))}
           </div>
