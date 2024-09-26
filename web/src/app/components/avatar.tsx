@@ -76,7 +76,7 @@ export function Avatar({ firstName, email }: AvatarProps) {
                 progress={
                   currentUsage?.maxStorage
                     ? (currentUsage?.currentUsage / currentUsage?.maxStorage) *
-                    100
+                      100
                     : 0
                 }
               />

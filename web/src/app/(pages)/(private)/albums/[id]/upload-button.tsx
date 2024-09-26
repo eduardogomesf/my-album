@@ -130,7 +130,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         file,
         id,
         status,
-        failureReason: ''
+        failureReason: '',
       }
     })
 

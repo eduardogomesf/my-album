@@ -96,37 +96,39 @@ export function MoveFilesButton({
           </Dialog.Description>
 
           <div className="mt-4 grid max-h-[200px] grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3">
-            {albums.filter(album => album.id !== albumId).map((album) => (
-              <button
-                className="group flex h-32 w-full max-w-[150px] cursor-pointer flex-col rounded-md bg-gray-200"
-                onClick={() => handleSelectAlbum(album.id)}
-                key={album.id}
-              >
-                <div
-                  className={clsx(
-                    'flex w-full flex-1 items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out group-hover:bg-gray-300',
-                    selectedAlbumId === album.id ? 'bg-gray-300' : '',
-                  )}
+            {albums
+              .filter((album) => album.id !== albumId)
+              .map((album) => (
+                <button
+                  className="group flex h-32 w-full max-w-[150px] cursor-pointer flex-col rounded-md bg-gray-200"
+                  onClick={() => handleSelectAlbum(album.id)}
+                  key={album.id}
                 >
-                  <Image
-                    className="h-6 w-6 text-gray-800"
-                    alt="Album card background"
-                  />
-                </div>
+                  <div
+                    className={clsx(
+                      'flex w-full flex-1 items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out group-hover:bg-gray-300',
+                      selectedAlbumId === album.id ? 'bg-gray-300' : '',
+                    )}
+                  >
+                    <Image
+                      className="h-6 w-6 text-gray-800"
+                      alt="Album card background"
+                    />
+                  </div>
 
-                <div className="group relative flex w-full flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">
-                  <span className="text-sm font-bold">{album.name}</span>
-                  <span className="text-xs text-gray-500">
-                    {album.updatedAt ? formatDate(album.updatedAt) : ''}
-                  </span>
-                  {selectedAlbumId === album.id && (
-                    <span className="absolute right-2 top-2 rounded-full bg-gray-200 p-1">
-                      <Check className="h-4 w-4 text-gray-800" />
+                  <div className="group relative flex w-full flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">
+                    <span className="text-sm font-bold">{album.name}</span>
+                    <span className="text-xs text-gray-500">
+                      {album.updatedAt ? formatDate(album.updatedAt) : ''}
                     </span>
-                  )}
-                </div>
-              </button>
-            ))}
+                    {selectedAlbumId === album.id && (
+                      <span className="absolute right-2 top-2 rounded-full bg-gray-200 p-1">
+                        <Check className="h-4 w-4 text-gray-800" />
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))}
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-2">

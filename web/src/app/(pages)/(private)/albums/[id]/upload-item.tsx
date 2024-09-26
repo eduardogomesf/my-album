@@ -1,4 +1,5 @@
 import { CheckCircle, CircleNotch, XCircle } from 'phosphor-react'
+
 import { UploadErrorTooltip } from './upload-error-tooltip'
 
 export enum UploadStatus {
