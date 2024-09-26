@@ -96,7 +96,7 @@ export function MoveFilesButton({
           </Dialog.Description>
 
           <div className="mt-4 grid max-h-[200px] grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3">
-            {albums?.map((album) => (
+            {albums.filter(album => album.id !== albumId).map((album) => (
               <button
                 className="group flex h-32 w-full max-w-[150px] cursor-pointer flex-col rounded-md bg-gray-200"
                 onClick={() => handleSelectAlbum(album.id)}
