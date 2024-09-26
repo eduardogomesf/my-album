@@ -1,5 +1,5 @@
 import { Logger } from '@/shared'
-import { type Request, type Response } from 'express'
+import { type Response } from 'express'
 import { HTTP_CODES } from '../constant'
 import {
   type AddNewAlbumUseCase,
@@ -10,6 +10,7 @@ import {
 } from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
 import { convertErrorToHttpError } from '../helper'
+import { type CustomRequest } from '../../interface/custom-request'
 
 export class AlbumController {
   private readonly logger = new Logger(AlbumController.name)
@@ -22,14 +23,17 @@ export class AlbumController {
     private readonly restoreAlbumUseCase: RestoreAlbumUseCase
   ) {}
 
-  async add(request: Request, response: Response): Promise<Response> {
-    const correlationId = request.tracking.correlationId
+  async add(
+    CustomRequest: CustomRequest,
+    response: Response
+  ): Promise<Response> {
+    const correlationId = CustomRequest.tracking.correlationId
 
-    this.logger.info('Add album request received', correlationId)
+    this.logger.info('Add album CustomRequest received', correlationId)
 
     try {
-      const { name } = request.body
-      const { userId } = request.auth
+      const { name } = CustomRequest.body
+      const { userId } = CustomRequest.auth
 
       const createAlbumResult = await this.addNewAlbumUseCase.execute({
         name,
@@ -37,7 +41,10 @@ export class AlbumController {
       })
 
       if (!createAlbumResult.ok) {
-        this.logger.warn(`Album not created: ${createAlbumResult.message}`, correlationId)
+        this.logger.warn(
+          `Album not created: ${createAlbumResult.message}`,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
           [
@@ -67,14 +74,17 @@ export class AlbumController {
     }
   }
 
-  async getManyByStatus(request: Request, response: Response): Promise<Response> {
-    const correlationId = request.tracking.correlationId
+  async getManyByStatus(
+    CustomRequest: CustomRequest,
+    response: Response
+  ): Promise<Response> {
+    const correlationId = CustomRequest.tracking.correlationId
 
-    this.logger.info('Get albums request received', correlationId)
+    this.logger.info('Get albums CustomRequest received', correlationId)
 
     try {
-      const { userId } = request.auth
-      const { deletedAlbumsOnly } = request.query
+      const { userId } = CustomRequest.auth
+      const { deletedAlbumsOnly } = CustomRequest.query
 
       const getAlbumsResult = await this.getAlbumsUseCase.execute({
         userId,
@@ -94,27 +104,37 @@ export class AlbumController {
     }
   }
 
-  async getFilesByAlbumId(request: Request, response: Response): Promise<Response> {
-    const correlationId = request.tracking.correlationId
+  async getFilesByAlbumId(
+    CustomRequest: CustomRequest,
+    response: Response
+  ): Promise<Response> {
+    const correlationId = CustomRequest.tracking.correlationId
 
-    this.logger.info('Get files by album id request received', correlationId)
+    this.logger.info(
+      'Get files by album id CustomRequest received',
+      correlationId
+    )
 
     try {
-      const { userId } = request.auth
-      const { albumId } = request.params
-      const { page = 1, limit = 20 } = request.query
+      const { userId } = CustomRequest.auth
+      const { albumId } = CustomRequest.params
+      const { page = 1, limit = 20 } = CustomRequest.query
 
-      const getFilesByAlbumIdResult = await this.getFilesByAlbumIdUseCase.execute({
-        albumId,
-        userId,
-        filters: {
-          page: Number(page),
-          limit: Number(limit)
-        }
-      })
+      const getFilesByAlbumIdResult =
+        await this.getFilesByAlbumIdUseCase.execute({
+          albumId,
+          userId,
+          filters: {
+            page: Number(page),
+            limit: Number(limit)
+          }
+        })
 
       if (!getFilesByAlbumIdResult.ok) {
-        this.logger.warn(`Album not found: ${getFilesByAlbumIdResult.message}`, correlationId)
+        this.logger.warn(
+          `Album not found: ${getFilesByAlbumIdResult.message}`,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
           [
@@ -154,14 +174,17 @@ export class AlbumController {
     }
   }
 
-  async deleteAlbum(request: Request, response: Response): Promise<Response> {
-    const correlationId = request.tracking.correlationId
+  async deleteAlbum(
+    CustomRequest: CustomRequest,
+    response: Response
+  ): Promise<Response> {
+    const correlationId = CustomRequest.tracking.correlationId
 
-    this.logger.info('Delete album request received', correlationId)
+    this.logger.info('Delete album CustomRequest received', correlationId)
 
     try {
-      const { userId } = request.auth
-      const { albumId } = request.params
+      const { userId } = CustomRequest.auth
+      const { albumId } = CustomRequest.params
 
       const deleteAlbumResult = await this.deleteAlbumUseCase.execute({
         albumId,
@@ -169,7 +192,10 @@ export class AlbumController {
       })
 
       if (!deleteAlbumResult.ok) {
-        this.logger.warn(`Album not deleted: ${deleteAlbumResult.message}`, correlationId)
+        this.logger.warn(
+          `Album not deleted: ${deleteAlbumResult.message}`,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
           [
@@ -199,14 +225,17 @@ export class AlbumController {
     }
   }
 
-  async restore(request: Request, response: Response): Promise<Response> {
-    const correlationId = request.tracking.correlationId
+  async restore(
+    CustomRequest: CustomRequest,
+    response: Response
+  ): Promise<Response> {
+    const correlationId = CustomRequest.tracking.correlationId
 
-    this.logger.info('Restore album request received', correlationId)
+    this.logger.info('Restore album CustomRequest received', correlationId)
 
     try {
-      const { userId } = request.auth
-      const { albumId } = request.params
+      const { userId } = CustomRequest.auth
+      const { albumId } = CustomRequest.params
 
       const restoreAlbumResult = await this.restoreAlbumUseCase.execute({
         albumId,
@@ -214,7 +243,10 @@ export class AlbumController {
       })
 
       if (!restoreAlbumResult.ok) {
-        this.logger.warn(`Album not restored: ${restoreAlbumResult.message}`, correlationId)
+        this.logger.warn(
+          `Album not restored: ${restoreAlbumResult.message}`,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
           [

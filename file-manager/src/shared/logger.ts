@@ -5,9 +5,7 @@ export class Logger {
   private readonly logSource: string
   private readonly timezone: string
 
-  constructor(
-    logSource: string
-  ) {
+  constructor(logSource: string) {
     this.logSource = logSource
     this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
@@ -25,48 +23,32 @@ export class Logger {
   }
 
   private formatMessage(message: string, correlationId?: string) {
-    const now = DateTime.now().setZone(this.timezone).toFormat('yyyy-MM-dd HH:mm:ss')
-    const correlation = correlationId ? `[correlation-id:${correlationId}]` : ''
+    const now = DateTime.now()
+      .setZone(this.timezone)
+      .toFormat('yyyy-MM-dd HH:mm:ss')
+    const correlation = correlationId
+      ? `[correlation-id:${correlationId}]`
+      : ''
     return `[${now}][${this.logSource}]${correlation} ${message}`
   }
 
   verbose(message: string, correlationId?: string) {
-    console.debug(
-      chalk.cyan(
-        this.formatMessage(message, correlationId)
-      )
-    )
+    console.debug(chalk.cyan(this.formatMessage(message, correlationId)))
   }
 
   warn(message: string, correlationId?: string) {
-    console.warn(
-      chalk.yellow(
-        this.formatMessage(message, correlationId)
-      )
-    )
+    console.warn(chalk.yellow(this.formatMessage(message, correlationId)))
   }
 
   info(message: string, correlationId?: string) {
-    console.info(
-      chalk.green(
-        this.formatMessage(message, correlationId)
-      )
-    )
+    console.info(chalk.green(this.formatMessage(message, correlationId)))
   }
 
   error(message: any, correlationId?: string) {
-    console.error(
-      chalk.red(
-        this.formatMessage(message, correlationId)
-      )
-    )
+    console.error(chalk.red(this.formatMessage(message, correlationId)))
   }
 
   fatal(message: any, correlationId?: string) {
-    console.error(
-      chalk.bgRed(
-        this.formatMessage(message, correlationId)
-      )
-    )
+    console.error(chalk.bgRed(this.formatMessage(message, correlationId)))
   }
 }
