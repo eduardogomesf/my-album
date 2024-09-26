@@ -78,7 +78,7 @@ export function NewAlbumModal({ children }: NewAlbumModalProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 animate-fade-in-down bg-overlay" />
 
-        <Dialog.Content className="fixed left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md bg-gray-100 p-4 focus:outline-none md:w-4/12">
+        <Dialog.Content className="fixed left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md bg-gray-100 p-4 focus:outline-none md:w-2/12">
           <Dialog.Title className="text-lg font-semibold text-gray-900">
             New album
           </Dialog.Title>
