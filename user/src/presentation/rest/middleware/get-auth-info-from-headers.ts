@@ -1,7 +1,8 @@
 import * as cookie from 'cookie'
-import { type NextFunction, type Request, type Response } from 'express'
+import { type NextFunction, type Response } from 'express'
 import { Logger } from '@/shared'
 import { generateJwtTokenValidator } from '@/main/factory/util'
+import { type CustomRequest } from '../../interface/custom-request'
 
 export interface AuthInfo {
   userId: string
@@ -13,7 +14,11 @@ const logger = new Logger('getAuthInfoFromToken')
 
 const tokenValidator = generateJwtTokenValidator()
 
-export async function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): Promise<any> {
+export async function getAuthInfoFromHeaders(
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> {
   if (!req.headers.cookie) {
     logger.error('Cookies not found')
     return res.status(401).send('Cookies not found')
@@ -26,11 +31,14 @@ export async function getAuthInfoFromHeaders(req: Request, res: Response, next: 
     return res.status(401).send('Invalid cookie format')
   }
 
-  const { isValid, data, invalidationReason } = await tokenValidator.validate(accessToken)
+  const { isValid, data, invalidationReason } = await tokenValidator.validate(
+    accessToken
+  )
 
   if (!isValid) {
     logger.error('Auth token invalid or expired')
-    const message = invalidationReason === 'EXPIRED' ? 'Token expired' : 'Token invalid'
+    const message =
+      invalidationReason === 'EXPIRED' ? 'Token expired' : 'Token invalid'
     return res.status(401).send(message)
   }
 

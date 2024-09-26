@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express'
+import { type Response } from 'express'
 import * as cookie from 'cookie'
 
 import {
@@ -10,6 +10,7 @@ import {
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
 import { ERROR_MESSAGES } from '@/application/constant'
+import { type CustomRequest } from '../../interface/custom-request'
 
 export class UserController {
   private readonly logger = new Logger(UserController.name)
@@ -21,7 +22,7 @@ export class UserController {
     private readonly getUserInfoUseCase: GetUserInfoUseCase
   ) {}
 
-  async create(request: Request, response: Response): Promise<Response> {
+  async create(request: CustomRequest, response: Response): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Create user request received', correlationId)
@@ -32,22 +33,36 @@ export class UserController {
       )
 
       if (missingFieldsValidation.isMissing) {
-        this.logger.warn(`Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`, correlationId)
+        this.logger.warn(
+          `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`,
+          correlationId
+        )
         return response.status(400).json({
-          message: `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`
+          message: `Missing fields: ${missingFieldsValidation.missingFields.join(
+            ', '
+          )}`
         })
       }
 
       const { firstName, lastName, email, password, cellphone } = request.body
 
       const createUserResult = await this.createNewUserUseCase.execute({
-        firstName, lastName, email, password, cellphone
+        firstName,
+        lastName,
+        email,
+        password,
+        cellphone
       })
 
       if (!createUserResult.ok) {
-        this.logger.warn(`User not created: ${createUserResult.message}`, correlationId)
+        this.logger.warn(
+          `User not created: ${createUserResult.message}`,
+          correlationId
+        )
 
-        if (createUserResult.message === ERROR_MESSAGES.USER.EMAIL_ALREADY_EXIST) {
+        if (
+          createUserResult.message === ERROR_MESSAGES.USER.EMAIL_ALREADY_EXIST
+        ) {
           return response.status(409).json({
             message: createUserResult.message
           })
@@ -67,7 +82,7 @@ export class UserController {
     }
   }
 
-  async login(request: Request, response: Response): Promise<Response> {
+  async login(request: CustomRequest, response: Response): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Login request received', correlationId)
@@ -78,20 +93,29 @@ export class UserController {
       )
 
       if (missingFieldsValidation.isMissing) {
-        this.logger.warn(`Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`, correlationId)
+        this.logger.warn(
+          `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`,
+          correlationId
+        )
         return response.status(400).json({
-          message: `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`
+          message: `Missing fields: ${missingFieldsValidation.missingFields.join(
+            ', '
+          )}`
         })
       }
 
       const { email, password } = request.body
 
       const loginResult = await this.userLoginUseCase.execute({
-        email, password
+        email,
+        password
       })
 
       if (!loginResult.ok) {
-        this.logger.warn(`User not logged in: ${loginResult.message}`, correlationId)
+        this.logger.warn(
+          `User not logged in: ${loginResult.message}`,
+          correlationId
+        )
 
         if (loginResult.message?.includes('given credentials')) {
           return response.status(401).json({
@@ -126,7 +150,7 @@ export class UserController {
     }
   }
 
-  async refresh(request: Request, response: Response): Promise<Response> {
+  async refresh(request: CustomRequest, response: Response): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Refresh token request received', correlationId)
@@ -146,7 +170,12 @@ export class UserController {
       )
 
       if (missingFieldsValidation.isMissing) {
-        this.logger.warn(`Missing cookies: ${missingFieldsValidation.missingFields.join(', ')}`, correlationId)
+        this.logger.warn(
+          `Missing cookies: ${missingFieldsValidation.missingFields.join(
+            ', '
+          )}`,
+          correlationId
+        )
         return response.status(400).json({
           message: 'Cookies not found'
         })
@@ -160,7 +189,10 @@ export class UserController {
       })
 
       if (!refreshResult.ok) {
-        this.logger.warn(`Token not refreshed: ${refreshResult.message}`, correlationId)
+        this.logger.warn(
+          `Token not refreshed: ${refreshResult.message}`,
+          correlationId
+        )
         if (refreshResult.message === ERROR_MESSAGES.USER.NOT_FOUND) {
           return response.status(404).json({
             message: refreshResult.message
@@ -194,7 +226,10 @@ export class UserController {
     }
   }
 
-  async getUserInfo(request: Request, response: Response): Promise<Response> {
+  async getUserInfo(
+    request: CustomRequest,
+    response: Response
+  ): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
       this.logger.info('Get user info request received', correlationId)
@@ -206,7 +241,10 @@ export class UserController {
       })
 
       if (!getUserInfoResult.ok) {
-        this.logger.warn(`User not found: ${getUserInfoResult.message}`, correlationId)
+        this.logger.warn(
+          `User not found: ${getUserInfoResult.message}`,
+          correlationId
+        )
         return response.status(404).json({
           message: getUserInfoResult.message
         })
@@ -221,7 +259,12 @@ export class UserController {
     }
   }
 
-  private setCookies(response: Response, accessToken: string, refreshToken: string, userId: string): void {
+  private setCookies(
+    response: Response,
+    accessToken: string,
+    refreshToken: string,
+    userId: string
+  ): void {
     response.setHeader('Set-Cookie', [
       cookie.serialize('accessToken', accessToken, {
         httpOnly: true,
