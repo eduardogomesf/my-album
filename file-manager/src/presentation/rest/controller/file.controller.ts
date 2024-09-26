@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express'
+import { type Response } from 'express'
 import {
   type MoveFilesToOtherAlbumUseCase,
   type DeleteFilesUseCase,
@@ -13,6 +13,7 @@ import { HTTP_CODES } from '../constant'
 import { ERROR_MESSAGES } from '@/application/constant'
 import { type FileMetadata } from '@/application/interface'
 import * as archiver from 'archiver'
+import { type CustomRequest } from '../../interface/custom-request'
 
 export class FileController {
   private readonly logger = new Logger('FileController')
@@ -26,16 +27,13 @@ export class FileController {
     private readonly downloadFilesUseCase: DownloadFilesUseCase
   ) {}
 
-  async preUpload(request: Request, response: Response): Promise<void> {
+  async preUpload(request: CustomRequest, response: Response): Promise<void> {
     const correlationId = request.tracking.correlationId
 
     this.logger.info('Pre upload analysis request received', correlationId)
 
     try {
-      const {
-        files = [] as FileMetadata[],
-        albumId
-      } = request.body
+      const { files = [] as FileMetadata[], albumId } = request.body
 
       if (files?.length === 0) {
         this.logger.warn('Files not found in the request', correlationId)
@@ -47,20 +45,26 @@ export class FileController {
 
       const { userId } = request.auth
 
-      const preUploadAnalysisResult = await this.preUploadAnalysisUseCase.execute({
-        files,
-        albumId,
-        userId
-      })
+      const preUploadAnalysisResult =
+        await this.preUploadAnalysisUseCase.execute({
+          files,
+          albumId,
+          userId
+        })
 
       if (!preUploadAnalysisResult.ok) {
-        this.logger.warn(`Files pre upload analysis not finished: ${preUploadAnalysisResult.message}`, correlationId)
+        this.logger.warn(
+          `Files pre upload analysis not finished: ${preUploadAnalysisResult.message}`,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
-          [{
-            message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
-            httpCode: HTTP_CODES.NOT_FOUND.code
-          }],
+          [
+            {
+              message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            }
+          ],
           preUploadAnalysisResult.message ?? HTTP_CODES.BAD_REQUEST.message
         )
 
@@ -70,7 +74,10 @@ export class FileController {
         return
       }
 
-      this.logger.info('Files pre upload analysis finished successfully', correlationId)
+      this.logger.info(
+        'Files pre upload analysis finished successfully',
+        correlationId
+      )
 
       response.status(200).json(preUploadAnalysisResult.data)
     } catch (error) {
@@ -81,7 +88,10 @@ export class FileController {
     }
   }
 
-  async moveFiles(request: Request, response: Response): Promise<Response> {
+  async moveFiles(
+    request: CustomRequest,
+    response: Response
+  ): Promise<Response> {
     const correlationId = request.tracking.correlationId
 
     this.logger.info('Move files request received', correlationId)
@@ -90,17 +100,26 @@ export class FileController {
       const { targetAlbumId, filesIds } = request.body
       const { userId } = request.auth
 
-      const missingFieldsResult = MissingFieldsHelper.hasMissingFields(['targetAlbumId', 'filesIds'], request.body)
+      const missingFieldsResult = MissingFieldsHelper.hasMissingFields(
+        ['targetAlbumId', 'filesIds'],
+        request.body
+      )
 
       if (missingFieldsResult.isMissing) {
-        this.logger.warn(missingFieldsResult.missingFieldsMessage, correlationId)
+        this.logger.warn(
+          missingFieldsResult.missingFieldsMessage,
+          correlationId
+        )
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
           message: missingFieldsResult.missingFieldsMessage
         })
       }
 
       if (!Array.isArray(filesIds) || filesIds.length === 0) {
-        this.logger.warn('Files must be an array with at least one file id', correlationId)
+        this.logger.warn(
+          'Files must be an array with at least one file id',
+          correlationId
+        )
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
           message: 'Files must be an array with at least one file id'
         })
@@ -113,7 +132,10 @@ export class FileController {
       })
 
       if (!result.ok) {
-        this.logger.warn(result.message ?? HTTP_CODES.BAD_REQUEST.message, correlationId)
+        this.logger.warn(
+          result.message ?? HTTP_CODES.BAD_REQUEST.message,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
           [
@@ -125,7 +147,6 @@ export class FileController {
               message: ERROR_MESSAGES.PERMISSION.NOT_ALLOWED,
               httpCode: HTTP_CODES.FORBIDDEN.code
             }
-
           ],
           result.message ?? HTTP_CODES.BAD_REQUEST.message
         )
@@ -145,7 +166,7 @@ export class FileController {
     }
   }
 
-  async delete(request: Request, response: Response): Promise<Response> {
+  async delete(request: CustomRequest, response: Response): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
       const { filesIds = [], albumId } = request.body
@@ -165,7 +186,10 @@ export class FileController {
       })
 
       if (!result.ok) {
-        this.logger.warn(result.message ?? HTTP_CODES.BAD_REQUEST.message, correlationId)
+        this.logger.warn(
+          result.message ?? HTTP_CODES.BAD_REQUEST.message,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
           [
@@ -192,7 +216,10 @@ export class FileController {
     }
   }
 
-  async getAvailableStorage(request: Request, response: Response): Promise<Response> {
+  async getAvailableStorage(
+    request: CustomRequest,
+    response: Response
+  ): Promise<Response> {
     const correlationId = request.tracking.correlationId
 
     this.logger.info('Get available storage request received', correlationId)
@@ -204,7 +231,10 @@ export class FileController {
         userId
       })
 
-      this.logger.info('Available storage retrieved successfully', correlationId)
+      this.logger.info(
+        'Available storage retrieved successfully',
+        correlationId
+      )
       return response.status(HTTP_CODES.OK.code).json(result.data)
     } catch (error) {
       this.logger.error('Error getting available storage', correlationId)
@@ -214,16 +244,13 @@ export class FileController {
     }
   }
 
-  async postUpload(request: Request, response: Response): Promise<void> {
+  async postUpload(request: CustomRequest, response: Response): Promise<void> {
     const correlationId = request.tracking.correlationId
 
     this.logger.info('Post upload request received', correlationId)
 
     try {
-      const {
-        filesIds = [] as string[],
-        albumId
-      } = request.body
+      const { filesIds = [] as string[], albumId } = request.body
 
       if (filesIds?.length === 0) {
         this.logger.warn('Files ids not found in the request', correlationId)
@@ -242,13 +269,18 @@ export class FileController {
       })
 
       if (!postUploadResult.ok) {
-        this.logger.warn(`Post uploaded not finished: ${postUploadResult.message}`, correlationId)
+        this.logger.warn(
+          `Post uploaded not finished: ${postUploadResult.message}`,
+          correlationId
+        )
 
         const httpError = convertErrorToHttpError(
-          [{
-            message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND,
-            httpCode: HTTP_CODES.NOT_FOUND.code
-          }],
+          [
+            {
+              message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND,
+              httpCode: HTTP_CODES.NOT_FOUND.code
+            }
+          ],
           postUploadResult.message ?? HTTP_CODES.BAD_REQUEST.message
         )
 
@@ -269,7 +301,10 @@ export class FileController {
     }
   }
 
-  async downloadFiles(request: Request, response: Response): Promise<void> {
+  async downloadFiles(
+    request: CustomRequest,
+    response: Response
+  ): Promise<void> {
     const correlationId = request.tracking.correlationId
 
     this.logger.info('Download files request received', correlationId)

@@ -1,15 +1,16 @@
-import {
-  type Request,
-  type Response,
-  type NextFunction
-} from 'express'
+import { type Response, type NextFunction } from 'express'
 import { v4 as uuid } from 'uuid'
 import { Logger } from '@/shared'
+import { type CustomRequest } from '../../interface/custom-request'
 
 export const appLogger = new Logger('LoggerMiddleware')
 
-export function logger(req: Request, res: Response, next: NextFunction): any {
-  const correlationId = req.headers['x-correlation-id'] as string ?? uuid()
+export function logger(
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): any {
+  const correlationId = (req.headers['x-correlation-id'] as string) ?? uuid()
 
   const logContent = {
     method: req.method,
@@ -20,7 +21,10 @@ export function logger(req: Request, res: Response, next: NextFunction): any {
     hasQuery: Object.keys(req.query).length > 0
   }
 
-  appLogger.info(`Request received: ${JSON.stringify(logContent)}`, correlationId)
+  appLogger.info(
+    `Request received: ${JSON.stringify(logContent)}`,
+    correlationId
+  )
 
   req.tracking = { correlationId }
 

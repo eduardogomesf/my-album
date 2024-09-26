@@ -1,8 +1,9 @@
 import * as cookie from 'cookie'
-import { type NextFunction, type Request, type Response } from 'express'
+import { type NextFunction, type Response } from 'express'
 import { Logger } from '@/shared'
 import { HTTP_CODES } from '../constant'
 import { generateJwtTokenValidator } from '@/main/factory/util'
+import { type CustomRequest } from '../../interface/custom-request'
 
 export interface AuthInfo {
   userId: string
@@ -14,7 +15,11 @@ const logger = new Logger('getAuthInfoFromToken')
 
 const tokenValidator = generateJwtTokenValidator()
 
-export function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFunction): any {
+export function getAuthInfoFromHeaders(
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): any {
   if (!req.headers.cookie) {
     logger.error('Cookies not found')
     return res.status(HTTP_CODES.UNAUTHORIZED.code).send('Cookies not found')
@@ -24,14 +29,18 @@ export function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFu
 
   if (!accessToken) {
     logger.error('Invalid cookie format')
-    return res.status(HTTP_CODES.UNAUTHORIZED.code).send('Invalid cookie format')
+    return res
+      .status(HTTP_CODES.UNAUTHORIZED.code)
+      .send('Invalid cookie format')
   }
 
-  const { isValid, data, invalidationReason } = tokenValidator.validate(accessToken)
+  const { isValid, data, invalidationReason } =
+    tokenValidator.validate(accessToken)
 
   if (!isValid) {
     logger.error('Auth token invalid or expired')
-    const message = invalidationReason === 'EXPIRED' ? 'Token expired' : 'Token invalid'
+    const message =
+      invalidationReason === 'EXPIRED' ? 'Token expired' : 'Token invalid'
     return res.status(HTTP_CODES.UNAUTHORIZED.code).send(message)
   }
 
@@ -39,7 +48,9 @@ export function getAuthInfoFromHeaders(req: Request, res: Response, next: NextFu
 
   if (!userId) {
     logger.error('User id not found in token')
-    return res.status(HTTP_CODES.UNAUTHORIZED.code).send('User id not found in token')
+    return res
+      .status(HTTP_CODES.UNAUTHORIZED.code)
+      .send('User id not found in token')
   }
 
   req.auth = { userId }
