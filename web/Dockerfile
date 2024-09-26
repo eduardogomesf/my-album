@@ -7,6 +7,7 @@ FROM node:18.19.0-alpine AS builder
 WORKDIR /usr/app
 COPY . .
 COPY --from=deps /usr/app/node_modules ./node_modules
+COPY .env.example .env
 RUN npm run build
 
 FROM node:18.19.0-alpine AS runner
