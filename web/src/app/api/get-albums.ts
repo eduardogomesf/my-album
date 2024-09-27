@@ -6,6 +6,7 @@ export interface Album {
   numberOfPhotos: number
   numberOfVideos: number
   updatedAt: string
+  coverUrl?: string
 }
 
 export async function getAlbums(onlyDeleted = false): Promise<Album[]> {
