@@ -69,13 +69,15 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
     return router.push(`/albums/${album.id}`)
   }
 
-  async function handleDelete() {
+  async function handleDelete(goToTrash: boolean) {
     try {
       await deleteCurrentAlbum({ albumId: album.id })
 
       const successMessage = isDeletedAlbum
         ? 'Album deleted successfully!'
-        : 'Album moved to trash successfully!'
+        : goToTrash
+          ? 'Album deleted successfully'
+          : 'Album moved to trash successfully!'
 
       toast.success(successMessage)
     } catch (error) {
@@ -167,7 +169,7 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
                 ? 'This album will be permanently deleted since it does not have any media files'
                 : ''
             }
-            onConfirm={handleDelete}
+            onConfirm={() => handleDelete(isDeletedAlbum || !hasFiles)}
           >
             <button>
               <Trash className="hidden h-6 w-6 animate-fade-in-down text-gray-700 transition duration-300 hover:text-gray-800 group-hover:block" />
