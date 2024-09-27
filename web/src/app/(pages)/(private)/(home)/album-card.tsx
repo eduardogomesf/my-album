@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ArrowClockwise, Image as ImageIcon, Trash } from 'phosphor-react'
 import { toast } from 'sonner'
@@ -10,7 +11,6 @@ import { restoreAlbum } from '@/app/api/restore-album'
 import { ConfirmActionModal } from '@/app/components/confirm-action-modal'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 import { formatDate } from '@/app/util/date'
-import Image from 'next/image'
 
 export interface AlbumCardProps {
   album: Album
@@ -113,13 +113,13 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
     <div className="flex h-60 w-full max-w-[300px] cursor-pointer flex-col rounded-md bg-gray-300">
       {album.coverUrl ? (
         <button
-          className="relative w-[300px] h-[140] flex flex-1 items-center justify-center rounded-t-lg transition duration-150 ease-in-out hover:bg-gray-300"
+          className="relative flex h-[140] w-[300px] flex-1 items-center justify-center rounded-t-lg transition duration-150 ease-in-out hover:bg-gray-300"
           onClick={handleRedirect}
         >
           <Image
-            alt='Album cover'
+            alt="Album cover"
             src={album.coverUrl}
-            className='rounded-t-lg'
+            className="rounded-t-lg"
             fill={true}
             style={{ objectFit: 'cover' }}
             priority
@@ -135,8 +135,7 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
             alt="Album card background"
           />
         </button>
-      )
-      }
+      )}
 
       <div className="group relative flex flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">
         <div className="absolute right-3 top-3 flex items-center gap-3">
@@ -180,6 +179,6 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         <span className="text-sm text-gray-500">{formatMediaCounts()}</span>
         <span className="text-sm text-gray-500">{formattedUpdatedAt}</span>
       </div>
-    </div >
+    </div>
   )
 }
