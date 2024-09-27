@@ -1,9 +1,16 @@
 import { GetAlbumsUseCase } from '@/application/use-case'
-import { type GetAlbumsByStatusRepository } from '@/application/protocol'
+import { 
+  type GetFileUrlService, 
+  type GetLastPhotoByAlbumIdRepository, 
+  type GetAlbumsByStatusRepository 
+} from '@/application/protocol'
+import { getFileMock } from '../mock'
 
 describe('Get Albums Use Case', () => {
   let sut: GetAlbumsUseCase
   let mockGetAlbumsByStatusRepository: GetAlbumsByStatusRepository
+  let mockGetLastPhotoByAlbumIdRepository: GetLastPhotoByAlbumIdRepository
+  let mockGetFileUrlService: GetFileUrlService
 
   beforeEach(() => {
     mockGetAlbumsByStatusRepository = {
@@ -24,12 +31,24 @@ describe('Get Albums Use Case', () => {
         }
       ])
     }
+    mockGetLastPhotoByAlbumIdRepository = {
+      getLastPhotoByAlbumId: jest.fn().mockResolvedValue(getFileMock())
+    }
+    mockGetFileUrlService = {
+      getFileUrl: jest.fn().mockResolvedValue('https://any-url.com')
+    }
 
-    sut = new GetAlbumsUseCase(mockGetAlbumsByStatusRepository)
+    sut = new GetAlbumsUseCase(
+      mockGetAlbumsByStatusRepository,
+      mockGetLastPhotoByAlbumIdRepository,
+      mockGetFileUrlService
+    )
   })
 
   it('should get a list of active albums successfully', async () => {
     const getManyByStatusSpy = jest.spyOn(mockGetAlbumsByStatusRepository, 'getManyByStatus')
+    const getLastPhotoByAlbumIdSpy = jest.spyOn(mockGetLastPhotoByAlbumIdRepository, 'getLastPhotoByAlbumId')
+    const getFileUrlSpy = jest.spyOn(mockGetFileUrlService, 'getFileUrl')
 
     const result = await sut.execute({
       userId: 'user-id',
@@ -39,6 +58,8 @@ describe('Get Albums Use Case', () => {
     expect(result.ok).toBe(true)
     expect(result.data).toHaveLength(2)
     expect(getManyByStatusSpy).toHaveBeenCalledWith('user-id', 'ACTIVE')
+    expect(getLastPhotoByAlbumIdSpy).toHaveBeenCalledTimes(2)
+    expect(getFileUrlSpy).toHaveBeenCalledWith(getFileMock(), 'user-id')
   })
 
   it('should get a list of deleted albums successfully', async () => {

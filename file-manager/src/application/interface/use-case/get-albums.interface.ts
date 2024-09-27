@@ -9,4 +9,5 @@ export interface GetAlbumsUseCaseResponse {
   updatedAt: string
   numberOfVideos: number
   numberOfPhotos: number
+  coverUrl?: string
 }

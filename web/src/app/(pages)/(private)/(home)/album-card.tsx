@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { ArrowClockwise, Image, Trash } from 'phosphor-react'
+import { ArrowClockwise, Image as ImageIcon, Trash } from 'phosphor-react'
 import { toast } from 'sonner'
 
 import { deleteAlbum } from '@/app/api/delete-album'
@@ -110,15 +111,31 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
 
   return (
     <div className="flex h-60 w-full max-w-[300px] cursor-pointer flex-col rounded-md bg-gray-300">
-      <button
-        className="flex w-full flex-1 items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out hover:bg-gray-300"
-        onClick={handleRedirect}
-      >
-        <Image
-          className="h-10 w-10 text-gray-800"
-          alt="Album card background"
-        />
-      </button>
+      {album.coverUrl ? (
+        <button
+          className="relative flex h-[140] w-[300px] flex-1 items-center justify-center rounded-t-lg transition duration-150 ease-in-out hover:bg-gray-300"
+          onClick={handleRedirect}
+        >
+          <Image
+            alt="Album cover"
+            src={album.coverUrl}
+            className="rounded-t-lg"
+            fill={true}
+            style={{ objectFit: 'cover' }}
+            priority
+          />
+        </button>
+      ) : (
+        <button
+          className="flex w-full flex-1 items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out hover:bg-gray-300"
+          onClick={handleRedirect}
+        >
+          <ImageIcon
+            className="h-10 w-10 text-gray-800"
+            alt="Album card background"
+          />
+        </button>
+      )}
 
       <div className="group relative flex flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">
         <div className="absolute right-3 top-3 flex items-center gap-3">
