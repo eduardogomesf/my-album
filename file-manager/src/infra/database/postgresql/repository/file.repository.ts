@@ -12,7 +12,8 @@ import {
   type CountFilesByAlbumIdRepository,
   type GetFilesByIdsAndAlbumIdRepository,
   type DeleteFilesRepository,
-  type MarkFilesAsUploadedRepository
+  type MarkFilesAsUploadedRepository,
+  GetLastPhotoByAlbumIdRepository
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
@@ -27,7 +28,8 @@ export class PrismaFileRepository
 implements
   SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
   MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository,
-  GetFilesByIdsAndAlbumIdRepository, DeleteFilesRepository, MarkFilesAsUploadedRepository {
+  GetFilesByIdsAndAlbumIdRepository, DeleteFilesRepository, MarkFilesAsUploadedRepository, GetLastPhotoByAlbumIdRepository {
+  
   async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
     const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
 
@@ -219,6 +221,23 @@ implements
           uploaded: true
         }
       })
+    } catch (error) {
+      logger.error(error.message)
+      throw new Error(error)
+    }
+  }
+
+  async getLastPhotoByAlbumId(albumId: string): Promise<File | null> {
+    try {
+      const file = await prisma.file.findFirst({
+        where: {
+          albumId
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+      return file ? FileMapper.toEntity(file) : null
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)

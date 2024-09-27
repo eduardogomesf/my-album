@@ -59,3 +59,7 @@ export interface GetFilesByIdsAndAlbumIdRepository {
 export interface MarkFilesAsUploadedRepository {
   markAsUploaded: (filesIds: string[]) => Promise<void>
 }
+
+export interface GetLastPhotoByAlbumIdRepository {
+  getLastPhotoByAlbumId: (albumId: string) => Promise<File | null>
+}
