@@ -5,11 +5,7 @@ import { toast } from 'sonner'
 import { v4 as uuid } from 'uuid'
 
 import { postUpload } from '@/app/api/post-upload'
-import {
-  FileAfterAnalysis,
-  FileMetadata,
-  preUpload,
-} from '@/app/api/pre-upload'
+import { FileMetadata, preUpload } from '@/app/api/pre-upload'
 import { uploadFile } from '@/app/api/upload-file'
 
 import { UploadStatus } from './upload-item'
@@ -19,7 +15,12 @@ export interface FileWithId {
   id: string
   file: File
   status: UploadStatus
+  allowed: boolean
   failureReason?: string
+  reason?: string
+  uploadUrl?: string
+  fileId?: string
+  fields?: Record<string, string>
 }
 
 interface UploadButtonProps {
@@ -55,48 +56,53 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     mutationFn: postUpload,
   })
 
-  async function uploadFilesToS3(
-    filesToUpload: FileAfterAnalysis[],
-    allFiles: FileWithId[],
+  async function updateFileUploadStatusOnTheFly(
+    id: string,
+    status: UploadStatus,
   ) {
-    const successUploadsIds: string[] = []
-    const failedUploadsIds: string[] = []
-
-    const result = await Promise.all(
-      filesToUpload.map(async (allowedFile) => {
-        const { uploadUrl, fields } = allowedFile
-
-        const fileWithId = allFiles.find((file) => file.id === allowedFile.id)
-
-        if (!fileWithId || !uploadUrl || !fields) {
-          return null
-        }
-
-        let uploadedWithSuccess = true
-
-        await uploadFileMutation({
-          file: fileWithId?.file,
-          url: uploadUrl,
-          fields,
-        }).catch(() => {
-          uploadedWithSuccess = false
-        })
-
-        if (uploadedWithSuccess) {
-          setFinishedNumberOfFiles((prev) => prev + 1)
-          successUploadsIds.push(allowedFile.id)
-        } else {
-          failedUploadsIds.push(allowedFile.id)
-        }
-
-        return null
-      }),
+    setFilesWithIds((prevFilesWithIds) =>
+      prevFilesWithIds.map((item) =>
+        item.id === id ? { ...item, status } : item,
+      ),
     )
+  }
+
+  async function uploadFilesToS3(
+    files: FileWithId[],
+  ): Promise<{ uploadedFilesIds: string[] }> {
+    const uploadedFilesIds = []
+
+    for await (const file of files) {
+      if (!file.allowed || !file.uploadUrl || !file.fields) {
+        continue
+      }
+
+      const { uploadUrl, fields } = file
+
+      let uploadedWithSuccess = true
+
+      await uploadFileMutation({
+        file: file?.file,
+        url: uploadUrl,
+        fields,
+      }).catch(() => {
+        uploadedWithSuccess = false
+      })
+
+      const status = uploadedWithSuccess
+        ? UploadStatus.Completed
+        : UploadStatus.Failed
+
+      if (uploadedWithSuccess) {
+        uploadedFilesIds.push(file.fileId as string)
+        setFinishedNumberOfFiles((prev) => prev + 1)
+      }
+
+      updateFileUploadStatusOnTheFly(file.id, status)
+    }
 
     return {
-      successUploadsIds,
-      failedUploadsIds,
-      result,
+      uploadedFilesIds,
     }
   }
 
@@ -115,7 +121,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
     const filesMetaData: FileMetadata[] = []
 
-    const formattedFiles = filesArray.map((file) => {
+    const formattedFiles: FileWithId[] = filesArray.map((file) => {
       const id = uuid()
       const status = UploadStatus.Uploading
 
@@ -131,6 +137,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         id,
         status,
         failureReason: '',
+        allowed: false,
       }
     })
 
@@ -142,8 +149,6 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       albumId,
     })
 
-    const allowedFiles: FileAfterAnalysis[] = []
-
     const filesAfterPreUploadAnalysis = formattedFiles.map((file) => {
       const preUploadFile = preUploadFiles.find(
         (preUploadFile) => preUploadFile.id === file.id,
@@ -152,8 +157,12 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       if (!preUploadFile?.allowed && preUploadFile?.reason) {
         file.status = UploadStatus.Failed
         file.failureReason = preUploadFile.reason
+        file.allowed = false
       } else if (preUploadFile?.allowed) {
-        allowedFiles.push(preUploadFile)
+        file.allowed = true
+        file.fields = preUploadFile.fields
+        file.uploadUrl = preUploadFile.uploadUrl
+        file.fileId = preUploadFile.fileId
       }
 
       return file
@@ -161,45 +170,19 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
     setFilesWithIds(() => [...filesAfterPreUploadAnalysis])
 
-    const { successUploadsIds, failedUploadsIds } = await uploadFilesToS3(
-      allowedFiles,
+    const { uploadedFilesIds } = await uploadFilesToS3(
       filesAfterPreUploadAnalysis,
     )
 
-    const filesWithPostUploadStatus = filesAfterPreUploadAnalysis.map(
-      (file) => {
-        if (successUploadsIds.includes(file.id)) {
-          file.status = UploadStatus.Completed
-        } else if (failedUploadsIds.includes(file.id)) {
-          file.status = UploadStatus.Failed
-        }
-
-        return file
-      },
-    )
-
-    setFilesWithIds(() => [...filesWithPostUploadStatus])
-
-    if (successUploadsIds.length === 0) {
+    if (uploadedFilesIds.length === 0) {
       toast.error('Failed to upload files. Please try again.', {
         duration: 5000,
       })
       return
     }
 
-    const filesIdsForPostUpload = allowedFiles.reduce(
-      (accumulator, allowedFile) => {
-        if (successUploadsIds.includes(allowedFile.id) && allowedFile.fileId) {
-          accumulator.push(allowedFile.fileId)
-        }
-
-        return accumulator
-      },
-      [] as string[],
-    )
-
     await postUploadMutation({
-      filesIds: filesIdsForPostUpload,
+      filesIds: uploadedFilesIds,
       albumId,
     })
 
@@ -216,7 +199,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     ])
 
     const allFilesUploaded =
-      filesIdsForPostUpload.length === files.length
+      uploadedFilesIds.length === files.length
         ? 'Upload complete! All files have been uploaded.'
         : 'Upload complete! Some files were not uploaded.'
 
