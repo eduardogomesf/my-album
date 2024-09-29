@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { ArrowLeft, CaretLeft, CaretRight } from 'phosphor-react'
+
 import { handleFileUrl } from '../../../../util/url'
 
 interface MediaViewerProps {
