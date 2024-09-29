@@ -5,6 +5,7 @@ import { useRef } from 'react'
 
 import { File } from '@/app/api/get-album-files'
 import { formatDate } from '@/app/util/date'
+import { handleFileUrl } from '../../../../util/url'
 
 interface FileCardProps {
   file: File
@@ -76,7 +77,7 @@ export function FileCard({
       <button className="relative h-80 w-full" onClick={handleClick}>
         {isImage ? (
           <Image
-            src={file.url}
+            src={handleFileUrl(file.url)}
             alt={file.name}
             className={clsx(
               'rounded-lg transition-opacity duration-300 hover:opacity-80',

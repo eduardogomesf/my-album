@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { ArrowLeft, CaretLeft, CaretRight } from 'phosphor-react'
+import { handleFileUrl } from '../../../../util/url'
 
 interface MediaViewerProps {
   isImage: boolean
@@ -58,7 +59,7 @@ export function MediaViewer({
 
           {isImage ? (
             <Image
-              src={url}
+              src={handleFileUrl(url)}
               alt={'Media'}
               className="mx-auto w-full opacity-95 md:max-w-[85%]"
               fill={true}
@@ -71,7 +72,7 @@ export function MediaViewer({
               className="mx-auto block h-full w-full opacity-95 md:max-w-[85%]"
               controls
             >
-              <source src={url} type="video/mp4" />
+              <source src={handleFileUrl(url)} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           )}

@@ -11,6 +11,7 @@ import { restoreAlbum } from '@/app/api/restore-album'
 import { ConfirmActionModal } from '@/app/components/confirm-action-modal'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 import { formatDate } from '@/app/util/date'
+import { handleFileUrl } from '../../../util/url'
 
 export interface AlbumCardProps {
   album: Album
@@ -120,7 +121,7 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         >
           <Image
             alt="Album cover"
-            src={album.coverUrl}
+            src={handleFileUrl(album.coverUrl)}
             className="rounded-t-lg"
             fill={true}
             style={{ objectFit: 'cover' }}
