@@ -38,20 +38,30 @@ export default function Album() {
     hasNextPage,
   } = useInfiniteQuery({
     queryKey: ['album-files', albumId],
-    queryFn: async ({ pageParam = 0 }) => getAlbumFiles({ albumId, page: pageParam, limit: 16 }),
-    getNextPageParam: (lastPage, allPages) => {
+    queryFn: async ({ pageParam = 0 }) =>
+      getAlbumFiles({ albumId, page: pageParam, limit: 16 }),
+    getNextPageParam: (lastPage) => {
       const hasNextPage = lastPage.page < lastPage.totalOfPages
       return hasNextPage ? lastPage.page + 1 : undefined
     },
-    initialPageParam: 1
-  });
+    initialPageParam: 1,
+  })
 
-  const filesResult = getFilesResult?.pages?.length ? getFilesResult?.pages[getFilesResult?.pages.length - 1] : { album: { name: "" }, files: [], limit: 10, page: 1, total: 1, totalOfPages: 1 }
-  const files = getFilesResult?.pages?.length ?
-    getFilesResult.pages.reduce((accumulator, current) => {
-      accumulator = [...accumulator, ...current.files]
-      return accumulator
-    }, [] as File[])
+  const filesResult = getFilesResult?.pages?.length
+    ? getFilesResult?.pages[getFilesResult?.pages.length - 1]
+    : {
+        album: { name: '' },
+        files: [],
+        limit: 10,
+        page: 1,
+        total: 1,
+        totalOfPages: 1,
+      }
+  const files = getFilesResult?.pages?.length
+    ? getFilesResult.pages.reduce((accumulator, current) => {
+        accumulator = [...accumulator, ...current.files]
+        return accumulator
+      }, [] as File[])
     : []
 
   return (
