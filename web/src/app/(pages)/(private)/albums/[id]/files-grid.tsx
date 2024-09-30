@@ -86,12 +86,6 @@ export function FilesGrid({
     )
   }
 
-  console.log({
-    hasNextPage,
-    fetchNextPage,
-    totalOfFiles,
-  })
-
   return (
     <InfiniteScroll
       className={clsx(
