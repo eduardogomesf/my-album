@@ -1,12 +1,12 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { ArrowLeft, XCircle } from 'phosphor-react'
 import { useState } from 'react'
 
-import { FilesAndCounts, getAlbumFiles } from '@/app/api/get-album-files'
+import { File, getAlbumFiles } from '@/app/api/get-album-files'
 
 import { DeleteButton } from './delete-button'
 import { DownloadButton } from './download-button'
@@ -32,12 +32,27 @@ export default function Album() {
   const { id: albumId } = useParams<{ id: string }>()
 
   const {
-    data: filesResult = {} as FilesAndCounts,
+    data: getFilesResult,
     isLoading: isFilesLoading,
-  } = useQuery({
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
     queryKey: ['album-files', albumId],
-    queryFn: async () => getAlbumFiles({ albumId, page: 0, limit: 10 }),
-  })
+    queryFn: async ({ pageParam = 0 }) => getAlbumFiles({ albumId, page: pageParam, limit: 16 }),
+    getNextPageParam: (lastPage, allPages) => {
+      const hasNextPage = lastPage.page < lastPage.totalOfPages
+      return hasNextPage ? lastPage.page + 1 : undefined
+    },
+    initialPageParam: 1
+  });
+
+  const filesResult = getFilesResult?.pages?.length ? getFilesResult?.pages[getFilesResult?.pages.length - 1] : { album: { name: "" }, files: [], limit: 10, page: 1, total: 1, totalOfPages: 1 }
+  const files = getFilesResult?.pages?.length ?
+    getFilesResult.pages.reduce((accumulator, current) => {
+      accumulator = [...accumulator, ...current.files]
+      return accumulator
+    }, [] as File[])
+    : []
 
   return (
     <div className="m-auto h-full w-full max-w-[1664px] px-8 py-6">
@@ -96,13 +111,16 @@ export default function Album() {
 
         <FilesGrid
           isLoading={isFilesLoading}
-          files={filesResult?.files}
+          files={files}
           limit={filesResult?.limit}
           page={filesResult?.page}
           total={filesResult?.total}
           totalOfPages={filesResult?.totalOfPages}
           onSelect={handleSelectFile}
           selectedFiles={selectedFiles}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          totalOfFiles={filesResult?.total}
         />
       </main>
     </div>
