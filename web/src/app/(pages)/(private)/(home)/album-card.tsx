@@ -12,6 +12,8 @@ import { ConfirmActionModal } from '@/app/components/confirm-action-modal'
 import { SOMETHING_WENT_WRONG } from '@/app/constants/error'
 import { formatDate } from '@/app/util/date'
 
+import { handleFileUrl } from '../../../util/url'
+
 export interface AlbumCardProps {
   album: Album
   isDeletedAlbum?: boolean
@@ -32,6 +34,9 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         }),
         queryClient.invalidateQueries({
           queryKey: ['deleted-albums'],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['current-usage'],
         }),
       ])
     },
@@ -69,13 +74,13 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
     return router.push(`/albums/${album.id}`)
   }
 
-  async function handleDelete(goToTrash: boolean) {
+  async function handleDelete(permanentDelete: boolean) {
     try {
       await deleteCurrentAlbum({ albumId: album.id })
 
       const successMessage = isDeletedAlbum
         ? 'Album deleted successfully!'
-        : goToTrash
+        : permanentDelete
           ? 'Album deleted successfully'
           : 'Album moved to trash successfully!'
 
@@ -120,7 +125,7 @@ export function AlbumCard({ album, isDeletedAlbum = false }: AlbumCardProps) {
         >
           <Image
             alt="Album cover"
-            src={album.coverUrl}
+            src={handleFileUrl(album.coverUrl)}
             className="rounded-t-lg"
             fill={true}
             style={{ objectFit: 'cover' }}

@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { File } from '@/app/api/get-album-files'
 import { isSameDate } from '@/app/util/date'
@@ -17,6 +18,9 @@ interface FilesGrid {
   totalOfPages: number
   onSelect: (id: string) => void
   selectedFiles: string[]
+  hasNextPage: boolean
+  fetchNextPage: () => void
+  totalOfFiles: number
 }
 
 type FileForMediaOverlay = File & { listPosition: number }
@@ -26,6 +30,9 @@ export function FilesGrid({
   files,
   onSelect,
   selectedFiles,
+  hasNextPage,
+  fetchNextPage,
+  totalOfFiles,
 }: FilesGrid) {
   const [fileForMediaOverlay, setFileForMediaOverlay] =
     useState<FileForMediaOverlay | null>(null)
@@ -80,7 +87,7 @@ export function FilesGrid({
   }
 
   return (
-    <div
+    <InfiniteScroll
       className={clsx(
         'mt-4 grid h-auto auto-rows-auto grid-cols-1 gap-2 md:grid-cols-5 lg:grid-cols-8',
         files &&
@@ -88,6 +95,10 @@ export function FilesGrid({
           !isLoading &&
           'mt-[150px] md:grid-cols-1',
       )}
+      dataLength={totalOfFiles}
+      hasMore={hasNextPage}
+      next={fetchNextPage}
+      loader={<></>}
     >
       {fileForMediaOverlay && (
         <MediaViewer
@@ -117,6 +128,6 @@ export function FilesGrid({
               onSelectFileForMediaOverlay={handleSelectFileForMediaOverlay}
             />
           ))}
-    </div>
+    </InfiniteScroll>
   )
 }

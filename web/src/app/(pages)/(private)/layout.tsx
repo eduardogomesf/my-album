@@ -11,7 +11,7 @@ export default function PrivateLayout(props: PrivateLayoutProps) {
   return (
     <div className="relative min-h-screen">
       <Header />
-      {props.children}
+      <div className="pb-16">{props.children}</div>
       <Footer />
     </div>
   )
