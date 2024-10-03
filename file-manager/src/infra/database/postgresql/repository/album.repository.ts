@@ -13,7 +13,8 @@ import {
   type DeleteAlbumRepository,
   type GetAlbumsByStatusRepositoryResponse,
   type GetAlbumByIdWithFilesCountRepository,
-  type AlbumWithFileCount
+  type AlbumWithFileCount,
+  type MessageSender
 } from '@/application/protocol'
 import { type AlbumStatus } from '@/domain/enum'
 import { AlbumMapper } from '../mapper'
@@ -23,6 +24,11 @@ const logger = new Logger('PrismaAlbumRepository')
 export class PrismaAlbumRepository
 implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsByStatusRepository,
   UpdateAlbumRepository, DeleteAlbumRepository, GetAlbumByIdWithFilesCountRepository {
+
+  constructor(
+    private readonly deleteFilesFromStorageSender: MessageSender,
+  ) {}
+
   async getById(id: string, userId: string): Promise<Album | null> {
     try {
       const rawAlbum = await prisma.album.findUnique({
@@ -182,8 +188,16 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
         prisma.outbox.createMany({
           data: formattedFiles
         })
-
       ])
+
+      const filesIds = formattedFiles.map(file => file.aggregateId)
+
+      await this.deleteFilesFromStorageSender.send({
+        id: uuid(),
+        filesIds: filesIds,
+        userId: userId,
+        date: new Date()
+      })
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
