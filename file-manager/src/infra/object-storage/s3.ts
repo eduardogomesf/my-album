@@ -5,7 +5,8 @@ import {
   DeleteObjectCommand,
   CreateBucketCommand,
   PutBucketCorsCommand,
-  type GetObjectCommandOutput
+  type GetObjectCommandOutput,
+  DeleteObjectsCommand
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { type PresignedPostOptions, createPresignedPost } from '@aws-sdk/s3-presigned-post'
@@ -16,25 +17,35 @@ import {
   type GenerateUploadUrlService,
   type GenerateUploadUrlServiceDTO,
   type GenerateUploadUrlServiceResponse,
-  type GetFileStreamFromStorageService
+  type GetFileStreamFromStorageService,
+  DeleteFilesFromStorageService
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
-import { ENVS } from '@/shared'
+import { ENVS, Logger } from '@/shared'
 import {
+  type GetManyByAggregateIdsAndTypeOutboxRepository,
   type DeleteOneByIdOutboxRepository,
   type GetOneByAggregateIdAndTypeOutboxRepository,
-  type UpdateOneByIdOutboxRepository
+  type UpdateOneByIdOutboxRepository,
+  type DeleteManyByIdsOutboxRepository,
+  type UpdateManyByIdsOutboxRepository
 } from './interface'
 import { OutboxType } from '@prisma/client'
 import { type Readable } from 'stream'
 
-export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageService, GenerateUploadUrlService, GetFileStreamFromStorageService {
+export class S3FileStorage 
+implements GetFileUrlService, DeleteFileFromStorageService, 
+GenerateUploadUrlService, GetFileStreamFromStorageService, DeleteFilesFromStorageService {
+  private readonly logger = new Logger(S3FileStorage.name)
   private readonly client: S3Client
 
   constructor(
     private readonly updateOneByIdOutboxRepository: UpdateOneByIdOutboxRepository,
     private readonly getOneByAggregateIdAndTypeOutboxRepository: GetOneByAggregateIdAndTypeOutboxRepository,
-    private readonly deleteOneByIdOutboxRepository: DeleteOneByIdOutboxRepository
+    private readonly deleteOneByIdOutboxRepository: DeleteOneByIdOutboxRepository,
+    private readonly getManyByAggregateIdsAndTypeOutboxRepository: GetManyByAggregateIdsAndTypeOutboxRepository,
+    private readonly deleteManyByIdsOutboxRepository: DeleteManyByIdsOutboxRepository,
+    private readonly updateManyByIdsOutboxRepository: UpdateManyByIdsOutboxRepository,
   ) {
     this.client = new S3Client({
       region: ENVS.S3.REGION,
@@ -93,7 +104,7 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
     return url ?? ''
   }
 
-  async delete (file: File, userId: string): Promise<boolean> {
+  async delete(file: File, userId: string): Promise<boolean> {
     try {
       const key = `${userId}/${file.id}`
 
@@ -132,6 +143,55 @@ export class S3FileStorage implements GetFileUrlService, DeleteFileFromStorageSe
 
             wasDeleted = false
           }
+        })
+
+      return wasDeleted
+    } catch (error) {
+      return false
+    }
+  }
+
+  async deleteMany(filesIds: string[], userId: string): Promise<boolean> {
+    try {
+      const keys = filesIds.map(id => ({ Key: `${userId}/${id}` }))
+
+      let wasDeleted = false
+
+      const outboxRecords = await this.getManyByAggregateIdsAndTypeOutboxRepository.getManyByAggregateIdsAndType(
+        filesIds,
+        OutboxType.FILE_DELETED
+      )
+
+      if (!outboxRecords?.length) {
+        return wasDeleted
+      }
+
+      const deleteObjectsCommand = new DeleteObjectsCommand({
+        Bucket: ENVS.S3.BUCKET_NAME,
+        Delete: {
+          Objects: keys
+        }
+      })
+
+      const recordsIds = outboxRecords.map(outbox => outbox.id)
+
+      this.client.send(deleteObjectsCommand)
+        .then(async () => {
+          await this.deleteManyByIdsOutboxRepository.deleteManyByIds(recordsIds)
+
+          wasDeleted = true
+        }).catch(async (error) => {
+          this.logger.error("Error deleting files: ", JSON.stringify({ 
+            error: error.message, 
+            filesIds
+          }))
+
+          await this.updateManyByIdsOutboxRepository.updateManyByIds({
+            ids: recordsIds,
+            lastAttemptedAt: new Date()
+          })
+
+          wasDeleted = false
         })
 
       return wasDeleted
