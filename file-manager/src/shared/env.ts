@@ -31,6 +31,9 @@ export const ENVS = {
       FILE: {
         DELETE_MANY: process.env.KAFKA_CG_FILE_DELETE_MANY ?? 'file-manager-delete-files-many'
       }
+    },
+    RETRY_TIMEOUT: {
+      DELETE_MANY_FILES: process.env.KAFKA_RETRY_FILE_DELETE_MANY ? Number(process.env.KAFKA_RETRY_FILE_DELETE_MANY) :  30000
     }
   },
   S3: {

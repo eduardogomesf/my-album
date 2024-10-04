@@ -163,7 +163,7 @@ GenerateUploadUrlService, GetFileStreamFromStorageService, DeleteFilesFromStorag
       )
 
       if (!outboxRecords?.length) {
-        return wasDeleted
+        return true
       }
 
       const deleteObjectsCommand = new DeleteObjectsCommand({
