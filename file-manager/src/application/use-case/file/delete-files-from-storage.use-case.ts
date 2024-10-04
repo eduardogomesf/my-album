@@ -69,7 +69,7 @@ export class DeleteFilesFromStorageUseCase implements UseCase {
     const groups = [] as string[][]
 
     filesIds.forEach((id, index) => {
-      const groupIndex = Math.floor(index / 10)
+      const groupIndex = Math.floor(index / 1000)
 
       let group = groups[groupIndex]
 
