@@ -19,12 +19,21 @@ export const ENVS = {
     TOPICS: {
       USER: {
         CREATED: process.env.KAFKA_TOPIC_USER_CREATED ?? 'user-created'
+      },
+      FILE: {
+        DELETE_MANY: process.env.KAFKA_TOPIC_FILE_DELETE_MANY ?? 'delete-many-files'
       }
     },
     CONSUMER_GROUPS: {
       USER: {
         NEW_USER: process.env.KAFKA_CG_NEW_USER ?? 'file-manager-new-user'
+      },
+      FILE: {
+        DELETE_MANY: process.env.KAFKA_CG_FILE_DELETE_MANY ?? 'file-manager-delete-files-many'
       }
+    },
+    RETRY_TIMEOUT: {
+      DELETE_MANY_FILES: process.env.KAFKA_RETRY_FILE_DELETE_MANY ? Number(process.env.KAFKA_RETRY_FILE_DELETE_MANY) :  30000
     }
   },
   S3: {

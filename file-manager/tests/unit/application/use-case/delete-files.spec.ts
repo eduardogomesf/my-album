@@ -2,7 +2,7 @@ import { DeleteFilesUseCase } from '@/application/use-case'
 import {
   type GetFilesByIdsAndAlbumIdRepository,
   type DeleteFilesRepository,
-  type DeleteFileFromStorageService
+  type MessageSender
 } from '@/application/protocol'
 import { getFileMock } from '../mock'
 
@@ -10,11 +10,14 @@ jest.mock('uuid', () => ({
   v4: () => 'any-id'
 }))
 
+const mockDate = new Date();
+jest.spyOn(global, "Date").mockImplementation(() => mockDate)
+
 describe('Delete file Use Case', () => {
   let sut: DeleteFilesUseCase
   let getFilesByIdsAndAlbumIdRepository: GetFilesByIdsAndAlbumIdRepository
   let deleteFilesRepository: DeleteFilesRepository
-  let deleteFileFromStorageService: DeleteFileFromStorageService
+  let deleteFilesFromStorageSender: MessageSender
 
   beforeEach(() => {
     getFilesByIdsAndAlbumIdRepository = {
@@ -23,14 +26,14 @@ describe('Delete file Use Case', () => {
     deleteFilesRepository = {
       deleteFiles: jest.fn().mockResolvedValue(true)
     }
-    deleteFileFromStorageService = {
-      delete: jest.fn().mockResolvedValue(true)
+    deleteFilesFromStorageSender = {
+      send: jest.fn().mockResolvedValue(true)
     }
 
     sut = new DeleteFilesUseCase(
       getFilesByIdsAndAlbumIdRepository,
       deleteFilesRepository,
-      deleteFileFromStorageService
+      deleteFilesFromStorageSender
     )
   })
 
@@ -56,13 +59,18 @@ describe('Delete file Use Case', () => {
 
     const getFileByIdAndAlbumIdSpy = jest.spyOn(getFilesByIdsAndAlbumIdRepository, 'getFilesByIdsAndAlbumId')
     const deleteFileSpy = jest.spyOn(deleteFilesRepository, 'deleteFiles')
-    const deleteFileFromStorageSpy = jest.spyOn(deleteFileFromStorageService, 'delete')
+    const sendSpy = jest.spyOn(deleteFilesFromStorageSender, 'send')
 
     await sut.execute(payload)
 
     expect(getFileByIdAndAlbumIdSpy).toHaveBeenCalledWith(['any-id', 'any-id-2'], 'any-album-id', 'any-user-id')
     expect(deleteFileSpy).toHaveBeenCalledWith([getFileMock(), getFileMock()])
-    expect(deleteFileFromStorageSpy).toHaveBeenCalledTimes(2)
+    expect(sendSpy).toHaveBeenCalledWith({
+      id: 'any-id',
+      filesIds: ['any-id', 'any-id-2'],
+      userId: 'any-user-id',
+      date: mockDate
+    })
   })
 
   it('should not delete a file if it does not exist', async () => {

@@ -1,10 +1,9 @@
 import { generateKafkaClient, createNewKafkaConsumer } from '@/infra/messaging/kafka'
 import { AddNewUserEventConsumer } from '@/presentation/consumer'
 import { ENVS } from '@/shared'
-import { generateAddNewUserUseCase } from '../use-case'
-import { generateUserRepository } from '../repository'
+import { UseCases } from '@/presentation/interface/injections'
 
-export const generateAddNewUserConsumer = async (): Promise<AddNewUserEventConsumer> => {
+export const generateAddNewUserConsumer = async (useCases: UseCases): Promise<AddNewUserEventConsumer> => {
   const kafkaClient = generateKafkaClient()
   const kafkaConsumer = await createNewKafkaConsumer(kafkaClient, {
     consumerGroup: ENVS.KAFKA.CONSUMER_GROUPS.USER.NEW_USER,
@@ -13,8 +12,6 @@ export const generateAddNewUserConsumer = async (): Promise<AddNewUserEventConsu
       fromBeginning: true
     }
   })
-  const userRepository = generateUserRepository()
-  const addNewUserUseCase = generateAddNewUserUseCase(userRepository, userRepository)
-  const addNewUserEventConsumer = new AddNewUserEventConsumer(addNewUserUseCase, kafkaConsumer)
+  const addNewUserEventConsumer = new AddNewUserEventConsumer(useCases.addNewUserUseCase, kafkaConsumer)
   return addNewUserEventConsumer
 }

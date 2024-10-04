@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 import { ERROR_MESSAGES } from '../../constant'
 import {
   type UseCaseResponse,
@@ -7,14 +8,14 @@ import {
 import {
   type GetFilesByIdsAndAlbumIdRepository,
   type DeleteFilesRepository,
-  type DeleteFileFromStorageService
+  MessageSender
 } from '../../protocol'
 
 export class DeleteFilesUseCase implements UseCase {
   constructor(
     private readonly getFilesByIdsAndAlbumIdRepository: GetFilesByIdsAndAlbumIdRepository,
     private readonly deleteFilesRepository: DeleteFilesRepository,
-    private readonly deleteFileFromStorageService: DeleteFileFromStorageService
+    private readonly deleteFilesFromStorageSender: MessageSender,
   ) {}
 
   async execute(params: DeleteFileUseCaseParams): Promise<UseCaseResponse<null>> {
@@ -33,9 +34,12 @@ export class DeleteFilesUseCase implements UseCase {
 
     await this.deleteFilesRepository.deleteFiles(files)
 
-    for (const file of files) {
-      await this.deleteFileFromStorageService.delete(file, params.userId)
-    }
+    await this.deleteFilesFromStorageSender.send({
+      id: uuid(),
+      filesIds: params.filesIds,
+      userId: params.userId,
+      date: new Date()
+    })
 
     return {
       ok: true

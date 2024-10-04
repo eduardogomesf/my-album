@@ -2,10 +2,11 @@ import { type Consumer } from 'kafkajs'
 import { Logger } from '@/shared'
 import { type AddNewUserUseCase } from '@/application/use-case'
 import { type AddNewUserDTO } from '../dto'
+import { MessageConsumer } from '../interface/message-consumer'
 
 const logger = new Logger('AddNewUserEventConsumer')
 
-export class AddNewUserEventConsumer {
+export class AddNewUserEventConsumer implements MessageConsumer {
   constructor(
     private readonly addNewUserUseCase: AddNewUserUseCase,
     private readonly kafkaConsumer: Consumer

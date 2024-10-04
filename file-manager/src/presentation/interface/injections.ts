@@ -10,7 +10,8 @@ import {
   type GetAvailableStorageUseCase,
   type PreUploadAnalysisUseCase,
   type PostUploadUseCase,
-  type DownloadFilesUseCase
+  type DownloadFilesUseCase,
+  type DeleteFilesFromStorageUseCase
 } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 
@@ -27,8 +28,10 @@ export interface UseCases {
   preUploadAnalysisUseCase: PreUploadAnalysisUseCase
   postUploadUseCase: PostUploadUseCase
   downloadFilesUseCase: DownloadFilesUseCase
+  deleteFilesFromStorageUseCase: DeleteFilesFromStorageUseCase
 }
 
 export interface Injections extends UseCases {
   addNewUseKafkaConsumer: Consumer
+  deleteFilesFromStorageKafkaConsumer: Consumer
 }
