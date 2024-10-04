@@ -1,4 +1,4 @@
-import { ENVS, Logger } from '@/shared'
+import { Delay, ENVS, Logger } from '@/shared'
 import {
   type UseCaseResponse,
   type UseCase,
@@ -28,10 +28,6 @@ export class DeleteFilesFromStorageUseCase implements UseCase {
     let counter = 0
 
     for (const filesGroup of groups) {
-      if(params.retryCount && params.retryCount > 3) {
-        this.logger.info('FilesIds ')
-      }
-
       this.logger.verbose(`Starting deletion of group ${counter}...`, params.id)
 
       const wasDeleted = await this.deleteFilesFromStorageService.deleteMany(
@@ -46,13 +42,13 @@ export class DeleteFilesFromStorageUseCase implements UseCase {
         const newMessage = { ...params }
         
         newMessage.filesIds = [...filesGroup]
-        newMessage.lastAttempt = new Date().toString()
+        newMessage.lastAttempt = new Date()
         newMessage.retryCount = newMessage.retryCount ? newMessage.retryCount + 1 : 1
-  
-        setTimeout(async () => {
-          this.logger.verbose(`Publishing retry message of group ${counter}...`, params.id) 
-          await this.deleteFilesFromStorageSender.send(newMessage)
-        }, ENVS.KAFKA.RETRY_TIMEOUT.DELETE_MANY_FILES)
+
+        await Delay.wait(ENVS.KAFKA.RETRY_TIMEOUT.DELETE_MANY_FILES)
+
+        this.logger.verbose(`Publishing retry message of group ${counter}...`, params.id) 
+        await this.deleteFilesFromStorageSender.send(newMessage)
       } else {
         this.logger.verbose(`Deletion of group ${counter} finished successfully`, params.id)
       }

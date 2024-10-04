@@ -4,5 +4,5 @@ export type DeleteFileFromStorageDTO = {
   userId: string
   date: Date
   retryCount?: number
-  lastAttempt?: string
+  lastAttempt?: Date
 }

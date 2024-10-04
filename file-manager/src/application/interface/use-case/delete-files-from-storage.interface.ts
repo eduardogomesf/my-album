@@ -4,5 +4,5 @@ export type DeleteFileFromStorageUseCaseParams = {
   userId: string
   date: Date
   retryCount?: number
-  lastAttempt?: string
+  lastAttempt?: Date
 }
