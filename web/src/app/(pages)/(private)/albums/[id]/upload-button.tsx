@@ -39,6 +39,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
     setTotalNumberOfFiles(0)
     setFilesWithIds([])
     setNumberOfUploadedFiles(0)
+    setNumberOfFailedFiles(0)
     setIsUploadOverlayOpen(false)
   }
 
