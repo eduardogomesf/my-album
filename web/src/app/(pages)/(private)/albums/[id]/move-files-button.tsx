@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { Check, Folders, Image, X } from 'phosphor-react'
+import { Folders, X } from 'phosphor-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -86,7 +86,7 @@ export function MoveFilesButton({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 animate-fade-in-down bg-overlay" />
 
-        <Dialog.Content className="fixed left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md bg-gray-100 p-4 focus:outline-none md:w-4/12">
+        <Dialog.Content className="fixed left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md bg-gray-100 p-4 focus:outline-none md:w-3/12">
           <Dialog.Title className="text-lg font-semibold text-gray-900">
             Move files to another album
           </Dialog.Title>
@@ -95,37 +95,27 @@ export function MoveFilesButton({
             Select the album where you want to move the files
           </Dialog.Description>
 
-          <div className="mt-4 grid max-h-[200px] grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3">
+          <div className="mt-4 flex max-h-[200px] flex-col gap-6 overflow-y-auto">
             {albums
               .filter((album) => album.id !== albumId)
               .map((album) => (
                 <button
-                  className="group flex h-32 w-full max-w-[150px] cursor-pointer flex-col rounded-md bg-gray-200"
+                  className="group flex w-full cursor-pointer items-center gap-4 focus:outline-none"
                   onClick={() => handleSelectAlbum(album.id)}
                   key={album.id}
                 >
-                  <div
+                  <span
                     className={clsx(
-                      'flex w-full flex-1 items-center justify-center rounded-t-lg bg-gray-200 transition duration-150 ease-in-out group-hover:bg-gray-300',
-                      selectedAlbumId === album.id ? 'bg-gray-300' : '',
+                      'h-4 w-4 rounded-full border border-gray-800 bg-gray-200 p-1',
+                      selectedAlbumId === album.id && 'bg-gray-800',
                     )}
-                  >
-                    <Image
-                      className="h-6 w-6 text-gray-800"
-                      alt="Album card background"
-                    />
-                  </div>
+                  />
 
-                  <div className="group relative flex w-full flex-col items-start gap-1 rounded-b-lg bg-gray-50 p-3">
-                    <span className="text-sm font-bold">{album.name}</span>
-                    <span className="text-xs text-gray-500">
-                      {album.updatedAt ? formatDate(album.updatedAt) : ''}
+                  <div className="flex flex-col items-start gap-1">
+                    <span>{album.name}</span>
+                    <span className="text-xs">
+                      {formatDate(album.updatedAt)}
                     </span>
-                    {selectedAlbumId === album.id && (
-                      <span className="absolute right-2 top-2 rounded-full bg-gray-200 p-1">
-                        <Check className="h-4 w-4 text-gray-800" />
-                      </span>
-                    )}
                   </div>
                 </button>
               ))}

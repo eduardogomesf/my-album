@@ -63,6 +63,14 @@ export default function SignIn() {
     }
   }
 
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      const target = event.target as HTMLInputElement
+      target.form?.requestSubmit()
+    }
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <main className="flex w-full max-w-[500px] flex-col items-center p-6">
@@ -94,6 +102,7 @@ export default function SignIn() {
             labelId="password"
             {...register('password')}
             error={errors.password?.message}
+            onKeyDown={handleKeyDown}
           />
 
           <Button className="py-2" type="submit" disabled={isSubmitting}>

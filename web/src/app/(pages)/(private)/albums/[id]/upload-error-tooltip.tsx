@@ -16,9 +16,9 @@ export function UploadErrorTooltip({
         <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
-            className="rounded-md bg-white p-2"
+            className="z-index rounded-md bg-white p-2"
             side="right"
-            sideOffset={5}
+            sideOffset={30}
           >
             <span className="text-sm text-red-600">{message}</span>
             <Tooltip.Arrow className="fill-red-600" />
