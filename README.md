@@ -78,7 +78,7 @@ I recommend using a swagger editor like [this](https://editor.swagger.io/) to vi
 - List user's deleted albums
 - List user's album and its files (infinite scroll)
 - Upload files to an album
-- Delete fiels of an album
+- Delete files of an album
 - Move files from one album to another
 - Download files
 
