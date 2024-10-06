@@ -74,11 +74,11 @@ I recommend using a swagger editor like [this](https://editor.swagger.io/) to vi
 - Refresh token
 - Album creation
 - Album deletion
-- Retrieve user's active albums
-- Retrieve user's deleted albums
-- Retrieve user's album and its files
-- Upload a file to an album
-- Delete a file from an album
+- List user's active albums
+- List user's deleted albums
+- List user's album and its files (infinite scroll)
+- Upload files to an album
+- Delete fiels of an album
 - Move files from one album to another
 - Download files
 
@@ -91,7 +91,6 @@ I recommend using a swagger editor like [this](https://editor.swagger.io/) to vi
 - Update user information feature
 - Update password feature
 - Add monitoring services
-- Add infinite scroll feature
 ---
 
 🛠️ Created by [eduardogomesf](https://eduardogomesf.dev)
