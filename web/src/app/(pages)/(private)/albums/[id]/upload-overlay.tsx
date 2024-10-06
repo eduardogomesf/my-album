@@ -20,13 +20,11 @@ export function UploadOverlay({
   totalNumberOfFiles,
   numberOfUploadedFiles = 0,
   isUploadInProgress = false,
-  numberOfFailedFiles = 0
+  numberOfFailedFiles = 0,
 }: UploadOverlayProps) {
   return (
     open && (
-      <div
-        className="z-50 fixed bottom-20 left-10 h-[300px] w-10/12 animate-fade-in-down rounded-md bg-white px-2 py-2 focus:outline-none md:w-[400px]"
-      >
+      <div className="fixed bottom-20 left-10 z-50 h-[300px] w-10/12 animate-fade-in-down rounded-md bg-white px-2 py-2 focus:outline-none md:w-[400px]">
         <div className="flex items-center gap-1 px-2">
           <strong className="text-lg font-semibold text-gray-800">
             Media Upload
@@ -38,13 +36,13 @@ export function UploadOverlay({
         </div>
 
         {!isUploadInProgress && (
-          <div className='flex flex-col items-start gap-1 px-2'>
-            {
-              numberOfUploadedFiles > 0 &&
-              (<span className='text-sm font-normal text-gray-500'>
-                {numberOfUploadedFiles} uploaded{numberOfFailedFiles > 0 && `, ${numberOfFailedFiles} failed`}
-              </span>)
-            }
+          <div className="flex flex-col items-start gap-1 px-2">
+            {numberOfUploadedFiles > 0 && (
+              <span className="text-sm font-normal text-gray-500">
+                {numberOfUploadedFiles} uploaded
+                {numberOfFailedFiles > 0 && `, ${numberOfFailedFiles} failed`}
+              </span>
+            )}
           </div>
         )}
 
