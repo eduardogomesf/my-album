@@ -95,23 +95,27 @@ export function MoveFilesButton({
             Select the album where you want to move the files
           </Dialog.Description>
 
-          <div className="mt-4 flex flex-col max-h-[200px] gap-6 overflow-y-auto">
+          <div className="mt-4 flex max-h-[200px] flex-col gap-6 overflow-y-auto">
             {albums
               .filter((album) => album.id !== albumId)
               .map((album) => (
                 <button
-                  className="group flex w-full items-center gap-4 cursor-pointer focus:outline-none"
+                  className="group flex w-full cursor-pointer items-center gap-4 focus:outline-none"
                   onClick={() => handleSelectAlbum(album.id)}
                   key={album.id}
                 >
-                  <span className={clsx(
-                    'rounded-full border border-gray-800 p-1 bg-gray-200 h-4 w-4',
-                    selectedAlbumId === album.id && 'bg-gray-800'
-                  )} />
+                  <span
+                    className={clsx(
+                      'h-4 w-4 rounded-full border border-gray-800 bg-gray-200 p-1',
+                      selectedAlbumId === album.id && 'bg-gray-800',
+                    )}
+                  />
 
-                  <div className='flex flex-col items-start gap-1'>
+                  <div className="flex flex-col items-start gap-1">
                     <span>{album.name}</span>
-                    <span className='text-xs '>{formatDate(album.updatedAt)}</span>
+                    <span className="text-xs">
+                      {formatDate(album.updatedAt)}
+                    </span>
                   </div>
                 </button>
               ))}
