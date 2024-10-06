@@ -31,12 +31,19 @@ export function UploadButton({ albumId }: UploadButtonProps) {
   const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false)
   const [filesWithIds, setFilesWithIds] = useState<FileWithId[]>([])
   const [totalNumberOfFiles, setTotalNumberOfFiles] = useState(0)
-  const [finishedNumberOfFiles, setFinishedNumberOfFiles] = useState(0)
+  const [numberOfUploadedFiles, setNumberOfUploadedFiles] = useState(0)
+  const [numberOfFailedFiles, setNumberOfFailedFiles] = useState(0)
+  const [isUploadInProgress, setIsUploadInProgress] = useState(false)
 
   function closeUploadOverLay() {
+    clearInputs()
+  }
+
+  function clearInputs() {
     setTotalNumberOfFiles(0)
     setFilesWithIds([])
-    setFinishedNumberOfFiles(0)
+    setNumberOfUploadedFiles(0)
+    setNumberOfFailedFiles(0)
     setIsUploadOverlayOpen(false)
   }
 
@@ -95,7 +102,9 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
       if (uploadedWithSuccess) {
         uploadedFilesIds.push(file.fileId as string)
-        setFinishedNumberOfFiles((prev) => prev + 1)
+        setNumberOfUploadedFiles((prev) => prev + 1)
+      } else {
+        setNumberOfFailedFiles((prev) => prev + 1)
       }
 
       updateFileUploadStatusOnTheFly(file.id, status)
@@ -115,9 +124,11 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
     const filesArray = Array.from(files)
 
+    clearInputs()
+    setIsUploadInProgress(true)
     setTotalNumberOfFiles(filesArray.length)
     setFilesWithIds([])
-    setFinishedNumberOfFiles(0)
+    setNumberOfUploadedFiles(0)
 
     const filesMetaData: FileMetadata[] = []
 
@@ -158,6 +169,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         file.status = UploadStatus.Failed
         file.failureReason = preUploadFile.reason
         file.allowed = false
+        setNumberOfFailedFiles((prev) => prev + 1)
       } else if (preUploadFile?.allowed) {
         file.allowed = true
         file.fields = preUploadFile.fields
@@ -178,6 +190,7 @@ export function UploadButton({ albumId }: UploadButtonProps) {
       toast.error('Failed to upload files. Please try again.', {
         duration: 5000,
       })
+      setIsUploadInProgress(false)
       return
     }
 
@@ -203,13 +216,11 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         ? 'Upload complete! All files have been uploaded.'
         : 'Upload complete! Some files were not uploaded.'
 
+    setIsUploadInProgress(false)
+
     toast.success(allFilesUploaded, {
       duration: 5000,
     })
-
-    setTimeout(() => {
-      closeUploadOverLay()
-    }, 5000)
   }
 
   return (
@@ -229,8 +240,10 @@ export function UploadButton({ albumId }: UploadButtonProps) {
         open={isUploadOverlayOpen}
         onClose={closeUploadOverLay}
         totalNumberOfFiles={totalNumberOfFiles}
-        finishedNumberOfFiles={finishedNumberOfFiles}
+        numberOfUploadedFiles={numberOfUploadedFiles}
+        numberOfFailedFiles={numberOfFailedFiles}
         filesToBeUploaded={filesWithIds}
+        isUploadInProgress={isUploadInProgress}
       />
     </>
   )
