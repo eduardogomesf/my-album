@@ -36,6 +36,10 @@ export function UploadButton({ albumId }: UploadButtonProps) {
   const [isUploadInProgress, setIsUploadInProgress] = useState(false)
 
   function closeUploadOverLay() {
+    clearInputs()
+  }
+
+  function clearInputs() {
     setTotalNumberOfFiles(0)
     setFilesWithIds([])
     setNumberOfUploadedFiles(0)
@@ -120,8 +124,8 @@ export function UploadButton({ albumId }: UploadButtonProps) {
 
     const filesArray = Array.from(files)
 
+    clearInputs()
     setIsUploadInProgress(true)
-
     setTotalNumberOfFiles(filesArray.length)
     setFilesWithIds([])
     setNumberOfUploadedFiles(0)
