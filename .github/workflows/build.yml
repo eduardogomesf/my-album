@@ -7,6 +7,11 @@ on:
         description: "Name of the project folder"
         required: true
         type: string
+      run-tests:
+        description: "If run tests step should be executed"
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   build:
@@ -36,4 +41,5 @@ jobs:
 
       - name: run tests
         working-directory: ${{ inputs.project-folder }}
+        if: ${{ github.event.inputs.run-tests }}
         run: npm run test:cov
