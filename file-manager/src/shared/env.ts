@@ -7,6 +7,7 @@ export const ENVS = {
     PORT: process.env.PORT ?? 3001,
     ID: process.env.ID ?? 'file-manager-service',
     URL: process.env.URL ?? 'http://localhost:3002',
+    API_PREFIX: process.env.API_PREFIX ?? 'file-management/api/v1',
   },
   FILE_CONFIGS: {
     MAX_FILE_SIZE_IN_MB: process.env.FILE_MAX_SIZE_IN_MB
