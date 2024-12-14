@@ -26,7 +26,10 @@ export type PreUploadAnalysisUseCaseResponse = FileAfterAnalysis[]
 export async function preUpload(
   payload: PreUploadPayload,
 ): Promise<PreUploadAnalysisUseCaseResponse> {
-  const response = await api.post('/files/pre-upload', payload)
+  const response = await api.post(
+    '/file-management/api/v1/files/pre-upload',
+    payload,
+  )
 
   return response.data
 }

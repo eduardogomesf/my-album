@@ -22,7 +22,7 @@ api.interceptors.response.use(
 
       try {
         await api.post(
-          '/refresh-token',
+          '/user-management/api/v1/refresh-token',
           {},
           {
             withCredentials: true,

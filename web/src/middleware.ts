@@ -20,7 +20,7 @@ async function refreshToken(
 
   const response = await api
     .post(
-      '/refresh-token',
+      '/user-management/api/v1/refresh-token',
       {},
       {
         headers: {

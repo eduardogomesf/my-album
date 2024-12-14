@@ -5,5 +5,5 @@ interface RestoreAlbumParams {
 }
 
 export function restoreAlbum(params: RestoreAlbumParams) {
-  return api.patch(`/albums/${params.albumId}/restore`)
+  return api.patch(`/file-management/api/v1/albums/${params.albumId}/restore`)
 }
