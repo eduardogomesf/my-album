@@ -1,0 +1,28 @@
+name: Build (All)
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ["main"]
+
+  workflow_dispatch:
+
+jobs:
+  run-file-manager-build:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/build.yml
+    with:
+      project-folder: "file-manager"
+
+  run-user-build:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/build.yml
+    with:
+      project-folder: "user"
+
+  run-web-build:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/build.yml
+    with:
+      project-folder: web
+      run-tests: false

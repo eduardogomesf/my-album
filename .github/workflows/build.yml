@@ -41,5 +41,5 @@ jobs:
 
       - name: run tests
         working-directory: ${{ inputs.project-folder }}
-        if: ${{ github.event.inputs.run-tests }}
+        if: ${{ inputs.run-tests }}
         run: npm run test:cov
