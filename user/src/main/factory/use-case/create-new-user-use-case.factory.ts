@@ -2,17 +2,17 @@ import { CreateNewUserUseCase } from '@/application/use-case'
 import {
   type FindUserByEmailRepository,
   type HashPassword,
-  type CreateUserRepository
+  type CreateUserRepository,
 } from '@/application/protocol'
 
 export function generateCreateNewUserUseCase(
   findUserByEmailRepository: FindUserByEmailRepository,
   hashPassword: HashPassword,
-  createUserRepository: CreateUserRepository
+  createUserRepository: CreateUserRepository,
 ) {
   return new CreateNewUserUseCase(
     findUserByEmailRepository,
     hashPassword,
-    createUserRepository
+    createUserRepository,
   )
 }

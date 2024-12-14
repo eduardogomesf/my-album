@@ -44,7 +44,7 @@ export class File extends BaseEntity {
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
       ['name', 'size', 'extension', 'type', 'albumId', 'mimeType'],
-      this
+      this,
     )
 
     if (missingFieldsValidation.isMissing) {

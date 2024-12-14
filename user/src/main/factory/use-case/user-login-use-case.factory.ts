@@ -3,7 +3,7 @@ import {
   type SaveRefreshTokenRepository,
   type FindUserByEmailRepository,
   type PasswordValidator,
-  type TokenGenerator
+  type TokenGenerator,
 } from '@/application/protocol'
 
 export const generateUserLoginUseCase = (
@@ -11,13 +11,13 @@ export const generateUserLoginUseCase = (
   passwordValidator: PasswordValidator,
   tokenGenerator: TokenGenerator,
   refreshTokenGenerator: TokenGenerator,
-  saveRefreshTokenRepository: SaveRefreshTokenRepository
+  saveRefreshTokenRepository: SaveRefreshTokenRepository,
 ) => {
   return new UserLoginUseCase(
     findUserByEmailRepository,
     passwordValidator,
     tokenGenerator,
     refreshTokenGenerator,
-    saveRefreshTokenRepository
+    saveRefreshTokenRepository,
   )
 }

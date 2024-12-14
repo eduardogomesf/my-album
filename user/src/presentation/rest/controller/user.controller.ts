@@ -5,7 +5,7 @@ import {
   type UserLoginUseCase,
   type CreateNewUserUseCase,
   type RefreshTokenUseCase,
-  type GetUserInfoUseCase
+  type GetUserInfoUseCase,
 } from '@/application/use-case'
 import { MissingFieldsHelper } from '../helper/missing-fields.helper'
 import { Logger } from '@/shared'
@@ -19,7 +19,7 @@ export class UserController {
     private readonly createNewUserUseCase: CreateNewUserUseCase,
     private readonly userLoginUseCase: UserLoginUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
-    private readonly getUserInfoUseCase: GetUserInfoUseCase
+    private readonly getUserInfoUseCase: GetUserInfoUseCase,
   ) {}
 
   async create(request: CustomRequest, response: Response): Promise<Response> {
@@ -29,18 +29,18 @@ export class UserController {
 
       const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
         ['firstName', 'lastName', 'email', 'password', 'cellphone'],
-        request.body
+        request.body,
       )
 
       if (missingFieldsValidation.isMissing) {
         this.logger.warn(
           `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`,
-          correlationId
+          correlationId,
         )
         return response.status(400).json({
           message: `Missing fields: ${missingFieldsValidation.missingFields.join(
-            ', '
-          )}`
+            ', ',
+          )}`,
         })
       }
 
@@ -51,25 +51,25 @@ export class UserController {
         lastName,
         email,
         password,
-        cellphone
+        cellphone,
       })
 
       if (!createUserResult.ok) {
         this.logger.warn(
           `User not created: ${createUserResult.message}`,
-          correlationId
+          correlationId,
         )
 
         if (
           createUserResult.message === ERROR_MESSAGES.USER.EMAIL_ALREADY_EXIST
         ) {
           return response.status(409).json({
-            message: createUserResult.message
+            message: createUserResult.message,
           })
         }
 
         return response.status(400).json({
-          message: createUserResult.message
+          message: createUserResult.message,
         })
       }
 
@@ -89,18 +89,18 @@ export class UserController {
 
       const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
         ['email', 'password'],
-        request.body
+        request.body,
       )
 
       if (missingFieldsValidation.isMissing) {
         this.logger.warn(
           `Missing fields: ${missingFieldsValidation.missingFields.join(', ')}`,
-          correlationId
+          correlationId,
         )
         return response.status(400).json({
           message: `Missing fields: ${missingFieldsValidation.missingFields.join(
-            ', '
-          )}`
+            ', ',
+          )}`,
         })
       }
 
@@ -108,37 +108,37 @@ export class UserController {
 
       const loginResult = await this.userLoginUseCase.execute({
         email,
-        password
+        password,
       })
 
       if (!loginResult.ok) {
         this.logger.warn(
           `User not logged in: ${loginResult.message}`,
-          correlationId
+          correlationId,
         )
 
         if (loginResult.message?.includes('given credentials')) {
           return response.status(401).json({
-            message: loginResult.message
+            message: loginResult.message,
           })
         }
 
         return response.status(400).json({
-          message: loginResult.message
+          message: loginResult.message,
         })
       }
 
       const responseBody = {
         accessToken: loginResult?.data?.accessToken ?? '',
         refreshToken: loginResult?.data?.refreshToken ?? '',
-        userId: loginResult?.data?.userId ?? ''
+        userId: loginResult?.data?.userId ?? '',
       }
 
       this.setCookies(
         response,
         responseBody.accessToken,
         responseBody.refreshToken,
-        responseBody.userId
+        responseBody.userId,
       )
 
       this.logger.info('User logged in successfully', correlationId)
@@ -158,7 +158,7 @@ export class UserController {
       if (!request.headers.cookie) {
         this.logger.warn('Cookies not found', correlationId)
         return response.status(400).json({
-          message: 'Cookies not found'
+          message: 'Cookies not found',
         })
       }
 
@@ -166,18 +166,18 @@ export class UserController {
 
       const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
         ['refreshToken', 'userId'],
-        cookies
+        cookies,
       )
 
       if (missingFieldsValidation.isMissing) {
         this.logger.warn(
           `Missing cookies: ${missingFieldsValidation.missingFields.join(
-            ', '
+            ', ',
           )}`,
-          correlationId
+          correlationId,
         )
         return response.status(400).json({
-          message: 'Cookies not found'
+          message: 'Cookies not found',
         })
       }
 
@@ -185,36 +185,36 @@ export class UserController {
 
       const refreshResult = await this.refreshTokenUseCase.execute({
         refreshToken,
-        userId
+        userId,
       })
 
       if (!refreshResult.ok) {
         this.logger.warn(
           `Token not refreshed: ${refreshResult.message}`,
-          correlationId
+          correlationId,
         )
         if (refreshResult.message === ERROR_MESSAGES.USER.NOT_FOUND) {
           return response.status(404).json({
-            message: refreshResult.message
+            message: refreshResult.message,
           })
         }
 
         return response.status(401).json({
-          message: refreshResult.message
+          message: refreshResult.message,
         })
       }
 
       const responseBody = {
         accessToken: refreshResult?.data?.accessToken ?? '',
         refreshToken: refreshResult?.data?.refreshToken ?? '',
-        userId: refreshResult?.data?.userId ?? ''
+        userId: refreshResult?.data?.userId ?? '',
       }
 
       this.setCookies(
         response,
         responseBody.accessToken,
         responseBody.refreshToken,
-        responseBody.userId
+        responseBody.userId,
       )
 
       this.logger.info('Token refreshed successfully', correlationId)
@@ -228,7 +228,7 @@ export class UserController {
 
   async getUserInfo(
     request: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = request.tracking.correlationId
     try {
@@ -237,16 +237,16 @@ export class UserController {
       const { userId } = request.auth
 
       const getUserInfoResult = await this.getUserInfoUseCase.execute({
-        userId
+        userId,
       })
 
       if (!getUserInfoResult.ok) {
         this.logger.warn(
           `User not found: ${getUserInfoResult.message}`,
-          correlationId
+          correlationId,
         )
         return response.status(404).json({
-          message: getUserInfoResult.message
+          message: getUserInfoResult.message,
         })
       }
 
@@ -263,27 +263,27 @@ export class UserController {
     response: Response,
     accessToken: string,
     refreshToken: string,
-    userId: string
+    userId: string,
   ): void {
     response.setHeader('Set-Cookie', [
       cookie.serialize('accessToken', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 60 * 60 // 1 hour
+        maxAge: 60 * 60, // 1 hour
       }),
       cookie.serialize('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 60 * 60 * 24 * 1 // 1 day
+        maxAge: 60 * 60 * 24 * 1, // 1 day
       }),
       cookie.serialize('userId', userId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 60 * 60 * 24 * 1 // 1 day
-      })
+        maxAge: 60 * 60 * 24 * 1, // 1 day
+      }),
     ])
   }
 }

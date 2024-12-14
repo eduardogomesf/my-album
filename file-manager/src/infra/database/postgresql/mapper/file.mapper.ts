@@ -13,7 +13,7 @@ export class FileMapper {
       albumId: file.albumId,
       uploaded: file.uploaded,
       createdAt: file.createdAt,
-      updatedAt: file.updatedAt
+      updatedAt: file.updatedAt,
     })
   }
 }

@@ -20,8 +20,8 @@ export function generateKafkaClient(): Kafka {
     connectionTimeout: 5000,
     retry: {
       initialRetryTime: 300,
-      retries: 8
-    }
+      retries: 8,
+    },
   })
 
   logger.info('Kafka client created!')

@@ -3,12 +3,12 @@ import { ERROR_MESSAGES } from '../../constant'
 import {
   type UseCaseResponse,
   type UseCase,
-  type DeleteFileUseCaseParams
+  type DeleteFileUseCaseParams,
 } from '../../interface'
 import {
   type GetFilesByIdsAndAlbumIdRepository,
   type DeleteFilesRepository,
-  MessageSender
+  type MessageSender,
 } from '../../protocol'
 
 export class DeleteFilesUseCase implements UseCase {
@@ -18,17 +18,20 @@ export class DeleteFilesUseCase implements UseCase {
     private readonly deleteFilesFromStorageSender: MessageSender,
   ) {}
 
-  async execute(params: DeleteFileUseCaseParams): Promise<UseCaseResponse<null>> {
-    const files = await this.getFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId(
-      params.filesIds,
-      params.albumId,
-      params.userId
-    )
+  async execute(
+    params: DeleteFileUseCaseParams,
+  ): Promise<UseCaseResponse<null>> {
+    const files =
+      await this.getFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId(
+        params.filesIds,
+        params.albumId,
+        params.userId,
+      )
 
     if (!files || files.length === 0) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND
+        message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND,
       }
     }
 
@@ -38,11 +41,11 @@ export class DeleteFilesUseCase implements UseCase {
       id: uuid(),
       filesIds: params.filesIds,
       userId: params.userId,
-      date: new Date()
+      date: new Date(),
     })
 
     return {
-      ok: true
+      ok: true,
     }
   }
 }

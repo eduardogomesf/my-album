@@ -14,7 +14,7 @@ export class AlbumMapper {
       userId: raw.userId,
       status: raw.status as AlbumStatus,
       createdAt: raw.createdAt,
-      updatedAt: raw.updatedAt
+      updatedAt: raw.updatedAt,
     })
   }
 }

@@ -1,8 +1,11 @@
 import { AddNewUserUseCase } from '@/application/use-case'
-import { type CreateUserRepository, type GetUserByEmailRepository } from '@/application/protocol'
+import {
+  type CreateUserRepository,
+  type GetUserByEmailRepository,
+} from '@/application/protocol'
 
 jest.mock('uuid', () => ({
-  v4: () => 'any-id'
+  v4: () => 'any-id',
 }))
 
 describe('Add New User Use Case', () => {
@@ -11,12 +14,14 @@ describe('Add New User Use Case', () => {
   let mockCreateUserRepository: CreateUserRepository
 
   beforeEach(() => {
-    mockFindUserByEmailRepository = { getByEmail: jest.fn().mockResolvedValue(null) }
+    mockFindUserByEmailRepository = {
+      getByEmail: jest.fn().mockResolvedValue(null),
+    }
     mockCreateUserRepository = { create: jest.fn().mockResolvedValue(null) }
 
     sut = new AddNewUserUseCase(
       mockFindUserByEmailRepository,
-      mockCreateUserRepository
+      mockCreateUserRepository,
     )
   })
 
@@ -24,7 +29,7 @@ describe('Add New User Use Case', () => {
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     }
 
     const result = await sut.execute(payload)
@@ -34,7 +39,7 @@ describe('Add New User Use Case', () => {
       id: 'any-id',
       firstName: payload.firstName,
       lastName: payload.lastName,
-      email: payload.email
+      email: payload.email,
     })
   })
 
@@ -43,10 +48,13 @@ describe('Add New User Use Case', () => {
       id: 'existing-id',
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     }
 
-    const getByEmailSpy = jest.spyOn(mockFindUserByEmailRepository, 'getByEmail')
+    const getByEmailSpy = jest.spyOn(
+      mockFindUserByEmailRepository,
+      'getByEmail',
+    )
     const createSpy = jest.spyOn(mockCreateUserRepository, 'create')
 
     await sut.execute(payload)
@@ -55,7 +63,7 @@ describe('Add New User Use Case', () => {
       id: payload.id,
       firstName: payload.firstName,
       lastName: payload.lastName,
-      email: payload.email
+      email: payload.email,
     })
     expect(getByEmailSpy).toHaveBeenCalledWith(payload.email)
   })
@@ -65,14 +73,14 @@ describe('Add New User Use Case', () => {
       id: 'existing-id',
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     })
 
     const payload = {
       id: 'existing-id',
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     }
 
     const result = await sut.execute(payload)
@@ -82,18 +90,22 @@ describe('Add New User Use Case', () => {
       id: payload.id,
       firstName: payload.firstName,
       lastName: payload.lastName,
-      email: payload.email
+      email: payload.email,
     })
     expect(result.message).toBe('User already exists')
   })
 
   it('should pass along any error thrown when trying to get a user by id', async () => {
-    mockFindUserByEmailRepository.getByEmail = jest.fn().mockImplementation(() => { throw new Error('any-error') })
+    mockFindUserByEmailRepository.getByEmail = jest
+      .fn()
+      .mockImplementation(() => {
+        throw new Error('any-error')
+      })
 
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     }
 
     const result = sut.execute(payload)
@@ -102,14 +114,14 @@ describe('Add New User Use Case', () => {
   })
 
   it('should pass along any error thrown when trying to create a user', async () => {
-    mockCreateUserRepository.create = jest.fn().mockImplementation(
-      () => { throw new Error('create-user-error') }
-    )
+    mockCreateUserRepository.create = jest.fn().mockImplementation(() => {
+      throw new Error('create-user-error')
+    })
 
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     }
 
     const result = sut.execute(payload)

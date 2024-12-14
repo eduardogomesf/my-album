@@ -23,7 +23,9 @@ export interface GenerateUploadUrlServiceResponse {
 }
 
 export interface GenerateUploadUrlService {
-  generateUploadUrl: (params: GenerateUploadUrlServiceDTO) => Promise<GenerateUploadUrlServiceResponse>
+  generateUploadUrl: (
+    params: GenerateUploadUrlServiceDTO,
+  ) => Promise<GenerateUploadUrlServiceResponse>
 }
 
 export interface GetFileStreamFromStorageService {

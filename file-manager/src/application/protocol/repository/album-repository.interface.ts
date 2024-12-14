@@ -18,7 +18,10 @@ export interface GetAlbumsByStatusRepositoryResponse {
 }
 
 export interface GetAlbumsByStatusRepository {
-  getManyByStatus: (userId: string, status: AlbumStatus) => Promise<GetAlbumsByStatusRepositoryResponse[]>
+  getManyByStatus: (
+    userId: string,
+    status: AlbumStatus,
+  ) => Promise<GetAlbumsByStatusRepositoryResponse[]>
 }
 
 export interface SaveAlbumRepository {
@@ -38,5 +41,8 @@ export type AlbumWithFileCount = Album & {
 }
 
 export interface GetAlbumByIdWithFilesCountRepository {
-  getByIdWithFilesCount: (id: string, userId: string) => Promise<AlbumWithFileCount | null>
+  getByIdWithFilesCount: (
+    id: string,
+    userId: string,
+  ) => Promise<AlbumWithFileCount | null>
 }

@@ -4,7 +4,7 @@ import {
   type TokenGenerator,
   type FindUserByEmailRepository,
   type PasswordValidator,
-  type SaveRefreshTokenRepository
+  type SaveRefreshTokenRepository,
 } from '../protocol'
 
 interface UserLoginUseCaseDTO {
@@ -24,43 +24,51 @@ export class UserLoginUseCase implements UseCase {
     private readonly passwordValidator: PasswordValidator,
     private readonly tokenGenerator: TokenGenerator,
     private readonly refreshTokenGenerator: TokenGenerator,
-    private readonly saveRefreshToken: SaveRefreshTokenRepository
+    private readonly saveRefreshToken: SaveRefreshTokenRepository,
   ) {}
 
-  async execute(payload: UserLoginUseCaseDTO): Promise<UseCaseResponse<UserLoginUseCaseResponse>> {
-    const userByEmail = await this.findUserByEmailRepository.findByEmail(payload.email)
+  async execute(
+    payload: UserLoginUseCaseDTO,
+  ): Promise<UseCaseResponse<UserLoginUseCaseResponse>> {
+    const userByEmail = await this.findUserByEmailRepository.findByEmail(
+      payload.email,
+    )
 
-    const notValidCredentialsMessage = 'No user found with the given credentials'
+    const notValidCredentialsMessage =
+      'No user found with the given credentials'
 
     if (!userByEmail) {
       return {
         ok: false,
-        message: notValidCredentialsMessage
+        message: notValidCredentialsMessage,
       }
     }
 
-    const isPasswordValid = await this.passwordValidator.validate(payload.password, userByEmail.password)
+    const isPasswordValid = await this.passwordValidator.validate(
+      payload.password,
+      userByEmail.password,
+    )
 
     if (!isPasswordValid) {
       return {
         ok: false,
-        message: notValidCredentialsMessage
+        message: notValidCredentialsMessage,
       }
     }
 
     const [accessToken, refreshToken] = await Promise.all([
       this.tokenGenerator.generate({
-        id: userByEmail.id
+        id: userByEmail.id,
       }),
       this.refreshTokenGenerator.generate({
-        id: userByEmail.id
-      })
+        id: userByEmail.id,
+      }),
     ])
 
     await this.saveRefreshToken.save({
       id: uuid(),
       token: refreshToken,
-      userId: userByEmail.id
+      userId: userByEmail.id,
     })
 
     return {
@@ -68,8 +76,8 @@ export class UserLoginUseCase implements UseCase {
       data: {
         accessToken,
         refreshToken,
-        userId: userByEmail.id
-      }
+        userId: userByEmail.id,
+      },
     }
   }
 }

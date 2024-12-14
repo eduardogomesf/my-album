@@ -4,9 +4,9 @@ jest.mock('@/shared/env.ts', () => {
   return {
     ENVS: {
       FILE_CONFIGS: {
-        MAX_FILE_SIZE_IN_MB: '5'
-      }
-    }
+        MAX_FILE_SIZE_IN_MB: '5',
+      },
+    },
   }
 })
 

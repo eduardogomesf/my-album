@@ -4,9 +4,9 @@ jest.mock('@/shared/env.ts', () => {
   return {
     ENVS: {
       FILE_CONFIGS: {
-        ALLOWED_EXTENSIONS: ['jpg', 'mp4']
-      }
-    }
+        ALLOWED_EXTENSIONS: ['jpg', 'mp4'],
+      },
+    },
   }
 })
 

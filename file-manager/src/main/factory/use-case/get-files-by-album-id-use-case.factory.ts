@@ -2,7 +2,7 @@ import {
   type GetFilesByAlbumIdRepository,
   type GetAlbumByIdRepository,
   type GetFileUrlService,
-  type CountFilesByAlbumIdRepository
+  type CountFilesByAlbumIdRepository,
 } from '@/application/protocol'
 import { GetFilesByAlbumIdUseCase } from '@/application/use-case'
 
@@ -10,12 +10,12 @@ export const generateGetFilesByAlbumIdUseCase = (
   getFilesByAlbumIdRepository: GetFilesByAlbumIdRepository,
   getAlbumByIdRepository: GetAlbumByIdRepository,
   getFileUrlService: GetFileUrlService,
-  countFilesByAlbumIdRepository: CountFilesByAlbumIdRepository
+  countFilesByAlbumIdRepository: CountFilesByAlbumIdRepository,
 ) => {
   return new GetFilesByAlbumIdUseCase(
     getFilesByAlbumIdRepository,
     getAlbumByIdRepository,
     getFileUrlService,
-    countFilesByAlbumIdRepository
+    countFilesByAlbumIdRepository,
   )
 }

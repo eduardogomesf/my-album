@@ -7,11 +7,11 @@ export interface HasMissingFieldsResponse {
 export class MissingFieldsHelper {
   static hasMissingFields(
     fields: string[],
-    payload: Record<string, unknown>
+    payload: Record<string, unknown>,
   ): HasMissingFieldsResponse {
     const missingFields: string[] = []
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       const value = payload[field]
       if (!value) {
         missingFields.push(field)
@@ -21,7 +21,7 @@ export class MissingFieldsHelper {
     return {
       isMissing: missingFields.length > 0,
       missingFields,
-      missingFieldsMessage: `Missing fields: ${missingFields.join(', ')}`
+      missingFieldsMessage: `Missing fields: ${missingFields.join(', ')}`,
     }
   }
 }

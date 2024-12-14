@@ -26,9 +26,7 @@ export class Logger {
     const now = DateTime.now()
       .setZone(this.timezone)
       .toFormat('yyyy-MM-dd HH:mm:ss')
-    const correlation = correlationId
-      ? `[correlation-id:${correlationId}]`
-      : ''
+    const correlation = correlationId ? `[correlation-id:${correlationId}]` : ''
     return `[${now}][${this.logSource}]${correlation} ${message}`
   }
 

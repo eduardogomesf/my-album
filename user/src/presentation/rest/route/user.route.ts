@@ -11,13 +11,17 @@ export function getUserRouter(useCases: UseCases): Router {
     useCases.createNewUser,
     useCases.userLogin,
     useCases.refreshToken,
-    useCases.getUserInfoUseCase
+    useCases.getUserInfoUseCase,
   )
 
   router.post('/users', userController.create.bind(userController))
   router.post('/login', userController.login.bind(userController))
   router.post('/refresh-token', userController.refresh.bind(userController))
-  router.get('/users/profile', getAuthInfoFromHeaders as any, userController.getUserInfo.bind(userController))
+  router.get(
+    '/users/profile',
+    getAuthInfoFromHeaders as any,
+    userController.getUserInfo.bind(userController),
+  )
 
   return router
 }

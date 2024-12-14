@@ -3,19 +3,19 @@ import {
   type GetAlbumByIdRepository,
   type GetCurrentStorageUsageRepository,
   type GenerateUploadUrlService,
-  type SaveFileRepository
+  type SaveFileRepository,
 } from '@/application/protocol'
 
 export const generatePreUploadAnalysisUseCase = (
   getAlbumByIdRepository: GetAlbumByIdRepository,
   getCurrentStorageUsageRepository: GetCurrentStorageUsageRepository,
   generateUploadUrlService: GenerateUploadUrlService,
-  saveFileRepository: SaveFileRepository
+  saveFileRepository: SaveFileRepository,
 ) => {
   return new PreUploadAnalysisUseCase(
     getAlbumByIdRepository,
     getCurrentStorageUsageRepository,
     generateUploadUrlService,
-    saveFileRepository
+    saveFileRepository,
   )
 }

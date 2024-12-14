@@ -11,7 +11,7 @@ describe('File Entity', () => {
       mimeType: 'image/png',
       albumId: 'album-id',
       createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
-      updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
+      updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
     })
 
     expect(file.id).toBeDefined()
@@ -30,9 +30,13 @@ describe('File Entity', () => {
     expect(() => {
       new File({
         createdAt: '2021-01-01T00:00:00.000Z',
-        updatedAt: '2021-01-01T00:00:00.000Z'
+        updatedAt: '2021-01-01T00:00:00.000Z',
       } as any)
-    }).toThrow(new DomainError('fields name, size, extension, type, albumId, mimeType can not be empty'))
+    }).toThrow(
+      new DomainError(
+        'fields name, size, extension, type, albumId, mimeType can not be empty',
+      ),
+    )
   })
 
   it('should not be able to create a new file with invalid size', () => {
@@ -46,7 +50,7 @@ describe('File Entity', () => {
         uploaded: false,
         albumId: 'album-id',
         createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
-        updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
+        updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
       })
     }).toThrow(new DomainError('Size should be greater than 0'))
   })

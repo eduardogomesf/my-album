@@ -8,7 +8,7 @@ export const getFileMock = () => ({
   url: 'www.any-url.com',
   status: 'ACTIVE',
   createdAt: new Date().toString(),
-  updatedAt: new Date().toString()
+  updatedAt: new Date().toString(),
 })
 
 export const getFileWithAlbumMock = () => ({
@@ -30,6 +30,6 @@ export const getFileWithAlbumMock = () => ({
     status: 'ACTIVE',
     createdAt: new Date().toString(),
     updatedAt: new Date().toString(),
-    userId: 'user-id'
-  }
+    userId: 'user-id',
+  },
 })

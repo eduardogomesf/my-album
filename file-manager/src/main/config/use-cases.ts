@@ -3,7 +3,7 @@ import {
   generateAlbumRepository,
   generateFileRepository,
   generateOutboxRepository,
-  generateUserRepository
+  generateUserRepository,
 } from '../factory/repository'
 import {
   generateAddNewAlbumUseCase,
@@ -17,7 +17,7 @@ import {
   generateMoveFilesToOtherAlbumUseCase,
   generateRestoreAlbumUseCase,
   generatePostUploadUseCase,
-  generateDownloadFilesUseCase
+  generateDownloadFilesUseCase,
 } from '../factory/use-case'
 import { generateFileStorageService } from '../factory/object-storage'
 import { generateGetFileUrlDecorator } from '../factory/decorator/'
@@ -54,29 +54,74 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     host: ENVS.REDIS.HOST,
     username: ENVS.REDIS.USERNAME,
     password: ENVS.REDIS.PASSWORD,
-    port: ENVS.REDIS.PORT
+    port: ENVS.REDIS.PORT,
   })
-  const getFileUrlDecorator = generateGetFileUrlDecorator(fileStorageService, cache)
+  const getFileUrlDecorator = generateGetFileUrlDecorator(
+    fileStorageService,
+    cache,
+  )
 
   // use-cases
-  const addNewUserUseCase = generateAddNewUserUseCase(userRepository, userRepository)
+  const addNewUserUseCase = generateAddNewUserUseCase(
+    userRepository,
+    userRepository,
+  )
   const preUploadAnalysisUseCase = generatePreUploadAnalysisUseCase(
     albumRepository,
     fileRepository,
     fileStorageService,
-    fileRepository
+    fileRepository,
   )
-  const addNewAlbumUseCase = generateAddNewAlbumUseCase(userRepository, albumRepository, albumRepository)
-  const getAlbumsUseCase = generateGetAlbumsUseCase(albumRepository, fileRepository, fileStorageService)
-  const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(fileRepository, albumRepository, getFileUrlDecorator, fileRepository)
-  const moveFilesToOtherAlbumUseCase = generateMoveFilesToOtherAlbumUseCase(albumRepository, fileRepository, fileRepository)
-  const deleteFileUseCase = generateDeleteFileUseCase(fileRepository, fileRepository, deleteFilesFromStorageSender)
-  const deleteAlbumUseCase = generateDeleteAlbumUseCase(albumRepository, albumRepository, albumRepository)
-  const restoreAlbumUseCase = generateRestoreAlbumUseCase(albumRepository, albumRepository)
-  const getAvailableStorageUseCase = generateGetAvailableStorageUseCase(fileRepository)
-  const postUploadUseCase = generatePostUploadUseCase(fileRepository, fileRepository)
-  const downloadFilesUseCase = generateDownloadFilesUseCase(albumRepository, fileRepository, fileStorageService)
-  const deleteFilesFromStorageUseCase = generateDeleteFilesFromStorageUseCase(fileStorageService, deleteFilesFromStorageSender)
+  const addNewAlbumUseCase = generateAddNewAlbumUseCase(
+    userRepository,
+    albumRepository,
+    albumRepository,
+  )
+  const getAlbumsUseCase = generateGetAlbumsUseCase(
+    albumRepository,
+    fileRepository,
+    fileStorageService,
+  )
+  const getFilesByAlbumIdUseCase = generateGetFilesByAlbumIdUseCase(
+    fileRepository,
+    albumRepository,
+    getFileUrlDecorator,
+    fileRepository,
+  )
+  const moveFilesToOtherAlbumUseCase = generateMoveFilesToOtherAlbumUseCase(
+    albumRepository,
+    fileRepository,
+    fileRepository,
+  )
+  const deleteFileUseCase = generateDeleteFileUseCase(
+    fileRepository,
+    fileRepository,
+    deleteFilesFromStorageSender,
+  )
+  const deleteAlbumUseCase = generateDeleteAlbumUseCase(
+    albumRepository,
+    albumRepository,
+    albumRepository,
+  )
+  const restoreAlbumUseCase = generateRestoreAlbumUseCase(
+    albumRepository,
+    albumRepository,
+  )
+  const getAvailableStorageUseCase =
+    generateGetAvailableStorageUseCase(fileRepository)
+  const postUploadUseCase = generatePostUploadUseCase(
+    fileRepository,
+    fileRepository,
+  )
+  const downloadFilesUseCase = generateDownloadFilesUseCase(
+    albumRepository,
+    fileRepository,
+    fileStorageService,
+  )
+  const deleteFilesFromStorageUseCase = generateDeleteFilesFromStorageUseCase(
+    fileStorageService,
+    deleteFilesFromStorageSender,
+  )
 
   return {
     addNewUserUseCase,
@@ -91,6 +136,6 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     getAvailableStorageUseCase,
     postUploadUseCase,
     downloadFilesUseCase,
-    deleteFilesFromStorageUseCase
+    deleteFilesFromStorageUseCase,
   }
 }

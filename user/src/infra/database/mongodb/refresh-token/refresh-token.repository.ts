@@ -2,20 +2,25 @@ import {
   type SaveRefreshTokenRepository,
   type RefreshToken,
   type GetRefreshTokenByTokenAndUserIdRepository,
-  type DeleteRefreshTokenByIdRepository
+  type DeleteRefreshTokenByIdRepository,
 } from '@/application/protocol'
 import { Logger } from '@/shared'
 import { RefreshTokenModel } from './refresh-token.entity'
 
 const logger = new Logger('MongoUserRepository')
 
-export class MongoRefreshTokenRepository implements SaveRefreshTokenRepository, GetRefreshTokenByTokenAndUserIdRepository, DeleteRefreshTokenByIdRepository {
+export class MongoRefreshTokenRepository
+  implements
+    SaveRefreshTokenRepository,
+    GetRefreshTokenByTokenAndUserIdRepository,
+    DeleteRefreshTokenByIdRepository
+{
   async save(data: RefreshToken): Promise<void> {
     try {
       const payload = {
         _id: data.id,
         token: data.token,
-        userId: data.userId
+        userId: data.userId,
       }
 
       await RefreshTokenModel.create(payload)
@@ -26,11 +31,14 @@ export class MongoRefreshTokenRepository implements SaveRefreshTokenRepository, 
     }
   }
 
-  async getByTokenAndUserId(token: string, userId: string): Promise<RefreshToken | null> {
+  async getByTokenAndUserId(
+    token: string,
+    userId: string,
+  ): Promise<RefreshToken | null> {
     try {
       const refreshToken = await RefreshTokenModel.findOne({
         token,
-        userId
+        userId,
       })
 
       if (!refreshToken) {
@@ -40,7 +48,7 @@ export class MongoRefreshTokenRepository implements SaveRefreshTokenRepository, 
       return {
         id: refreshToken?._id,
         token: refreshToken?.token,
-        userId: refreshToken?.userId
+        userId: refreshToken?.userId,
       }
     } catch (error) {
       logger.error('Error getting refresh token by token and user id')
@@ -49,10 +57,10 @@ export class MongoRefreshTokenRepository implements SaveRefreshTokenRepository, 
     }
   }
 
-  async delete (id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
       await RefreshTokenModel.deleteOne({
-        _id: id
+        _id: id,
       })
     } catch (error) {
       logger.error('Error deleting refresh token by id')

@@ -1,6 +1,10 @@
 import { createClient, type RedisClientType } from 'redis'
 import { Logger } from '@/shared'
-import { type CacheSetOptions, type CacheService, type NewCacheServiceParams } from '../interface'
+import {
+  type CacheSetOptions,
+  type CacheService,
+  type NewCacheServiceParams,
+} from '../interface'
 
 export class RedisCache implements CacheService {
   private readonly logger = new Logger(RedisCache.name)
@@ -9,21 +13,31 @@ export class RedisCache implements CacheService {
   constructor(params: NewCacheServiceParams) {
     this.client = createClient({
       url: `redis://${params.username}:${params.password}@${params.host}:${params.port}`,
-      name: params.clientName
+      name: params.clientName,
     })
 
     this.connect()
       .then(() => {
         this.logger.info('Redis connected')
-      }).catch((error) => {
+      })
+      .catch((error) => {
         this.logger.error(`Redis connection error: ${error}`)
       })
   }
 
-  public async set(key: string, value: any, options?: CacheSetOptions, shouldThrowError = false): Promise<void> {
+  public async set(
+    key: string,
+    value: any,
+    options?: CacheSetOptions,
+    shouldThrowError = false,
+  ): Promise<void> {
     try {
       if (options?.expirationInSeconds) {
-        await this.client.setEx(key, options.expirationInSeconds, JSON.stringify(value))
+        await this.client.setEx(
+          key,
+          options.expirationInSeconds,
+          JSON.stringify(value),
+        )
       } else {
         await this.client.set(key, JSON.stringify(value))
       }

@@ -11,7 +11,7 @@ import {
   type PreUploadAnalysisUseCase,
   type PostUploadUseCase,
   type DownloadFilesUseCase,
-  type DeleteFilesFromStorageUseCase
+  type DeleteFilesFromStorageUseCase,
 } from '@/application/use-case'
 import { type Consumer } from 'kafkajs'
 

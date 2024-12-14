@@ -3,12 +3,12 @@ import {
   type GenerateUploadUrlService,
   type GetCurrentStorageUsageRepository,
   type SaveFileRepository,
-  type GetAlbumByIdRepository
+  type GetAlbumByIdRepository,
 } from '@/application/protocol'
 import { getAlbumByIdMock } from '../mock'
 
 jest.mock('uuid', () => ({
-  v4: () => 'any-id'
+  v4: () => 'any-id',
 }))
 
 jest.mock('@/shared/env.ts', () => ({
@@ -16,10 +16,9 @@ jest.mock('@/shared/env.ts', () => ({
     FILE_CONFIGS: {
       MAX_STORAGE_SIZE_IN_MB: 10,
       ALLOWED_EXTENSIONS: ['png'],
-      MAX_FILE_SIZE_IN_MB: 2
-
-    }
-  }
+      MAX_FILE_SIZE_IN_MB: 2,
+    },
+  },
 }))
 
 describe('Pre Upload Analysis Use Case', () => {
@@ -31,37 +30,42 @@ describe('Pre Upload Analysis Use Case', () => {
 
   beforeEach(() => {
     getAlbumByIdRepository = {
-      getById: jest.fn().mockResolvedValue(getAlbumByIdMock())
+      getById: jest.fn().mockResolvedValue(getAlbumByIdMock()),
     }
     getCurrentStorageUsageRepository = {
       getUsage: jest.fn().mockResolvedValue({
-        usage: 15728640
-      })
+        usage: 15728640,
+      }),
     }
     generateUploadUrlService = {
       generateUploadUrl: jest.fn().mockResolvedValue({
         url: 'any-url',
-        fields: { a: 'a', b: 'b' }
-      })
+        fields: { a: 'a', b: 'b' },
+      }),
     }
     saveFileRepository = {
-      save: jest.fn().mockResolvedValue(null)
+      save: jest.fn().mockResolvedValue(null),
     }
 
     sut = new PreUploadAnalysisUseCase(
       getAlbumByIdRepository,
       getCurrentStorageUsageRepository,
       generateUploadUrlService,
-      saveFileRepository
+      saveFileRepository,
     )
   })
 
   it('should complete pre upload analysis successfully', async () => {
-    getCurrentStorageUsageRepository.getUsage = jest.fn().mockResolvedValueOnce({ usage: 9437184 }) // 9 MB
+    getCurrentStorageUsageRepository.getUsage = jest
+      .fn()
+      .mockResolvedValueOnce({ usage: 9437184 }) // 9 MB
 
     const getByIdSpy = jest.spyOn(getAlbumByIdRepository, 'getById')
     const getUsageSpy = jest.spyOn(getCurrentStorageUsageRepository, 'getUsage')
-    const generateUploadUrlSpy = jest.spyOn(generateUploadUrlService, 'generateUploadUrl')
+    const generateUploadUrlSpy = jest.spyOn(
+      generateUploadUrlService,
+      'generateUploadUrl',
+    )
     const saveSpy = jest.spyOn(saveFileRepository, 'save')
 
     const result = await sut.execute({
@@ -72,37 +76,46 @@ describe('Pre Upload Analysis Use Case', () => {
           id: 'file-1', // Allowed
           originalName: 'me.png',
           size: 1048576, // 1 MB
-          mimetype: 'image/png'
+          mimetype: 'image/png',
         },
         {
           id: 'file-2', // Block due to invalid extension
           originalName: 'docs.pdf',
           size: 1048576,
-          mimetype: 'application/pdf'
+          mimetype: 'application/pdf',
         },
         {
           id: 'file-3', // Block due to file size
           originalName: 'wallpaper.png',
           size: 3145728,
-          mimetype: 'image/png'
+          mimetype: 'image/png',
         },
         {
           id: 'file-4', // Block due to max storage size reached on file-1
           originalName: 'me.png',
           size: 1048576,
-          mimetype: 'image/png'
-        }
-
-      ]
+          mimetype: 'image/png',
+        },
+      ],
     })
 
     expect(result.message).toBeUndefined()
     expect(result.ok).toBe(true)
     expect(result.data).toEqual([
-      { allowed: false, id: 'file-3', reason: 'The file is too large. Max 2 MB' },
-      { allowed: true, fields: { a: 'a', b: 'b' }, fileId: 'any-id', id: 'file-1', uploadUrl: 'any-url' },
+      {
+        allowed: false,
+        id: 'file-3',
+        reason: 'The file is too large. Max 2 MB',
+      },
+      {
+        allowed: true,
+        fields: { a: 'a', b: 'b' },
+        fileId: 'any-id',
+        id: 'file-1',
+        uploadUrl: 'any-url',
+      },
       { allowed: false, id: 'file-2', reason: 'Invalid extension' },
-      { allowed: false, id: 'file-4', reason: 'No free space available' }
+      { allowed: false, id: 'file-4', reason: 'No free space available' },
     ])
     expect(getByIdSpy).toHaveBeenCalledWith('any-album-id', 'user-id')
     expect(getUsageSpy).toHaveBeenCalledWith('user-id')
@@ -111,7 +124,7 @@ describe('Pre Upload Analysis Use Case', () => {
       originalName: 'me.png',
       size: 1048576,
       mimetype: 'image/png',
-      userId: 'user-id'
+      userId: 'user-id',
     })
     expect(saveSpy).toHaveBeenCalledWith({
       id: 'any-id',
@@ -123,7 +136,7 @@ describe('Pre Upload Analysis Use Case', () => {
       size: 1048576,
       uploaded: false,
       createdAt: null,
-      updatedAt: null
+      updatedAt: null,
     })
     expect(generateUploadUrlSpy).toHaveBeenCalledTimes(1)
     expect(saveSpy).toHaveBeenCalledTimes(1)
@@ -133,7 +146,7 @@ describe('Pre Upload Analysis Use Case', () => {
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      files: []
+      files: [],
     })
 
     expect(result.ok).toBe(false)
@@ -146,7 +159,7 @@ describe('Pre Upload Analysis Use Case', () => {
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      files: [null as any]
+      files: [null as any],
     })
 
     expect(result.ok).toBe(false)
@@ -156,13 +169,13 @@ describe('Pre Upload Analysis Use Case', () => {
   it('should not perform pre upload analysis if album is deleted', async () => {
     getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce({
       ...getAlbumByIdMock(),
-      status: 'DELETED'
+      status: 'DELETED',
     })
 
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      files: [null as any]
+      files: [null as any],
     })
 
     expect(result.ok).toBe(false)
@@ -170,12 +183,14 @@ describe('Pre Upload Analysis Use Case', () => {
   })
 
   it('should stop pre upload analysis at the beginning if user has reached storage limit', async () => {
-    getCurrentStorageUsageRepository.getUsage = jest.fn().mockResolvedValue(10485760)
+    getCurrentStorageUsageRepository.getUsage = jest
+      .fn()
+      .mockResolvedValue(10485760)
 
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      files: [null as any]
+      files: [null as any],
     })
 
     expect(result.ok).toBe(false)
@@ -183,12 +198,14 @@ describe('Pre Upload Analysis Use Case', () => {
   })
 
   it('should pass along any unknown error', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    getAlbumByIdRepository.getById = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      files: [null as any]
+      files: [null as any],
     })
 
     await expect(result).rejects.toThrow('any-error')

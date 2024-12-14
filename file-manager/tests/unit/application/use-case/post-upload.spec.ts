@@ -1,12 +1,12 @@
 import { PostUploadUseCase } from '@/application/use-case/file'
 import {
   type GetFilesByIdsAndAlbumIdRepository,
-  type MarkFilesAsUploadedRepository
+  type MarkFilesAsUploadedRepository,
 } from '@/application/protocol'
 import { getFileMock } from '../mock'
 
 jest.mock('uuid', () => ({
-  v4: () => 'any-id'
+  v4: () => 'any-id',
 }))
 
 describe('Post Upload Use Case', () => {
@@ -16,15 +16,17 @@ describe('Post Upload Use Case', () => {
 
   beforeEach(() => {
     mockGetFilesByIdsAndAlbumIdRepository = {
-      getFilesByIdsAndAlbumId: jest.fn().mockResolvedValue([getFileMock(), getFileMock()])
+      getFilesByIdsAndAlbumId: jest
+        .fn()
+        .mockResolvedValue([getFileMock(), getFileMock()]),
     }
     mockMarkFilesAsUploadedRepository = {
-      markAsUploaded: jest.fn().mockResolvedValue(null)
+      markAsUploaded: jest.fn().mockResolvedValue(null),
     }
 
     sut = new PostUploadUseCase(
       mockGetFilesByIdsAndAlbumIdRepository,
-      mockMarkFilesAsUploadedRepository
+      mockMarkFilesAsUploadedRepository,
     )
   })
 
@@ -32,50 +34,67 @@ describe('Post Upload Use Case', () => {
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      filesIds: ['file-id', 'file-id-1']
+      filesIds: ['file-id', 'file-id-1'],
     })
 
     expect(result.ok).toBe(true)
   })
 
   it('should calls dependencies with correct input', async () => {
-    const getFilesByIdsAndAlbumIdSpy = jest.spyOn(mockGetFilesByIdsAndAlbumIdRepository, 'getFilesByIdsAndAlbumId')
-    const markFilesAsUploadedSpy = jest.spyOn(mockMarkFilesAsUploadedRepository, 'markAsUploaded')
+    const getFilesByIdsAndAlbumIdSpy = jest.spyOn(
+      mockGetFilesByIdsAndAlbumIdRepository,
+      'getFilesByIdsAndAlbumId',
+    )
+    const markFilesAsUploadedSpy = jest.spyOn(
+      mockMarkFilesAsUploadedRepository,
+      'markAsUploaded',
+    )
 
     await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      filesIds: ['file-id', 'file-id-1']
+      filesIds: ['file-id', 'file-id-1'],
     })
 
-    expect(getFilesByIdsAndAlbumIdSpy).toHaveBeenCalledWith(['file-id', 'file-id-1'], 'any-album-id', 'user-id')
-    expect(markFilesAsUploadedSpy).toHaveBeenCalledWith(['file-id', 'file-id-1'])
+    expect(getFilesByIdsAndAlbumIdSpy).toHaveBeenCalledWith(
+      ['file-id', 'file-id-1'],
+      'any-album-id',
+      'user-id',
+    )
+    expect(markFilesAsUploadedSpy).toHaveBeenCalledWith([
+      'file-id',
+      'file-id-1',
+    ])
   })
 
   it('should not perform post upload actions if no file is found', async () => {
-    mockGetFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId = jest.fn().mockResolvedValueOnce([])
+    mockGetFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId = jest
+      .fn()
+      .mockResolvedValueOnce([])
 
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      filesIds: ['file-id', 'file-id-1']
+      filesIds: ['file-id', 'file-id-1'],
     })
 
     expect(result).toEqual({
       ok: false,
       data: {
-        message: 'Files not found'
-      }
+        message: 'Files not found',
+      },
     })
   })
 
   it('should pass along any unknown error', async () => {
-    mockGetFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    mockGetFilesByIdsAndAlbumIdRepository.getFilesByIdsAndAlbumId = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
-      filesIds: ['file-id', 'file-id-1']
+      filesIds: ['file-id', 'file-id-1'],
     })
 
     await expect(result).rejects.toThrow('any-error')

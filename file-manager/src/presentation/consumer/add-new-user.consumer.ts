@@ -2,14 +2,14 @@ import { type Consumer } from 'kafkajs'
 import { Logger } from '@/shared'
 import { type AddNewUserUseCase } from '@/application/use-case'
 import { type AddNewUserDTO } from '../dto'
-import { MessageConsumer } from '../interface/message-consumer'
+import { type MessageConsumer } from '../interface/message-consumer'
 
 const logger = new Logger('AddNewUserEventConsumer')
 
 export class AddNewUserEventConsumer implements MessageConsumer {
   constructor(
     private readonly addNewUserUseCase: AddNewUserUseCase,
-    private readonly kafkaConsumer: Consumer
+    private readonly kafkaConsumer: Consumer,
   ) {}
 
   private isValid(payload: any) {
@@ -46,7 +46,10 @@ export class AddNewUserEventConsumer implements MessageConsumer {
         const isValid = this.isValid(parsedData)
 
         if (!isValid) {
-          logger.error(`Invalid data: ${JSON.stringify(parsedData)}`, parsedData.id)
+          logger.error(
+            `Invalid data: ${JSON.stringify(parsedData)}`,
+            parsedData.id,
+          )
           return
         }
 
@@ -54,11 +57,11 @@ export class AddNewUserEventConsumer implements MessageConsumer {
           id: parsedData.id,
           firstName: parsedData.firstName,
           lastName: parsedData.lastName,
-          email: parsedData.email
+          email: parsedData.email,
         })
 
         logger.info('New user added', parsedData.id)
-      }
+      },
     })
   }
 }

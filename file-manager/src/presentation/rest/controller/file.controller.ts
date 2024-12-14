@@ -5,7 +5,7 @@ import {
   type GetAvailableStorageUseCase,
   type PreUploadAnalysisUseCase,
   type PostUploadUseCase,
-  type DownloadFilesUseCase
+  type DownloadFilesUseCase,
 } from '@/application/use-case'
 import { Logger } from '@/shared'
 import { MissingFieldsHelper, convertErrorToHttpError } from '../helper'
@@ -24,7 +24,7 @@ export class FileController {
     private readonly deleteFileUseCase: DeleteFilesUseCase,
     private readonly getAvailableStorageUseCase: GetAvailableStorageUseCase,
     private readonly postUploadUseCase: PostUploadUseCase,
-    private readonly downloadFilesUseCase: DownloadFilesUseCase
+    private readonly downloadFilesUseCase: DownloadFilesUseCase,
   ) {}
 
   async preUpload(request: CustomRequest, response: Response): Promise<void> {
@@ -38,7 +38,7 @@ export class FileController {
       if (files?.length === 0) {
         this.logger.warn('Files not found in the request', correlationId)
         response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'Files not found in the request'
+          message: 'Files not found in the request',
         })
         return
       }
@@ -49,34 +49,34 @@ export class FileController {
         await this.preUploadAnalysisUseCase.execute({
           files,
           albumId,
-          userId
+          userId,
         })
 
       if (!preUploadAnalysisResult.ok) {
         this.logger.warn(
           `Files pre upload analysis not finished: ${preUploadAnalysisResult.message}`,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          preUploadAnalysisResult.message ?? HTTP_CODES.BAD_REQUEST.message
+          preUploadAnalysisResult.message ?? HTTP_CODES.BAD_REQUEST.message,
         )
 
         response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
         return
       }
 
       this.logger.info(
         'Files pre upload analysis finished successfully',
-        correlationId
+        correlationId,
       )
 
       response.status(200).json(preUploadAnalysisResult.data)
@@ -90,7 +90,7 @@ export class FileController {
 
   async moveFiles(
     request: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = request.tracking.correlationId
 
@@ -102,57 +102,57 @@ export class FileController {
 
       const missingFieldsResult = MissingFieldsHelper.hasMissingFields(
         ['targetAlbumId', 'filesIds'],
-        request.body
+        request.body,
       )
 
       if (missingFieldsResult.isMissing) {
         this.logger.warn(
           missingFieldsResult.missingFieldsMessage,
-          correlationId
+          correlationId,
         )
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: missingFieldsResult.missingFieldsMessage
+          message: missingFieldsResult.missingFieldsMessage,
         })
       }
 
       if (!Array.isArray(filesIds) || filesIds.length === 0) {
         this.logger.warn(
           'Files must be an array with at least one file id',
-          correlationId
+          correlationId,
         )
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'Files must be an array with at least one file id'
+          message: 'Files must be an array with at least one file id',
         })
       }
 
       const result = await this.moveFilesUseCase.execute({
         userId,
         targetAlbumId,
-        filesIds
+        filesIds,
       })
 
       if (!result.ok) {
         this.logger.warn(
           result.message ?? HTTP_CODES.BAD_REQUEST.message,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
+              httpCode: HTTP_CODES.NOT_FOUND.code,
             },
             {
               message: ERROR_MESSAGES.PERMISSION.NOT_ALLOWED,
-              httpCode: HTTP_CODES.FORBIDDEN.code
-            }
+              httpCode: HTTP_CODES.FORBIDDEN.code,
+            },
           ],
-          result.message ?? HTTP_CODES.BAD_REQUEST.message
+          result.message ?? HTTP_CODES.BAD_REQUEST.message,
         )
 
         return response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
       }
 
@@ -175,34 +175,34 @@ export class FileController {
       if (!filesIds.length) {
         this.logger.warn('Files ids not found', correlationId)
         return response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'filesIds property is empty'
+          message: 'filesIds property is empty',
         })
       }
 
       const result = await this.deleteFileUseCase.execute({
         filesIds,
         userId,
-        albumId
+        albumId,
       })
 
       if (!result.ok) {
         this.logger.warn(
           result.message ?? HTTP_CODES.BAD_REQUEST.message,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.FILE.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          result.message ?? HTTP_CODES.BAD_REQUEST.message
+          result.message ?? HTTP_CODES.BAD_REQUEST.message,
         )
 
         return response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
       }
 
@@ -218,7 +218,7 @@ export class FileController {
 
   async getAvailableStorage(
     request: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = request.tracking.correlationId
 
@@ -228,12 +228,12 @@ export class FileController {
       const { userId } = request.auth
 
       const result = await this.getAvailableStorageUseCase.execute({
-        userId
+        userId,
       })
 
       this.logger.info(
         'Available storage retrieved successfully',
-        correlationId
+        correlationId,
       )
       return response.status(HTTP_CODES.OK.code).json(result.data)
     } catch (error) {
@@ -255,7 +255,7 @@ export class FileController {
       if (filesIds?.length === 0) {
         this.logger.warn('Files ids not found in the request', correlationId)
         response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'Files ids not found in the request'
+          message: 'Files ids not found in the request',
         })
         return
       }
@@ -265,27 +265,27 @@ export class FileController {
       const postUploadResult = await this.postUploadUseCase.execute({
         filesIds,
         albumId,
-        userId
+        userId,
       })
 
       if (!postUploadResult.ok) {
         this.logger.warn(
           `Post uploaded not finished: ${postUploadResult.message}`,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.FILE.MANY_NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          postUploadResult.message ?? HTTP_CODES.BAD_REQUEST.message
+          postUploadResult.message ?? HTTP_CODES.BAD_REQUEST.message,
         )
 
         response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
         return
       }
@@ -303,7 +303,7 @@ export class FileController {
 
   async downloadFiles(
     request: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<void> {
     const correlationId = request.tracking.correlationId
 
@@ -316,7 +316,7 @@ export class FileController {
       if (!filesIds.length) {
         this.logger.warn('Files ids not found in the request', correlationId)
         response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'Files ids not found in the request'
+          message: 'Files ids not found in the request',
         })
         return
       }
@@ -324,7 +324,7 @@ export class FileController {
       if (!albumId) {
         this.logger.warn('Album id not found in the request', correlationId)
         response.status(HTTP_CODES.BAD_REQUEST.code).json({
-          message: 'Album id not found in the request'
+          message: 'Album id not found in the request',
         })
         return
       }
@@ -341,7 +341,7 @@ export class FileController {
         filesIds,
         userId,
         archiver: arch,
-        albumId
+        albumId,
       })
 
       await arch.finalize()

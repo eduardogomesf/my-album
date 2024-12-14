@@ -13,18 +13,16 @@ describe('Get User Info Use Case', () => {
         lastName: 'Doe',
         email: 'john.doe@test.com',
         cellphone: '5511999999999',
-        password: 'hashed-password'
-      })
+        password: 'hashed-password',
+      }),
     }
 
-    sut = new GetUserInfoUseCase(
-      mockFindUserByIdRepository
-    )
+    sut = new GetUserInfoUseCase(mockFindUserByIdRepository)
   })
 
   it('should get user info successfully', async () => {
     const result = await sut.execute({
-      userId: 'any-id'
+      userId: 'any-id',
     })
 
     expect(result.ok).toBe(true)
@@ -33,7 +31,7 @@ describe('Get User Info Use Case', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@test.com',
-      phone: '5511999999999'
+      phone: '5511999999999',
     })
   })
 
@@ -41,7 +39,7 @@ describe('Get User Info Use Case', () => {
     mockFindUserByIdRepository.findById = jest.fn().mockResolvedValue(null)
 
     const result = await sut.execute({
-      userId: 'any-id'
+      userId: 'any-id',
     })
 
     expect(result.ok).toBe(false)
@@ -49,10 +47,12 @@ describe('Get User Info Use Case', () => {
   })
 
   it('should pass along any error thrown', async () => {
-    mockFindUserByIdRepository.findById = jest.fn().mockImplementation(() => { throw new Error('any-error') })
+    mockFindUserByIdRepository.findById = jest.fn().mockImplementation(() => {
+      throw new Error('any-error')
+    })
 
     const result = sut.execute({
-      userId: 'any-id'
+      userId: 'any-id',
     })
 
     await expect(result).rejects.toThrow(new Error('any-error'))

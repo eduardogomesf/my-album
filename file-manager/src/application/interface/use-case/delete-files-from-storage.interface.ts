@@ -1,4 +1,4 @@
-export type DeleteFileFromStorageUseCaseParams = {
+export interface DeleteFileFromStorageUseCaseParams {
   id: string
   filesIds: string[]
   userId: string

@@ -33,7 +33,7 @@ export class Album extends BaseEntity {
   private validate() {
     const missingFieldsValidation = MissingFieldsHelper.hasMissingFields(
       ['name', 'userId'],
-      this
+      this,
     )
 
     if (missingFieldsValidation.isMissing) {

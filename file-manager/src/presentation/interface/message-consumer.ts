@@ -1,3 +1,3 @@
 export interface MessageConsumer {
-  start(): Promise<void>
+  start: () => Promise<void>
 }

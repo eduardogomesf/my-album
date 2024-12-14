@@ -43,7 +43,7 @@ export abstract class Publisher {
   }
 
   public removeSubscriber(subscriberName: string) {
-    this.subscribers.filter(sub => sub.name !== subscriberName)
+    this.subscribers.filter((sub) => sub.name !== subscriberName)
   }
 
   public notifySubscribers(data: any) {

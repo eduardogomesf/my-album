@@ -13,7 +13,7 @@ export async function bootstrap() {
     ENVS.MONGO.CONNECTION_NAME,
     ENVS.MONGO.URL,
     ENVS.MONGO.DB_NAME,
-    {}
+    {},
   )
 
   generateKafkaClient()
@@ -23,7 +23,7 @@ export async function bootstrap() {
   bootstrapExpressServer(useCases)
 }
 
-bootstrap().catch(error => {
+bootstrap().catch((error) => {
   logger.fatal('Error bootstrapping application')
   logger.fatal(error)
   process.exit(1)

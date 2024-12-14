@@ -3,7 +3,7 @@ import {
   type GetFileUrlService,
   type GetAlbumByIdRepository,
   type GetFilesByAlbumIdRepository,
-  type CountFilesByAlbumIdRepository
+  type CountFilesByAlbumIdRepository,
 } from '@/application/protocol'
 import { getAlbumByIdMock, getFileMock } from '../mock'
 
@@ -16,31 +16,34 @@ describe('Get Files By Album Id Use Case', () => {
 
   beforeEach(() => {
     mockGetFilesByAlbumIdRepository = {
-      getManyWithFilters: jest.fn().mockResolvedValue([
-        getFileMock(),
-        getFileMock()
-      ])
+      getManyWithFilters: jest
+        .fn()
+        .mockResolvedValue([getFileMock(), getFileMock()]),
     }
-    mockGetAlbumByIdRepository = { getById: jest.fn().mockResolvedValue(getAlbumByIdMock()) }
+    mockGetAlbumByIdRepository = {
+      getById: jest.fn().mockResolvedValue(getAlbumByIdMock()),
+    }
     mockGetFileUrlService = {
       getFileUrl: jest.fn().mockResolvedValue([
         {
           ...getFileMock(),
-          url: 'any-url'
+          url: 'any-url',
         },
         {
           ...getFileMock(),
-          url: 'any-url'
-        }
-      ])
+          url: 'any-url',
+        },
+      ]),
     }
-    mockCountFilesByAlbumIdRepository = { countWithFilters: jest.fn().mockResolvedValue(2) }
+    mockCountFilesByAlbumIdRepository = {
+      countWithFilters: jest.fn().mockResolvedValue(2),
+    }
 
     sut = new GetFilesByAlbumIdUseCase(
       mockGetFilesByAlbumIdRepository,
       mockGetAlbumByIdRepository,
       mockGetFileUrlService,
-      mockCountFilesByAlbumIdRepository
+      mockCountFilesByAlbumIdRepository,
     )
   })
 
@@ -50,8 +53,8 @@ describe('Get Files By Album Id Use Case', () => {
       userId: 'user-id',
       filters: {
         page: 1,
-        limit: 10
-      }
+        limit: 10,
+      },
     })
 
     expect(result.ok).toBe(true)
@@ -62,27 +65,36 @@ describe('Get Files By Album Id Use Case', () => {
     expect(result.data?.totalPages).toBe(1)
     expect(result.data?.album).toEqual({
       id: 'any-id',
-      name: 'any-name'
+      name: 'any-name',
     })
   })
 
   it('should call dependencies with right params ', async () => {
     const getByIdSpy = jest.spyOn(mockGetAlbumByIdRepository, 'getById')
-    const getManyWithFiltersSpy = jest.spyOn(mockGetFilesByAlbumIdRepository, 'getManyWithFilters')
+    const getManyWithFiltersSpy = jest.spyOn(
+      mockGetFilesByAlbumIdRepository,
+      'getManyWithFilters',
+    )
     const getFileUrlSpy = jest.spyOn(mockGetFileUrlService, 'getFileUrl')
-    const countWithFiltersSpy = jest.spyOn(mockCountFilesByAlbumIdRepository, 'countWithFilters')
+    const countWithFiltersSpy = jest.spyOn(
+      mockCountFilesByAlbumIdRepository,
+      'countWithFilters',
+    )
 
     await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
       filters: {
         page: 1,
-        limit: 10
-      }
+        limit: 10,
+      },
     })
 
     expect(getByIdSpy).toHaveBeenCalledWith('any-album-id', 'user-id')
-    expect(getManyWithFiltersSpy).toHaveBeenCalledWith('any-album-id', { limit: 10, page: 1 })
+    expect(getManyWithFiltersSpy).toHaveBeenCalledWith('any-album-id', {
+      limit: 10,
+      page: 1,
+    })
     expect(getFileUrlSpy).toHaveBeenCalledTimes(2)
     expect(countWithFiltersSpy).toHaveBeenCalledWith('any-album-id')
   })
@@ -95,8 +107,8 @@ describe('Get Files By Album Id Use Case', () => {
       userId: 'user-id',
       filters: {
         page: 1,
-        limit: 10
-      }
+        limit: 10,
+      },
     })
 
     expect(result.ok).toBe(false)
@@ -104,15 +116,17 @@ describe('Get Files By Album Id Use Case', () => {
   })
 
   it('should pass along any unknown error', async () => {
-    mockGetAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    mockGetAlbumByIdRepository.getById = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
       filters: {
         page: 1,
-        limit: 10
-      }
+        limit: 10,
+      },
     })
 
     await expect(result).rejects.toThrow('any-error')

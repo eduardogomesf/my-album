@@ -7,7 +7,7 @@ describe('Album Entity', () => {
       userId: 'user-id',
       status: 'ACTIVE' as any,
       createdAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
-      updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date
+      updatedAt: '2021-01-01T00:00:00.000Z' as unknown as Date,
     })
 
     expect(album.id).toBeDefined()
@@ -22,7 +22,7 @@ describe('Album Entity', () => {
     expect(() => {
       new Album({
         createdAt: '2021-01-01T00:00:00.000Z',
-        updatedAt: '2021-01-01T00:00:00.000Z'
+        updatedAt: '2021-01-01T00:00:00.000Z',
       } as any)
     }).toThrow(new DomainError('fields name, userId can not be empty'))
   })
@@ -35,7 +35,7 @@ describe('Album Entity', () => {
         userId: 'user-id',
         isDeleted: true,
         createdAt: '2021-01-01T00:00:00.000Z',
-        updatedAt: '2021-01-01T00:00:00.000Z'
+        updatedAt: '2021-01-01T00:00:00.000Z',
       } as any)
     }).toThrow(new DomainError('Name must be between 2 and 50 characters'))
   })

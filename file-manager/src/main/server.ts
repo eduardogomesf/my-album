@@ -15,7 +15,7 @@ export async function bootstrap() {
   bootstrapExpressServer(useCases)
 }
 
-bootstrap().catch(error => {
+bootstrap().catch((error) => {
   logger.fatal('Error bootstrapping application')
   logger.fatal(error)
   process.exit(1)

@@ -5,7 +5,7 @@ import {
   type DeleteOneByIdOutboxRepository,
   type DeleteManyByIdsOutboxRepository,
   type GetManyByAggregateIdsAndTypeOutboxRepository,
-  type UpdateManyByIdsOutboxRepository
+  type UpdateManyByIdsOutboxRepository,
 } from '@/infra/object-storage/interface'
 
 export const generateFileStorageService = (
@@ -22,6 +22,6 @@ export const generateFileStorageService = (
     deleteOneByIdOutboxRepository,
     getManyByAggregateIdsAndTypeOutboxRepository,
     deleteManyByIdsOutboxRepository,
-    updateManyByIdsOutboxRepository
+    updateManyByIdsOutboxRepository,
   )
 }

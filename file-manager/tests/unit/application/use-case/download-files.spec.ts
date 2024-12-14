@@ -3,12 +3,12 @@ import { DownloadFilesUseCase } from '@/application/use-case/file'
 import {
   type GetAlbumByIdRepository,
   type GetFilesByIdsRepository,
-  type GetFileStreamFromStorageService
+  type GetFileStreamFromStorageService,
 } from '@/application/protocol'
 import { getAlbumByIdMock, getFileWithAlbumMock } from '../mock'
 
 jest.mock('uuid', () => ({
-  v4: () => 'any-id'
+  v4: () => 'any-id',
 }))
 
 describe('Download Files Use Case', () => {
@@ -19,45 +19,55 @@ describe('Download Files Use Case', () => {
 
   beforeEach(() => {
     getAlbumByIdRepository = {
-      getById: jest.fn().mockResolvedValue(getAlbumByIdMock())
+      getById: jest.fn().mockResolvedValue(getAlbumByIdMock()),
     }
     getFilesByIdsRepository = {
-      getByIds: jest.fn().mockResolvedValue([getFileWithAlbumMock(), getFileWithAlbumMock()])
+      getByIds: jest
+        .fn()
+        .mockResolvedValue([getFileWithAlbumMock(), getFileWithAlbumMock()]),
     }
     getFileStreamFromStorageService = {
-      getFileStream: jest.fn().mockResolvedValue(new Readable({
-        read() {
-          this.push('Any content')
-          this.push(null) // Signal the end of the stream
-        }
-      }))
+      getFileStream: jest.fn().mockResolvedValue(
+        new Readable({
+          read() {
+            this.push('Any content')
+            this.push(null) // Signal the end of the stream
+          },
+        }),
+      ),
     }
 
     sut = new DownloadFilesUseCase(
       getAlbumByIdRepository,
       getFilesByIdsRepository,
-      getFileStreamFromStorageService
+      getFileStreamFromStorageService,
     )
   })
 
   it('should download files successfully', async () => {
     const getByIdSpy = jest.spyOn(getAlbumByIdRepository, 'getById')
     const getByIdsSpy = jest.spyOn(getFilesByIdsRepository, 'getByIds')
-    const getFileStreamSpy = jest.spyOn(getFileStreamFromStorageService, 'getFileStream')
+    const getFileStreamSpy = jest.spyOn(
+      getFileStreamFromStorageService,
+      'getFileStream',
+    )
 
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
       filesIds: ['file-id', 'file-id-1'],
       archiver: {
-        append: jest.fn()
-      } as any
+        append: jest.fn(),
+      } as any,
     })
 
     expect(result.ok).toBe(true)
     expect(result.data).toBe(null)
     expect(getByIdSpy).toHaveBeenCalledWith('any-album-id', 'user-id')
-    expect(getByIdsSpy).toHaveBeenCalledWith(['file-id', 'file-id-1'], 'user-id')
+    expect(getByIdsSpy).toHaveBeenCalledWith(
+      ['file-id', 'file-id-1'],
+      'user-id',
+    )
     expect(getFileStreamSpy).toHaveBeenCalledTimes(2)
   })
 
@@ -68,7 +78,7 @@ describe('Download Files Use Case', () => {
       albumId: 'any-album-id',
       userId: 'user-id',
       filesIds: ['file-id', 'file-id-1'],
-      archiver: null as any
+      archiver: null as any,
     })
 
     expect(result.ok).toBe(false)
@@ -79,30 +89,33 @@ describe('Download Files Use Case', () => {
     const modifiedFileWithAlbumMock = getFileWithAlbumMock()
     modifiedFileWithAlbumMock.album.userId = 'other-user-id'
 
-    getFilesByIdsRepository.getByIds = jest.fn().mockResolvedValue([
-      getFileWithAlbumMock(),
-      modifiedFileWithAlbumMock
-    ])
+    getFilesByIdsRepository.getByIds = jest
+      .fn()
+      .mockResolvedValue([getFileWithAlbumMock(), modifiedFileWithAlbumMock])
 
     const result = await sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
       filesIds: ['file-id', 'file-id-1'],
-      archiver: null as any
+      archiver: null as any,
     })
 
     expect(result.ok).toBe(false)
-    expect(result.message).toBe('You do not have permission to perform this action')
+    expect(result.message).toBe(
+      'You do not have permission to perform this action',
+    )
   })
 
   it('should pass along any unknown error', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    getAlbumByIdRepository.getById = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
       albumId: 'any-album-id',
       userId: 'user-id',
       filesIds: ['file-id', 'file-id-1'],
-      archiver: null as any
+      archiver: null as any,
     })
 
     await expect(result).rejects.toThrow('any-error')

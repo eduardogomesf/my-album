@@ -1,12 +1,12 @@
 import { RestoreAlbumUseCase } from '@/application/use-case'
 import {
   type GetAlbumByIdRepository,
-  type UpdateAlbumRepository
+  type UpdateAlbumRepository,
 } from '@/application/protocol'
 import { getAlbumByIdMock } from '../mock/album.mock'
 
 jest.mock('uuid', () => ({
-  v4: () => 'any-id'
+  v4: () => 'any-id',
 }))
 
 describe('Restore Album Use Case', () => {
@@ -16,20 +16,16 @@ describe('Restore Album Use Case', () => {
 
   beforeEach(() => {
     getAlbumByIdRepository = {
-      getById: jest.fn()
-        .mockResolvedValueOnce({
-          ...getAlbumByIdMock(),
-          status: 'DELETED'
-        })
+      getById: jest.fn().mockResolvedValueOnce({
+        ...getAlbumByIdMock(),
+        status: 'DELETED',
+      }),
     }
     updateAlbumRepository = {
-      update: jest.fn().mockResolvedValue(null)
+      update: jest.fn().mockResolvedValue(null),
     }
 
-    sut = new RestoreAlbumUseCase(
-      getAlbumByIdRepository,
-      updateAlbumRepository
-    )
+    sut = new RestoreAlbumUseCase(getAlbumByIdRepository, updateAlbumRepository)
   })
 
   it('should restore album successfully', async () => {
@@ -38,14 +34,14 @@ describe('Restore Album Use Case', () => {
 
     const result = await sut.execute({
       albumId: 'album-id',
-      userId: 'user-id'
+      userId: 'user-id',
     })
 
     expect(result.ok).toBe(true)
     expect(getAlbumByIdSpy).toHaveBeenCalledWith('album-id', 'user-id')
     expect(updateSpy).toHaveBeenCalledWith({
       ...getAlbumByIdMock(),
-      status: 'ACTIVE'
+      status: 'ACTIVE',
     })
   })
 
@@ -54,38 +50,40 @@ describe('Restore Album Use Case', () => {
 
     const result = await sut.execute({
       albumId: 'album-id',
-      userId: 'user-id'
+      userId: 'user-id',
     })
 
     expect(result).toEqual({
       ok: false,
-      message: 'Album not found'
+      message: 'Album not found',
     })
   })
 
   it('should not restore if album is not deleted', async () => {
     getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce({
       ...getAlbumByIdMock(),
-      status: 'ACTIVE'
+      status: 'ACTIVE',
     })
 
     const result = await sut.execute({
       albumId: 'album-id',
-      userId: 'user-id'
+      userId: 'user-id',
     })
 
     expect(result).toEqual({
       ok: false,
-      message: 'Album is not deleted'
+      message: 'Album is not deleted',
     })
   })
 
   it('should pass along any unknown error', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+    getAlbumByIdRepository.getById = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('any-error'))
 
     const result = sut.execute({
       albumId: 'album-id',
-      userId: 'user-id'
+      userId: 'user-id',
     })
 
     await expect(result).rejects.toThrow('any-error')

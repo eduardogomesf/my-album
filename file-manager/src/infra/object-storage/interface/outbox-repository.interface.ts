@@ -16,11 +16,17 @@ export interface UpdateOneByIdOutboxRepository {
 }
 
 export interface GetOneByAggregateIdAndTypeOutboxRepository {
-  getByAggregateIdAndType: (id: string, type: OutboxType) => Promise<Outbox | null>
+  getByAggregateIdAndType: (
+    id: string,
+    type: OutboxType,
+  ) => Promise<Outbox | null>
 }
 
 export interface GetManyByAggregateIdsAndTypeOutboxRepository {
-  getManyByAggregateIdsAndType: (ids: string[], type: OutboxType) => Promise<Outbox[]>
+  getManyByAggregateIdsAndType: (
+    ids: string[],
+    type: OutboxType,
+  ) => Promise<Outbox[]>
 }
 
 export interface DeleteOneByIdOutboxRepository {
@@ -32,5 +38,7 @@ export interface DeleteManyByIdsOutboxRepository {
 }
 
 export interface UpdateManyByIdsOutboxRepository {
-  updateManyByIds: (params: UpdateManyOutboxRepositoryParams) => Promise<boolean>
+  updateManyByIds: (
+    params: UpdateManyOutboxRepositoryParams,
+  ) => Promise<boolean>
 }

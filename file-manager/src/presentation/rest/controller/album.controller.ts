@@ -6,7 +6,7 @@ import {
   type GetFilesByAlbumIdUseCase,
   type GetAlbumsUseCase,
   type DeleteAlbumUseCase,
-  type RestoreAlbumUseCase
+  type RestoreAlbumUseCase,
 } from '@/application/use-case'
 import { ERROR_MESSAGES } from '@/application/constant'
 import { convertErrorToHttpError } from '../helper'
@@ -20,12 +20,12 @@ export class AlbumController {
     private readonly getAlbumsUseCase: GetAlbumsUseCase,
     private readonly getFilesByAlbumIdUseCase: GetFilesByAlbumIdUseCase,
     private readonly deleteAlbumUseCase: DeleteAlbumUseCase,
-    private readonly restoreAlbumUseCase: RestoreAlbumUseCase
+    private readonly restoreAlbumUseCase: RestoreAlbumUseCase,
   ) {}
 
   async add(
     CustomRequest: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = CustomRequest.tracking.correlationId
 
@@ -37,27 +37,27 @@ export class AlbumController {
 
       const createAlbumResult = await this.addNewAlbumUseCase.execute({
         name,
-        userId
+        userId,
       })
 
       if (!createAlbumResult.ok) {
         this.logger.warn(
           `Album not created: ${createAlbumResult.message}`,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.USER.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          createAlbumResult.message
+          createAlbumResult.message,
         )
 
         return response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
       }
 
@@ -69,14 +69,14 @@ export class AlbumController {
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message,
       })
     }
   }
 
   async getManyByStatus(
     CustomRequest: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = CustomRequest.tracking.correlationId
 
@@ -88,7 +88,7 @@ export class AlbumController {
 
       const getAlbumsResult = await this.getAlbumsUseCase.execute({
         userId,
-        deletedAlbums: deletedAlbumsOnly === 'true'
+        deletedAlbums: deletedAlbumsOnly === 'true',
       })
 
       this.logger.info('Albums retrieved successfully', correlationId)
@@ -99,20 +99,20 @@ export class AlbumController {
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message,
       })
     }
   }
 
   async getFilesByAlbumId(
     CustomRequest: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = CustomRequest.tracking.correlationId
 
     this.logger.info(
       'Get files by album id CustomRequest received',
-      correlationId
+      correlationId,
     )
 
     try {
@@ -126,28 +126,28 @@ export class AlbumController {
           userId,
           filters: {
             page: Number(page),
-            limit: Number(limit)
-          }
+            limit: Number(limit),
+          },
         })
 
       if (!getFilesByAlbumIdResult.ok) {
         this.logger.warn(
           `Album not found: ${getFilesByAlbumIdResult.message}`,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          getFilesByAlbumIdResult.message
+          getFilesByAlbumIdResult.message,
         )
 
         return response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
       }
 
@@ -161,22 +161,22 @@ export class AlbumController {
         totalOfPages: getFilesByAlbumIdResult.data?.totalPages,
         album: {
           id: getFilesByAlbumIdResult.data?.album.id,
-          name: getFilesByAlbumIdResult.data?.album.name
-        }
+          name: getFilesByAlbumIdResult.data?.album.name,
+        },
       })
     } catch (error) {
       this.logger.error('Error retrieving files by album id', correlationId)
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message,
       })
     }
   }
 
   async deleteAlbum(
     CustomRequest: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = CustomRequest.tracking.correlationId
 
@@ -188,27 +188,27 @@ export class AlbumController {
 
       const deleteAlbumResult = await this.deleteAlbumUseCase.execute({
         albumId,
-        userId
+        userId,
       })
 
       if (!deleteAlbumResult.ok) {
         this.logger.warn(
           `Album not deleted: ${deleteAlbumResult.message}`,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          deleteAlbumResult.message
+          deleteAlbumResult.message,
         )
 
         return response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
       }
 
@@ -220,14 +220,14 @@ export class AlbumController {
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message,
       })
     }
   }
 
   async restore(
     CustomRequest: CustomRequest,
-    response: Response
+    response: Response,
   ): Promise<Response> {
     const correlationId = CustomRequest.tracking.correlationId
 
@@ -239,27 +239,27 @@ export class AlbumController {
 
       const restoreAlbumResult = await this.restoreAlbumUseCase.execute({
         albumId,
-        userId
+        userId,
       })
 
       if (!restoreAlbumResult.ok) {
         this.logger.warn(
           `Album not restored: ${restoreAlbumResult.message}`,
-          correlationId
+          correlationId,
         )
 
         const httpError = convertErrorToHttpError(
           [
             {
               message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
-              httpCode: HTTP_CODES.NOT_FOUND.code
-            }
+              httpCode: HTTP_CODES.NOT_FOUND.code,
+            },
           ],
-          restoreAlbumResult.message
+          restoreAlbumResult.message,
         )
 
         return response.status(httpError.httpCode).json({
-          message: httpError.message
+          message: httpError.message,
         })
       }
 
@@ -271,7 +271,7 @@ export class AlbumController {
       this.logger.error(error, correlationId)
       this.logger.error(error.stack, correlationId)
       return response.status(HTTP_CODES.INTERNAL_SERVER_ERROR.code).json({
-        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message
+        message: HTTP_CODES.INTERNAL_SERVER_ERROR.message,
       })
     }
   }

@@ -1,7 +1,6 @@
 export interface GetFilesByAlbumIdFilters {
   limit?: number
   page?: number
-
 }
 
 export interface GetFilesByAlbumIdUseCaseParams {

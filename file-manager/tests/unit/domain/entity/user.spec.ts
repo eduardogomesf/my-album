@@ -5,7 +5,7 @@ describe('User Entity', () => {
     const user = new User({
       firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@mail.com'
+      email: 'john.doe@mail.com',
     })
 
     expect(user.id).toBeDefined()
@@ -19,7 +19,7 @@ describe('User Entity', () => {
     expect(() => {
       new User({
         lastName: 'Doe',
-        email: 'john.doe@mail.com'
+        email: 'john.doe@mail.com',
       } as any)
     }).toThrow('First name should not be empty')
   })
@@ -28,7 +28,7 @@ describe('User Entity', () => {
     expect(() => {
       new User({
         firstName: 'John',
-        email: 'john.doe@mail.com'
+        email: 'john.doe@mail.com',
       } as any)
     }).toThrow('Last name should not be empty')
   })
@@ -37,7 +37,7 @@ describe('User Entity', () => {
     expect(() => {
       new User({
         firstName: 'John',
-        lastName: 'Doe'
+        lastName: 'Doe',
       } as any)
     }).toThrow('E-mail should not be empty')
   })
