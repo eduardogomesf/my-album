@@ -20,9 +20,17 @@ function setDefaultRoutes(app: express.Express) {
 }
 
 function setRoutes(app: express.Express, useCases: UseCases) {
-  const userRouter = getUserRouter(useCases)
+  let rawApiPrefix = ENVS.APP.API_PREFIX
 
-  app.use(userRouter)
+  const apiPrefix = rawApiPrefix.startsWith('/')
+    ? rawApiPrefix
+    : `/${rawApiPrefix}`
+
+  const routers = [getUserRouter(useCases)]
+
+  routers.map((router) => {
+    app.use(apiPrefix, router)
+  })
 }
 
 export function bootstrapExpressServer(useCases: UseCases) {
