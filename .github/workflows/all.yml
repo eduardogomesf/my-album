@@ -3,16 +3,16 @@ name: Build (All)
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "web/**"
-      - "file-manager/**"
-      - "user/**"
+    paths:
+      - ".github/**"
+      - "@configs/**"
+      - "docs/**"
   pull_request:
     branches: ["main"]
-    paths-ignore:
-      - "web/**"
-      - "file-manager/**"
-      - "user/**"
+    paths:
+      - ".github/**"
+      - "@configs/**"
+      - "docs/**"
   workflow_dispatch:
 
 jobs:
