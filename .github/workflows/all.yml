@@ -1,0 +1,33 @@
+name: Build (All)
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - "web/**"
+      - "file-manager/**"
+      - "user/**"
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "web/**"
+      - "file-manager/**"
+      - "user/**"
+  workflow_dispatch:
+
+jobs:
+  run-file-manager-build:
+    uses: ./.github/workflows/build.yml
+    with:
+      project-folder: "file-manager"
+
+  run-user-build:
+    uses: ./.github/workflows/build.yml
+    with:
+      project-folder: "user"
+
+  run-web-build:
+    uses: ./.github/workflows/build.yml
+    with:
+      project-folder: web
+      run-tests: false
