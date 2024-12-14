@@ -1,6 +1,9 @@
 import { User } from '@/domain/entity'
 import { type UseCase, type UseCaseResponse } from '../../interface'
-import { type CreateUserRepository, type GetUserByEmailRepository } from '../../protocol'
+import {
+  type CreateUserRepository,
+  type GetUserByEmailRepository,
+} from '../../protocol'
 
 interface AddNewUserDTO {
   id?: string
@@ -12,17 +15,19 @@ interface AddNewUserDTO {
 export class AddNewUserUseCase implements UseCase {
   constructor(
     private readonly getUserByEmailRepository: GetUserByEmailRepository,
-    private readonly createUserRepository: CreateUserRepository
+    private readonly createUserRepository: CreateUserRepository,
   ) {}
 
   async execute(userDto: AddNewUserDTO): Promise<UseCaseResponse<User>> {
-    const userAlreadyExists = await this.getUserByEmailRepository.getByEmail(userDto.email)
+    const userAlreadyExists = await this.getUserByEmailRepository.getByEmail(
+      userDto.email,
+    )
 
     if (userAlreadyExists) {
       return {
         data: userAlreadyExists,
         ok: true,
-        message: 'User already exists'
+        message: 'User already exists',
       }
     }
 
@@ -30,7 +35,7 @@ export class AddNewUserUseCase implements UseCase {
       id: userDto.id,
       firstName: userDto.firstName,
       lastName: userDto.lastName,
-      email: userDto.email
+      email: userDto.email,
     })
 
     await this.createUserRepository.create(user)
@@ -38,7 +43,7 @@ export class AddNewUserUseCase implements UseCase {
     return {
       data: user,
       ok: true,
-      message: 'User created successfully'
+      message: 'User created successfully',
     }
   }
 }

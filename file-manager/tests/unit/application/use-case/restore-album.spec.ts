@@ -1,93 +1,94 @@
-import { RestoreAlbumUseCase } from '@/application/use-case'
+import { RestoreAlbumUseCase } from "@/application/use-case";
 import {
   type GetAlbumByIdRepository,
-  type UpdateAlbumRepository
-} from '@/application/protocol'
-import { getAlbumByIdMock } from '../mock/album.mock'
+  type UpdateAlbumRepository,
+} from "@/application/protocol";
+import { getAlbumByIdMock } from "../mock/album.mock";
 
-jest.mock('uuid', () => ({
-  v4: () => 'any-id'
-}))
+jest.mock("uuid", () => ({
+  v4: () => "any-id",
+}));
 
-describe('Restore Album Use Case', () => {
-  let sut: RestoreAlbumUseCase
-  let getAlbumByIdRepository: GetAlbumByIdRepository
-  let updateAlbumRepository: UpdateAlbumRepository
+describe("Restore Album Use Case", () => {
+  let sut: RestoreAlbumUseCase;
+  let getAlbumByIdRepository: GetAlbumByIdRepository;
+  let updateAlbumRepository: UpdateAlbumRepository;
 
   beforeEach(() => {
     getAlbumByIdRepository = {
-      getById: jest.fn()
-        .mockResolvedValueOnce({
-          ...getAlbumByIdMock(),
-          status: 'DELETED'
-        })
-    }
+      getById: jest.fn().mockResolvedValueOnce({
+        ...getAlbumByIdMock(),
+        status: "DELETED",
+      }),
+    };
     updateAlbumRepository = {
-      update: jest.fn().mockResolvedValue(null)
-    }
+      update: jest.fn().mockResolvedValue(null),
+    };
 
     sut = new RestoreAlbumUseCase(
       getAlbumByIdRepository,
-      updateAlbumRepository
-    )
-  })
+      updateAlbumRepository,
+    );
+  });
 
-  it('should restore album successfully', async () => {
-    const getAlbumByIdSpy = jest.spyOn(getAlbumByIdRepository, 'getById')
-    const updateSpy = jest.spyOn(updateAlbumRepository, 'update')
+  it("should restore album successfully", async () => {
+    const getAlbumByIdSpy = jest.spyOn(getAlbumByIdRepository, "getById");
+    const updateSpy = jest.spyOn(updateAlbumRepository, "update");
 
     const result = await sut.execute({
-      albumId: 'album-id',
-      userId: 'user-id'
-    })
+      albumId: "album-id",
+      userId: "user-id",
+    });
 
-    expect(result.ok).toBe(true)
-    expect(getAlbumByIdSpy).toHaveBeenCalledWith('album-id', 'user-id')
+    expect(result.ok).toBe(true);
+    expect(getAlbumByIdSpy).toHaveBeenCalledWith("album-id", "user-id");
     expect(updateSpy).toHaveBeenCalledWith({
       ...getAlbumByIdMock(),
-      status: 'ACTIVE'
-    })
-  })
+      status: "ACTIVE",
+    });
+  });
 
-  it('should not restore if the album does not exist', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce(null)
+  it("should not restore if the album does not exist", async () => {
+    getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce(null);
 
     const result = await sut.execute({
-      albumId: 'album-id',
-      userId: 'user-id'
-    })
+      albumId: "album-id",
+      userId: "user-id",
+    });
 
     expect(result).toEqual({
       ok: false,
-      message: 'Album not found'
-    })
-  })
+      message: "Album not found",
+    });
+  });
 
-  it('should not restore if album is not deleted', async () => {
+  it("should not restore if album is not deleted", async () => {
     getAlbumByIdRepository.getById = jest.fn().mockResolvedValueOnce({
       ...getAlbumByIdMock(),
-      status: 'ACTIVE'
-    })
+      status: "ACTIVE",
+    });
 
     const result = await sut.execute({
-      albumId: 'album-id',
-      userId: 'user-id'
-    })
+      albumId: "album-id",
+      userId: "user-id",
+    });
 
     expect(result).toEqual({
       ok: false,
-      message: 'Album is not deleted'
-    })
-  })
+      message: "Album is not deleted",
+    });
+  });
 
-  it('should pass along any unknown error', async () => {
-    getAlbumByIdRepository.getById = jest.fn().mockRejectedValueOnce(new Error('any-error'))
+  it("should pass along any unknown error", async () => {
+    getAlbumByIdRepository.getById = jest
+      .fn()
+      .mockRejectedValueOnce(new Error("any-error"));
 
     const result = sut.execute({
-      albumId: 'album-id',
-      userId: 'user-id'
-    })
+      albumId: "album-id",
+      userId: "user-id",
+    });
 
-    await expect(result).rejects.toThrow('any-error')
-  })
-})
+    await expect(result).rejects.toThrow("any-error");
+  });
+});

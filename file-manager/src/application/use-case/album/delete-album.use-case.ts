@@ -3,28 +3,34 @@ import { ERROR_MESSAGES } from '../../constant'
 import {
   type UseCaseResponse,
   type UseCase,
-  type DeleteAlbumUseCaseParams
+  type DeleteAlbumUseCaseParams,
 } from '../../interface'
 import {
   type GetAlbumByIdWithFilesCountRepository,
   type DeleteAlbumRepository,
-  type UpdateAlbumRepository
+  type UpdateAlbumRepository,
 } from '../../protocol'
 
 export class DeleteAlbumUseCase implements UseCase {
   constructor(
     private readonly getAlbumByIdWithFilesCountRepository: GetAlbumByIdWithFilesCountRepository,
     private readonly updateAlbumRepository: UpdateAlbumRepository,
-    private readonly deleteAlbumRepository: DeleteAlbumRepository
+    private readonly deleteAlbumRepository: DeleteAlbumRepository,
   ) {}
 
-  async execute (params: DeleteAlbumUseCaseParams): Promise<UseCaseResponse<void>> {
-    const album = await this.getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount(params.albumId, params.userId)
+  async execute(
+    params: DeleteAlbumUseCaseParams,
+  ): Promise<UseCaseResponse<void>> {
+    const album =
+      await this.getAlbumByIdWithFilesCountRepository.getByIdWithFilesCount(
+        params.albumId,
+        params.userId,
+      )
 
     if (!album) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.ALBUM.NOT_FOUND
+        message: ERROR_MESSAGES.ALBUM.NOT_FOUND,
       }
     }
 
@@ -36,7 +42,7 @@ export class DeleteAlbumUseCase implements UseCase {
     }
 
     return {
-      ok: true
+      ok: true,
     }
   }
 }

@@ -1,7 +1,7 @@
 import { DeleteFilesFromStorageUseCase } from '@/application/use-case'
 import {
   type DeleteFilesFromStorageService,
-  type MessageSender
+  type MessageSender,
 } from '@/application/protocol'
 
 export const generateDeleteFilesFromStorageUseCase = (
@@ -10,6 +10,6 @@ export const generateDeleteFilesFromStorageUseCase = (
 ) => {
   return new DeleteFilesFromStorageUseCase(
     deleteFilesFromStorageService,
-    deleteFilesFromStorageSender
+    deleteFilesFromStorageSender,
   )
 }

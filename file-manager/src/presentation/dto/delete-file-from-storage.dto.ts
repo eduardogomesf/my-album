@@ -1,4 +1,4 @@
-export type DeleteFileFromStorageDTO = {
+export interface DeleteFileFromStorageDTO {
   id: string
   filesIds: string[]
   userId: string

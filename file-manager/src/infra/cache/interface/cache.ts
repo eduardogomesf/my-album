@@ -16,6 +16,6 @@ export interface CacheService {
     key: string,
     value: any,
     options?: CacheSetOptions,
-    shouldThrowError?: boolean
+    shouldThrowError?: boolean,
   ) => Promise<void>
 }

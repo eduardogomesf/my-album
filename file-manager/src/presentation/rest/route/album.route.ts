@@ -11,18 +11,34 @@ export function getAlbumRouter(useCases: UseCases): Router {
     useCases.getAlbumsUseCase,
     useCases.getFilesByAlbumIdUseCase,
     useCases.deleteAlbumUseCase,
-    useCases.restoreAlbumUseCase
+    useCases.restoreAlbumUseCase,
   )
 
-  router.post('/albums', getAuthInfoFromHeaders, albumController.add.bind(albumController))
-  router.get('/albums', getAuthInfoFromHeaders, albumController.getManyByStatus.bind(albumController))
+  router.post(
+    '/albums',
+    getAuthInfoFromHeaders,
+    albumController.add.bind(albumController),
+  )
+  router.get(
+    '/albums',
+    getAuthInfoFromHeaders,
+    albumController.getManyByStatus.bind(albumController),
+  )
   router.get(
     '/albums/:albumId/files',
     getAuthInfoFromHeaders,
-    albumController.getFilesByAlbumId.bind(albumController)
+    albumController.getFilesByAlbumId.bind(albumController),
   )
-  router.delete('/albums/:albumId', getAuthInfoFromHeaders, albumController.deleteAlbum.bind(albumController))
-  router.patch('/albums/:albumId/restore', getAuthInfoFromHeaders, albumController.restore.bind(albumController))
+  router.delete(
+    '/albums/:albumId',
+    getAuthInfoFromHeaders,
+    albumController.deleteAlbum.bind(albumController),
+  )
+  router.patch(
+    '/albums/:albumId/restore',
+    getAuthInfoFromHeaders,
+    albumController.restore.bind(albumController),
+  )
 
   return router
 }

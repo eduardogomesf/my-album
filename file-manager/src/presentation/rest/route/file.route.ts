@@ -13,32 +13,44 @@ export function getFileRouter(useCases: UseCases): Router {
     useCases.deleteFileUseCase,
     useCases.getAvailableStorageUseCase,
     useCases.postUploadUseCase,
-    useCases.downloadFilesUseCase
+    useCases.downloadFilesUseCase,
   )
 
   router.post(
     '/files/pre-upload',
     getAuthInfoFromHeaders,
-    fileController.preUpload.bind(fileController)
+    fileController.preUpload.bind(fileController),
   )
 
   router.post(
     '/files/post-upload',
     getAuthInfoFromHeaders,
-    fileController.postUpload.bind(fileController)
+    fileController.postUpload.bind(fileController),
   )
 
   router.put(
     '/files/move',
     getAuthInfoFromHeaders,
-    fileController.moveFiles.bind(fileController)
+    fileController.moveFiles.bind(fileController),
   )
 
-  router.post('/files/delete', getAuthInfoFromHeaders, fileController.delete.bind(fileController))
+  router.post(
+    '/files/delete',
+    getAuthInfoFromHeaders,
+    fileController.delete.bind(fileController),
+  )
 
-  router.get('/storage', getAuthInfoFromHeaders, fileController.getAvailableStorage.bind(fileController))
+  router.get(
+    '/storage',
+    getAuthInfoFromHeaders,
+    fileController.getAvailableStorage.bind(fileController),
+  )
 
-  router.post('/files/download', getAuthInfoFromHeaders, fileController.downloadFiles.bind(fileController))
+  router.post(
+    '/files/download',
+    getAuthInfoFromHeaders,
+    fileController.downloadFiles.bind(fileController),
+  )
 
   return router
 }

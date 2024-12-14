@@ -1,10 +1,10 @@
 export const getAlbumByIdMock = () => ({
-  id: 'any-id',
-  name: 'any-name',
+  id: "any-id",
+  name: "any-name",
   isMain: true,
   isDeleted: false,
-  status: 'ACTIVE',
+  status: "ACTIVE",
   createdAt: new Date().toString(),
   updatedAt: new Date().toString(),
-  userId: 'user-id'
-})
+  userId: "user-id",
+});

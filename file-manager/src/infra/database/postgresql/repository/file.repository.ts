@@ -13,7 +13,7 @@ import {
   type GetFilesByIdsAndAlbumIdRepository,
   type DeleteFilesRepository,
   type MarkFilesAsUploadedRepository,
-  GetLastPhotoByAlbumIdRepository
+  type GetLastPhotoByAlbumIdRepository,
 } from '@/application/protocol'
 import { type File } from '@/domain/entity'
 import { Logger } from '@/shared'
@@ -25,27 +25,40 @@ import { AlbumMapper } from '../mapper'
 const logger = new Logger('PrismaFileRepository')
 
 export class PrismaFileRepository
-implements
-  SaveFileRepository, GetCurrentStorageUsageRepository, GetFilesByAlbumIdRepository,
-  MoveFilesToAlbumByFilesIdsRepository, GetFilesByIdsRepository, CountFilesByAlbumIdRepository,
-  GetFilesByIdsAndAlbumIdRepository, DeleteFilesRepository, MarkFilesAsUploadedRepository, GetLastPhotoByAlbumIdRepository {
-  
-  async getManyWithFilters(albumId: string, filters: GetFilesFilters): Promise<File[]> {
-    const { limit, offset } = PrismaQueryHelper.getPagination(filters.page, filters.limit)
+  implements
+    SaveFileRepository,
+    GetCurrentStorageUsageRepository,
+    GetFilesByAlbumIdRepository,
+    MoveFilesToAlbumByFilesIdsRepository,
+    GetFilesByIdsRepository,
+    CountFilesByAlbumIdRepository,
+    GetFilesByIdsAndAlbumIdRepository,
+    DeleteFilesRepository,
+    MarkFilesAsUploadedRepository,
+    GetLastPhotoByAlbumIdRepository
+{
+  async getManyWithFilters(
+    albumId: string,
+    filters: GetFilesFilters,
+  ): Promise<File[]> {
+    const { limit, offset } = PrismaQueryHelper.getPagination(
+      filters.page,
+      filters.limit,
+    )
 
     try {
       const files = await prisma.file.findMany({
         where: {
           albumId,
-          uploaded: true
+          uploaded: true,
         },
         skip: offset,
         take: limit,
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: 'desc',
+        },
       })
-      return files.map(file => FileMapper.toEntity(file))
+      return files.map((file) => FileMapper.toEntity(file))
     } catch (error) {
       logger.error(error.message)
       throw new Error(error)
@@ -63,8 +76,8 @@ implements
           mimeType: file.mimeType,
           uploaded: file.uploaded,
           extension: file.extension,
-          albumId: file.albumId
-        }
+          albumId: file.albumId,
+        },
       })
     } catch (error) {
       logger.error(error.message)
@@ -81,7 +94,7 @@ implements
       const usage = usageRaw[0]?.usage ? Number(usageRaw[0]?.usage) : 0
 
       return {
-        usage
+        usage,
       }
     } catch (error) {
       logger.error(error.message)
@@ -94,12 +107,12 @@ implements
       await prisma.file.updateMany({
         where: {
           id: {
-            in: payload.filesIds
-          }
+            in: payload.filesIds,
+          },
         },
         data: {
-          albumId: payload.targetAlbumId
-        }
+          albumId: payload.targetAlbumId,
+        },
       })
     } catch (error) {
       logger.error(error.message)
@@ -112,18 +125,18 @@ implements
       const files = await prisma.file.findMany({
         where: {
           id: {
-            in: filesIds
-          }
+            in: filesIds,
+          },
         },
         include: {
-          album: true
-        }
+          album: true,
+        },
       })
       return files.map((rawFile) => {
         const file = FileMapper.toEntity(rawFile)
         return {
           ...file,
-          album: AlbumMapper.toDomain(rawFile.album)
+          album: AlbumMapper.toDomain(rawFile.album),
         } as any
       })
     } catch (error) {
@@ -137,8 +150,8 @@ implements
       const numberOfFiles = await prisma.file.count({
         where: {
           albumId,
-          uploaded: true
-        }
+          uploaded: true,
+        },
       })
       return numberOfFiles
     } catch (error) {
@@ -150,7 +163,7 @@ implements
   async getFilesByIdsAndAlbumId(
     filesIds: string[],
     albumId: string,
-    userId: string
+    userId: string,
   ): Promise<File[]> {
     try {
       const fieldsInParams = Prisma.join(filesIds)
@@ -170,7 +183,7 @@ implements
           userId: rawFile.user_id,
           albumId: rawFile.album_id,
           createdAt: rawFile.created_at,
-          updatedAt: rawFile.updated_at
+          updatedAt: rawFile.updated_at,
         })
       })
 
@@ -183,24 +196,24 @@ implements
 
   async deleteFiles(files: File[]): Promise<boolean> {
     try {
-      const filesIds = files.map(file => file.id)
+      const filesIds = files.map((file) => file.id)
 
       await prisma.$transaction([
         prisma.file.deleteMany({
           where: {
             id: {
-              in: filesIds
-            }
-          }
+              in: filesIds,
+            },
+          },
         }),
         prisma.outbox.createMany({
-          data: files.map(file => ({
+          data: files.map((file) => ({
             id: uuid(),
             type: OutboxType.FILE_DELETED,
             payload: JSON.stringify({ ...file, size: file.size.toString() }),
-            aggregateId: file.id
-          }))
-        })
+            aggregateId: file.id,
+          })),
+        }),
       ])
       return true
     } catch (error) {
@@ -209,17 +222,17 @@ implements
     }
   }
 
-  async markAsUploaded (filesIds: string[]): Promise<void> {
+  async markAsUploaded(filesIds: string[]): Promise<void> {
     try {
       await prisma.file.updateMany({
         where: {
           id: {
-            in: filesIds
-          }
+            in: filesIds,
+          },
         },
         data: {
-          uploaded: true
-        }
+          uploaded: true,
+        },
       })
     } catch (error) {
       logger.error(error.message)
@@ -231,11 +244,11 @@ implements
     try {
       const file = await prisma.file.findFirst({
         where: {
-          albumId
+          albumId,
         },
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: 'desc',
+        },
       })
       return file ? FileMapper.toEntity(file) : null
     } catch (error) {

@@ -8,12 +8,15 @@ export interface ConsumerOptions {
   }
 }
 
-export async function createNewKafkaConsumer(client: Kafka, consumerOptions: ConsumerOptions): Promise<Consumer> {
+export async function createNewKafkaConsumer(
+  client: Kafka,
+  consumerOptions: ConsumerOptions,
+): Promise<Consumer> {
   const consumer = client.consumer({ groupId: consumerOptions.consumerGroup })
   await consumer.connect()
   await consumer.subscribe({
     topic: consumerOptions.subscribeOptions.topic,
-    fromBeginning: consumerOptions.subscribeOptions.fromBeginning
+    fromBeginning: consumerOptions.subscribeOptions.fromBeginning,
   })
   return consumer
 }

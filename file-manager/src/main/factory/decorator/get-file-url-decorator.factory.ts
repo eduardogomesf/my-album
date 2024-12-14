@@ -4,10 +4,7 @@ import { type CacheService } from '@/infra/cache/interface'
 
 export const generateGetFileUrlDecorator = (
   getFileUrlService: GetFileUrlService,
-  cache: CacheService
+  cache: CacheService,
 ) => {
-  return new GetFileUrlCacheDecorator(
-    getFileUrlService,
-    cache
-  )
+  return new GetFileUrlCacheDecorator(getFileUrlService, cache)
 }

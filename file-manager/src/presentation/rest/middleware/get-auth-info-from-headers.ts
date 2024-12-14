@@ -18,7 +18,7 @@ const tokenValidator = generateJwtTokenValidator()
 export function getAuthInfoFromHeaders(
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): any {
   if (!req.headers.cookie) {
     logger.error('Cookies not found')

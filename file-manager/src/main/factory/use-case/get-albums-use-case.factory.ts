@@ -1,14 +1,18 @@
-import { 
-  type GetFileUrlService, 
-  type GetLastPhotoByAlbumIdRepository, 
-  type GetAlbumsByStatusRepository
+import {
+  type GetFileUrlService,
+  type GetLastPhotoByAlbumIdRepository,
+  type GetAlbumsByStatusRepository,
 } from '@/application/protocol'
 import { GetAlbumsUseCase } from '@/application/use-case'
 
 export const generateGetAlbumsUseCase = (
   getAlbumsByStatusRepository: GetAlbumsByStatusRepository,
   getLastPhotoByAlbumIdRepository: GetLastPhotoByAlbumIdRepository,
-  getFileUrlService: GetFileUrlService
+  getFileUrlService: GetFileUrlService,
 ) => {
-  return new GetAlbumsUseCase(getAlbumsByStatusRepository, getLastPhotoByAlbumIdRepository, getFileUrlService)
+  return new GetAlbumsUseCase(
+    getAlbumsByStatusRepository,
+    getLastPhotoByAlbumIdRepository,
+    getFileUrlService,
+  )
 }

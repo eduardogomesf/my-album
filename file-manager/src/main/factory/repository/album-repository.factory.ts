@@ -1,8 +1,8 @@
 import { PrismaAlbumRepository } from '@/infra/database/postgresql'
-import { MessageSender } from '@/application/protocol'
+import { type MessageSender } from '@/application/protocol'
 
 export const generateAlbumRepository = (
-  deleteFilesFromStorageSender: MessageSender
+  deleteFilesFromStorageSender: MessageSender,
 ) => {
   return new PrismaAlbumRepository(deleteFilesFromStorageSender)
 }

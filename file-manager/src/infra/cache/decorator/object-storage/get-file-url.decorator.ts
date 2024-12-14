@@ -6,7 +6,7 @@ import { type CacheService } from '../../interface'
 export class GetFileUrlCacheDecorator implements GetFileUrlService {
   constructor(
     private readonly getFileUrlService: GetFileUrlService,
-    private readonly cache: CacheService
+    private readonly cache: CacheService,
   ) {}
 
   async getFileUrl(file: File, userId: string): Promise<string> {
@@ -18,10 +18,12 @@ export class GetFileUrlCacheDecorator implements GetFileUrlService {
     if (urlFromCache) {
       url = urlFromCache
     } else {
-      const urlExpirationInSecods = (60 * 60 * ENVS.S3.URL_EXPIRATION)
-      const expirationTime = urlExpirationInSecods - (urlExpirationInSecods * 0.1)
+      const urlExpirationInSecods = 60 * 60 * ENVS.S3.URL_EXPIRATION
+      const expirationTime = urlExpirationInSecods - urlExpirationInSecods * 0.1
       url = await this.getFileUrlService.getFileUrl(file, userId)
-      await this.cache.set(cacheKey, url, { expirationInSeconds: expirationTime })
+      await this.cache.set(cacheKey, url, {
+        expirationInSeconds: expirationTime,
+      })
     }
 
     return url

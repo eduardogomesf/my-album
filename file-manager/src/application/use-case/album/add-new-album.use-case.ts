@@ -1,6 +1,10 @@
 import { Album } from '@/domain/entity'
 import { type UseCaseResponse, type UseCase } from '../../interface'
-import { type SaveAlbumRepository, type GetAlbumByNameRepository, type GetUserByIdRepository } from '../../protocol'
+import {
+  type SaveAlbumRepository,
+  type GetAlbumByNameRepository,
+  type GetUserByIdRepository,
+} from '../../protocol'
 import { Logger } from '@/shared'
 import { ERROR_MESSAGES } from '../../constant'
 import { AlbumStatus } from '@/domain/enum'
@@ -16,44 +20,49 @@ export class AddNewAlbumUseCase implements UseCase {
   constructor(
     private readonly getUserByIdRepository: GetUserByIdRepository,
     private readonly getAlbumByNameRepository: GetAlbumByNameRepository,
-    private readonly saveAlbumRepository: SaveAlbumRepository
+    private readonly saveAlbumRepository: SaveAlbumRepository,
   ) {}
 
-  async execute(params: AddNewAlbumUseCaseParams): Promise<UseCaseResponse<null>> {
+  async execute(
+    params: AddNewAlbumUseCaseParams,
+  ): Promise<UseCaseResponse<null>> {
     const user = await this.getUserByIdRepository.getById(params.userId)
 
     if (!user) {
       this.logger.verbose(`User not found with id: ${params.userId}`)
       return {
         ok: false,
-        message: ERROR_MESSAGES.USER.NOT_FOUND
+        message: ERROR_MESSAGES.USER.NOT_FOUND,
       }
     }
 
-    const albumByName = await this.getAlbumByNameRepository.getByName(params.name, params.userId)
+    const albumByName = await this.getAlbumByNameRepository.getByName(
+      params.name,
+      params.userId,
+    )
 
     if (albumByName && albumByName.status !== AlbumStatus.ACTIVE) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.ALBUM.DELETED_ALBUM_WITH_SAME_NAME
+        message: ERROR_MESSAGES.ALBUM.DELETED_ALBUM_WITH_SAME_NAME,
       }
     } else if (albumByName) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.ALBUM.ALREADY_EXISTS
+        message: ERROR_MESSAGES.ALBUM.ALREADY_EXISTS,
       }
     }
 
     const album = new Album({
       name: params.name,
       userId: user.id,
-      status: AlbumStatus.ACTIVE
+      status: AlbumStatus.ACTIVE,
     })
 
     await this.saveAlbumRepository.save(album)
 
     return {
-      ok: true
+      ok: true,
     }
   }
 }

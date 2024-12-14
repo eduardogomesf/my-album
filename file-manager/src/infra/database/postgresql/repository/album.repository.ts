@@ -1,4 +1,7 @@
-import { OutboxType, type AlbumStatus as AlbumStatusPrisma } from '@prisma/client'
+import {
+  OutboxType,
+  type AlbumStatus as AlbumStatusPrisma,
+} from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 
 import { type Album } from '@/domain/entity'
@@ -14,7 +17,7 @@ import {
   type GetAlbumsByStatusRepositoryResponse,
   type GetAlbumByIdWithFilesCountRepository,
   type AlbumWithFileCount,
-  type MessageSender
+  type MessageSender,
 } from '@/application/protocol'
 import { type AlbumStatus } from '@/domain/enum'
 import { AlbumMapper } from '../mapper'
@@ -22,20 +25,24 @@ import { AlbumMapper } from '../mapper'
 const logger = new Logger('PrismaAlbumRepository')
 
 export class PrismaAlbumRepository
-implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository, GetAlbumsByStatusRepository,
-  UpdateAlbumRepository, DeleteAlbumRepository, GetAlbumByIdWithFilesCountRepository {
-
-  constructor(
-    private readonly deleteFilesFromStorageSender: MessageSender,
-  ) {}
+  implements
+    GetAlbumByIdRepository,
+    GetAlbumByNameRepository,
+    SaveAlbumRepository,
+    GetAlbumsByStatusRepository,
+    UpdateAlbumRepository,
+    DeleteAlbumRepository,
+    GetAlbumByIdWithFilesCountRepository
+{
+  constructor(private readonly deleteFilesFromStorageSender: MessageSender) {}
 
   async getById(id: string, userId: string): Promise<Album | null> {
     try {
       const rawAlbum = await prisma.album.findUnique({
         where: {
           id,
-          userId
-        }
+          userId,
+        },
       })
       return AlbumMapper.toDomain(rawAlbum)
     } catch (error) {
@@ -49,8 +56,8 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
       const rawAlbum = await prisma.album.findFirst({
         where: {
           name,
-          userId
-        }
+          userId,
+        },
       })
       return AlbumMapper.toDomain(rawAlbum)
     } catch (error) {
@@ -65,8 +72,8 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
         data: {
           id: album.id,
           name: album.name,
-          userId: album.userId
-        }
+          userId: album.userId,
+        },
       })
     } catch (error) {
       logger.error(error.message)
@@ -74,7 +81,10 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     }
   }
 
-  async getManyByStatus(userId: string, status: AlbumStatus): Promise<GetAlbumsByStatusRepositoryResponse[]> {
+  async getManyByStatus(
+    userId: string,
+    status: AlbumStatus,
+  ): Promise<GetAlbumsByStatusRepositoryResponse[]> {
     try {
       const albumsWithCounts = await prisma.$queryRaw<any[]>`
         select
@@ -91,12 +101,12 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
         order by a.updated_at desc
       `
 
-      return albumsWithCounts.map(album => ({
+      return albumsWithCounts.map((album) => ({
         id: album.albumId,
         name: album.name,
         updatedAt: album.updatedAt,
         numberOfPhotos: Number(album.numberOfPhotos),
-        numberOfVideos: Number(album.numberOfVideos)
+        numberOfVideos: Number(album.numberOfVideos),
       }))
     } catch (error) {
       logger.error(error.message)
@@ -104,7 +114,10 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     }
   }
 
-  async getByIdWithFilesCount(id: string, userId: string): Promise<AlbumWithFileCount> {
+  async getByIdWithFilesCount(
+    id: string,
+    userId: string,
+  ): Promise<AlbumWithFileCount> {
     try {
       const albumsWithCounts = await prisma.$queryRaw<any[]>`
         select
@@ -139,13 +152,12 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     try {
       await prisma.album.update({
         where: {
-          id: album.id
+          id: album.id,
         },
         data: {
           name: album.name,
-          status: album.status as AlbumStatusPrisma
-
-        }
+          status: album.status as AlbumStatusPrisma,
+        },
       })
     } catch (error) {
       logger.error(error.message)
@@ -157,46 +169,46 @@ implements GetAlbumByIdRepository, GetAlbumByNameRepository, SaveAlbumRepository
     try {
       const files = await prisma.file.findMany({
         where: {
-          albumId
-        }
+          albumId,
+        },
       })
 
       if (files.length <= 0) {
         await prisma.album.delete({
           where: {
             id: albumId,
-            userId
-          }
+            userId,
+          },
         })
         return
       }
 
-      const formattedFiles = files.map(file => ({
+      const formattedFiles = files.map((file) => ({
         id: uuid(),
         type: OutboxType.FILE_DELETED,
         payload: JSON.stringify({ ...file, size: file.size.toString() }),
-        aggregateId: file.id
+        aggregateId: file.id,
       }))
 
       await prisma.$transaction([
         prisma.album.delete({
           where: {
             id: albumId,
-            userId
-          }
+            userId,
+          },
         }),
         prisma.outbox.createMany({
-          data: formattedFiles
-        })
+          data: formattedFiles,
+        }),
       ])
 
-      const filesIds = formattedFiles.map(file => file.aggregateId)
+      const filesIds = formattedFiles.map((file) => file.aggregateId)
 
       await this.deleteFilesFromStorageSender.send({
         id: uuid(),
-        filesIds: filesIds,
-        userId: userId,
-        date: new Date()
+        filesIds,
+        userId,
+        date: new Date(),
       })
     } catch (error) {
       logger.error(error.message)

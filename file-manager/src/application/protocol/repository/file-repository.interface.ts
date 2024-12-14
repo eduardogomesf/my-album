@@ -14,7 +14,7 @@ export interface GetFilesFilters {
 export interface GetFilesByAlbumIdRepository {
   getManyWithFilters: (
     albumId: string,
-    filters: GetFilesFilters
+    filters: GetFilesFilters,
   ) => Promise<File[]>
 }
 
@@ -32,16 +32,17 @@ export interface MoveFilesToAlbumByFilesIdsRepository {
   moveFiles: (payload: MoveFilesRepositoryParams) => Promise<void>
 }
 
-export type GetFilesByIdsRepositoryResponse = Array<File & { album: Album } >
+export type GetFilesByIdsRepositoryResponse = Array<File & { album: Album }>
 
 export interface GetFilesByIdsRepository {
-  getByIds: (filesIds: string[], userId: string) => Promise<GetFilesByIdsRepositoryResponse>
+  getByIds: (
+    filesIds: string[],
+    userId: string,
+  ) => Promise<GetFilesByIdsRepositoryResponse>
 }
 
 export interface CountFilesByAlbumIdRepository {
-  countWithFilters: (
-    albumId: string
-  ) => Promise<number>
+  countWithFilters: (albumId: string) => Promise<number>
 }
 
 export interface DeleteFilesRepository {
@@ -52,7 +53,7 @@ export interface GetFilesByIdsAndAlbumIdRepository {
   getFilesByIdsAndAlbumId: (
     fileIds: string[],
     albumId: string,
-    userId: string
+    userId: string,
   ) => Promise<File[]>
 }
 
