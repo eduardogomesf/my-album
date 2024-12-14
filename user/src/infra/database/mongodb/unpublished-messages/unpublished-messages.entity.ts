@@ -2,30 +2,38 @@ import { Schema, model } from 'mongoose'
 import { MongoConnectionManager } from '../client'
 import { ENVS } from '@/shared'
 
-const UnpublishedMessageSchema = new Schema({
-  _id: {
-    type: String,
-    required: true
+const UnpublishedMessageSchema = new Schema(
+  {
+    _id: {
+      type: String,
+      required: true,
+    },
+    data: Schema.Types.Mixed,
+    options: Schema.Types.Mixed,
   },
-  data: Schema.Types.Mixed,
-  options: Schema.Types.Mixed
-}, { timestamps: true })
+  { timestamps: true },
+)
 
-UnpublishedMessageSchema.virtual('id').get(function() {
+UnpublishedMessageSchema.virtual('id').get(function () {
   return this._id.toString()
 })
 
 UnpublishedMessageSchema.set('toJSON', {
-  virtuals: true
+  virtuals: true,
 })
 
 const connection = MongoConnectionManager.getOrCreate(
   ENVS.MONGO.CONNECTION_NAME,
   ENVS.MONGO.URL,
   ENVS.MONGO.DB_NAME,
-  {}
+  {},
 )
 
-export const UnpublishedMessageModel = model('UnpublishedMessage', UnpublishedMessageSchema, 'unpublished_messages', {
-  connection
-})
+export const UnpublishedMessageModel = model(
+  'UnpublishedMessage',
+  UnpublishedMessageSchema,
+  'unpublished_messages',
+  {
+    connection,
+  },
+)

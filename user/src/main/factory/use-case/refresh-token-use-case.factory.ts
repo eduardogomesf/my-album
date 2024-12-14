@@ -5,7 +5,7 @@ import {
   type GetRefreshTokenByTokenAndUserIdRepository,
   type DeleteRefreshTokenByIdRepository,
   type TokenValidator,
-  type SaveRefreshTokenRepository
+  type SaveRefreshTokenRepository,
 } from '@/application/protocol'
 
 export const generateRefreshTokenUseCase = (
@@ -15,7 +15,7 @@ export const generateRefreshTokenUseCase = (
   getRefreshTokenByTokenAndUserIdRepository: GetRefreshTokenByTokenAndUserIdRepository,
   deleteRefreshTokenByIdRepository: DeleteRefreshTokenByIdRepository,
   refreshTokenValidator: TokenValidator,
-  saveRefreshToken: SaveRefreshTokenRepository
+  saveRefreshToken: SaveRefreshTokenRepository,
 ): RefreshTokenUseCase => {
   return new RefreshTokenUseCase(
     userExistsRepository,
@@ -24,6 +24,6 @@ export const generateRefreshTokenUseCase = (
     getRefreshTokenByTokenAndUserIdRepository,
     deleteRefreshTokenByIdRepository,
     refreshTokenValidator,
-    saveRefreshToken
+    saveRefreshToken,
   )
 }

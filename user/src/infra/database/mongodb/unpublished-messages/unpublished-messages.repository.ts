@@ -15,7 +15,7 @@ export class MongoUnpublishedMessagesRepository {
       const payload = {
         _id: data.id,
         data: data.data,
-        options: data.options
+        options: data.options,
       }
 
       await UnpublishedMessageModel.create(payload)

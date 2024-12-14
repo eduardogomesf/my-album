@@ -2,7 +2,7 @@ import {
   type UserLoginUseCase,
   type CreateNewUserUseCase,
   type RefreshTokenUseCase,
-  type GetUserInfoUseCase
+  type GetUserInfoUseCase,
 } from '@/application/use-case'
 
 export interface UseCases {

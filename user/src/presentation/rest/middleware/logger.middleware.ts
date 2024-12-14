@@ -8,7 +8,7 @@ export const appLogger = new Logger('LoggerMiddleware')
 export function logger(
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): any {
   const correlationId = (req.headers['x-correlation-id'] as string) ?? uuid()
 
@@ -18,12 +18,12 @@ export function logger(
     correlationId,
     hasBody: Object.keys(req.body).length > 0,
     hasCookies: req.headers.cookie !== undefined,
-    hasQuery: Object.keys(req.query).length > 0
+    hasQuery: Object.keys(req.query).length > 0,
   }
 
   appLogger.info(
     `Request received: ${JSON.stringify(logContent)}`,
-    correlationId
+    correlationId,
   )
 
   req.tracking = { correlationId }

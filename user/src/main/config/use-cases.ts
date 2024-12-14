@@ -1,20 +1,30 @@
 import { type UseCases } from '@/presentation/interface/use-cases'
 import { ENVS } from '@/shared'
-import { generateCreateNewUserUseCase, generateGetUserInfoUseCase, generateRefreshTokenUseCase, generateUserLoginUseCase } from '../factory/use-case'
+import {
+  generateCreateNewUserUseCase,
+  generateGetUserInfoUseCase,
+  generateRefreshTokenUseCase,
+  generateUserLoginUseCase,
+} from '../factory/use-case'
 import { generateKafkaProducer } from '../factory/messaging'
-import { generateMongoRefreshTokenRepository, generateMongoUnpublishedMessagesRepository, generateMongoUserRepository } from '../factory/repository'
+import {
+  generateMongoRefreshTokenRepository,
+  generateMongoUnpublishedMessagesRepository,
+  generateMongoUserRepository,
+} from '../factory/repository'
 import {
   generateBcryptPasswordValidator,
   generateBcryptHashPassword,
   generateJwtTokenGenerator,
-  generateJwtTokenValidator
+  generateJwtTokenValidator,
 } from '../factory/util'
 import { Subscriber } from '@/application/interface'
 
 export const getApplicationUseCases = async (): Promise<UseCases> => {
   // Repositories
   const userRepository = generateMongoUserRepository()
-  const unpublishedMessagesRepository = generateMongoUnpublishedMessagesRepository()
+  const unpublishedMessagesRepository =
+    generateMongoUnpublishedMessagesRepository()
   const refreshTokenRepository = generateMongoRefreshTokenRepository()
 
   // Utils
@@ -23,28 +33,30 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
   const jwtTokenGenerator = generateJwtTokenGenerator()
   const refreshTokenGenerator = generateJwtTokenGenerator(
     ENVS.REFRESH_TOKEN.SECRET_KEY,
-    ENVS.REFRESH_TOKEN.EXPIRATION_TIME
+    ENVS.REFRESH_TOKEN.EXPIRATION_TIME,
   )
-  const refreshTokenValidator = generateJwtTokenValidator(ENVS.REFRESH_TOKEN.SECRET_KEY)
+  const refreshTokenValidator = generateJwtTokenValidator(
+    ENVS.REFRESH_TOKEN.SECRET_KEY,
+  )
 
   // Message senders
   const newUserCreatedSender = await generateKafkaProducer(
     ENVS.KAFKA.TOPICS.USER.CREATED,
-    unpublishedMessagesRepository
+    unpublishedMessagesRepository,
   )
 
   // Use cases
   const createNewUser = generateCreateNewUserUseCase(
     userRepository,
     hashPassword,
-    userRepository
+    userRepository,
   )
   const userLogin = generateUserLoginUseCase(
     userRepository,
     passwordValidator,
     jwtTokenGenerator,
     refreshTokenGenerator,
-    refreshTokenRepository
+    refreshTokenRepository,
   )
   const refreshToken = generateRefreshTokenUseCase(
     userRepository,
@@ -53,14 +65,14 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     refreshTokenRepository,
     refreshTokenRepository,
     refreshTokenValidator,
-    refreshTokenRepository
+    refreshTokenRepository,
   )
   const getUserInfoUseCase = generateGetUserInfoUseCase(userRepository)
 
   // Subscribers
   const newUserCreatedSenderSubscriber = new Subscriber(
     'NewUserCreatedSender',
-    newUserCreatedSender.send.bind(newUserCreatedSender)
+    newUserCreatedSender.send.bind(newUserCreatedSender),
   )
   createNewUser.addSubscriber(newUserCreatedSenderSubscriber)
 
@@ -68,6 +80,6 @@ export const getApplicationUseCases = async (): Promise<UseCases> => {
     createNewUser,
     userLogin,
     refreshToken,
-    getUserInfoUseCase
+    getUserInfoUseCase,
   }
 }

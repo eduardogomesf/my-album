@@ -2,7 +2,7 @@ import {
   type FindUserByEmailRepository,
   type CreateUserRepository,
   type UserExistsRepository,
-  type FindUserByIdRepository
+  type FindUserByIdRepository,
 } from '@/application/protocol'
 import { User } from '@/domain/entity/user.entity'
 import { Logger } from '@/shared'
@@ -10,7 +10,13 @@ import { UserModel } from './user.entity'
 
 const logger = new Logger('MongoUserRepository')
 
-export class MongoUserRepository implements FindUserByEmailRepository, CreateUserRepository, UserExistsRepository, FindUserByIdRepository {
+export class MongoUserRepository
+  implements
+    FindUserByEmailRepository,
+    CreateUserRepository,
+    UserExistsRepository,
+    FindUserByIdRepository
+{
   async findByEmail(email: string): Promise<User | null> {
     try {
       const user = await UserModel.findOne<User>({ email })
@@ -35,7 +41,7 @@ export class MongoUserRepository implements FindUserByEmailRepository, CreateUse
         lastName: user.lastName,
         email: user.email,
         cellphone: user.cellphone,
-        password: user.password
+        password: user.password,
       }
 
       await UserModel.create(userData)

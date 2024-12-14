@@ -17,7 +17,7 @@ const tokenValidator = generateJwtTokenValidator()
 export async function getAuthInfoFromHeaders(
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<any> {
   if (!req.headers.cookie) {
     logger.error('Cookies not found')
@@ -31,9 +31,8 @@ export async function getAuthInfoFromHeaders(
     return res.status(401).send('Invalid cookie format')
   }
 
-  const { isValid, data, invalidationReason } = await tokenValidator.validate(
-    accessToken
-  )
+  const { isValid, data, invalidationReason } =
+    await tokenValidator.validate(accessToken)
 
   if (!isValid) {
     logger.error('Auth token invalid or expired')

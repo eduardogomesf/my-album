@@ -2,11 +2,11 @@ import { CreateNewUserUseCase } from '@/application/use-case'
 import {
   type CreateUserRepository,
   type FindUserByEmailRepository,
-  type HashPassword
+  type HashPassword,
 } from '@/application/protocol'
 
 jest.mock('uuid', () => ({
-  v4: () => 'any-id'
+  v4: () => 'any-id',
 }))
 
 describe('Create New User Use Case', () => {
@@ -16,14 +16,16 @@ describe('Create New User Use Case', () => {
   let mockCreateUserRepository: CreateUserRepository
 
   beforeEach(() => {
-    mockFindUserByEmailRepository = { findByEmail: jest.fn().mockResolvedValue(null) }
+    mockFindUserByEmailRepository = {
+      findByEmail: jest.fn().mockResolvedValue(null),
+    }
     mockHashPassword = { hash: jest.fn().mockResolvedValue('hashed-password') }
     mockCreateUserRepository = { create: jest.fn().mockResolvedValue(null) }
 
     sut = new CreateNewUserUseCase(
       mockFindUserByEmailRepository,
       mockHashPassword,
-      mockCreateUserRepository
+      mockCreateUserRepository,
     )
   })
 
@@ -33,7 +35,7 @@ describe('Create New User Use Case', () => {
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       password: 'random-password',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     }
 
     const result = await sut.execute(payload)
@@ -47,10 +49,13 @@ describe('Create New User Use Case', () => {
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       password: 'random-password',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     }
 
-    const findByEmailSpy = jest.spyOn(mockFindUserByEmailRepository, 'findByEmail')
+    const findByEmailSpy = jest.spyOn(
+      mockFindUserByEmailRepository,
+      'findByEmail',
+    )
     const hashSpy = jest.spyOn(mockHashPassword, 'hash')
     const createSpy = jest.spyOn(mockCreateUserRepository, 'create')
 
@@ -64,7 +69,7 @@ describe('Create New User Use Case', () => {
       lastName: payload.lastName,
       email: payload.email,
       cellphone: payload.cellphone,
-      password: 'hashed-password'
+      password: 'hashed-password',
     })
   })
 
@@ -74,7 +79,7 @@ describe('Create New User Use Case', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@mail.com',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     })
 
     const payload = {
@@ -82,7 +87,7 @@ describe('Create New User Use Case', () => {
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       password: 'random-password',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     }
 
     const result = await sut.execute(payload)
@@ -92,14 +97,18 @@ describe('Create New User Use Case', () => {
   })
 
   it('should pass along any error thrown when trying to find a user by id', async () => {
-    mockFindUserByEmailRepository.findByEmail = jest.fn().mockImplementation(() => { throw new Error('any-error') })
+    mockFindUserByEmailRepository.findByEmail = jest
+      .fn()
+      .mockImplementation(() => {
+        throw new Error('any-error')
+      })
 
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       password: 'random-password',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     }
 
     const result = sut.execute(payload)
@@ -108,14 +117,16 @@ describe('Create New User Use Case', () => {
   })
 
   it('should pass along any error thrown when trying to hash the password', async () => {
-    mockHashPassword.hash = jest.fn().mockImplementation(() => { throw new Error('hash-error') })
+    mockHashPassword.hash = jest.fn().mockImplementation(() => {
+      throw new Error('hash-error')
+    })
 
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       password: 'random-password',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     }
 
     const result = sut.execute(payload)
@@ -124,14 +135,16 @@ describe('Create New User Use Case', () => {
   })
 
   it('should pass along any error thrown when trying to create a user', async () => {
-    mockCreateUserRepository.create = jest.fn().mockImplementation(() => { throw new Error('create-user-error') })
+    mockCreateUserRepository.create = jest.fn().mockImplementation(() => {
+      throw new Error('create-user-error')
+    })
 
     const payload = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       password: 'random-password',
-      cellphone: '11999999999'
+      cellphone: '11999999999',
     }
 
     const result = sut.execute(payload)

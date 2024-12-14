@@ -7,7 +7,7 @@ describe('User Entity', () => {
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       cellphone: '11999999999',
-      password: 'my-secure-password'
+      password: 'my-secure-password',
     })
 
     expect(user.id).toBeDefined()
@@ -24,7 +24,7 @@ describe('User Entity', () => {
         lastName: 'Doe',
         email: 'john.doe@mail.com',
         cellphone: '11999999999',
-        password: 'my-secure-password'
+        password: 'my-secure-password',
       } as any)
     }).toThrow('First name should not be empty')
   })
@@ -35,7 +35,7 @@ describe('User Entity', () => {
         firstName: 'John',
         email: 'john.doe@mail.com',
         cellphone: '11999999999',
-        password: 'my-secure-password'
+        password: 'my-secure-password',
       } as any)
     }).toThrow('Last name should not be empty')
   })
@@ -46,7 +46,7 @@ describe('User Entity', () => {
         firstName: 'John',
         lastName: 'Doe',
         cellphone: '11999999999',
-        password: 'my-secure-password'
+        password: 'my-secure-password',
       } as any)
     }).toThrow('E-mail should not be empty')
   })
@@ -57,7 +57,7 @@ describe('User Entity', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@mail.com',
-        password: 'my-secure-password'
+        password: 'my-secure-password',
       } as any)
     }).toThrow('Cellphone should not be empty')
   })
@@ -68,7 +68,7 @@ describe('User Entity', () => {
       lastName: 'Doe',
       email: 'john.doe@mail.com',
       cellphone: '11999999999',
-      password: 'my-secure-password'
+      password: 'my-secure-password',
     })
 
     expect(user.getFullName()).toBe('John Doe')

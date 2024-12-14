@@ -16,16 +16,18 @@ export interface GetUserInfoUseCaseResponse {
 
 export class GetUserInfoUseCase implements UseCase {
   constructor(
-    private readonly findUserByIdRepository: FindUserByIdRepository
+    private readonly findUserByIdRepository: FindUserByIdRepository,
   ) {}
 
-  async execute (params: GetUserInfoUseCaseParams): Promise<UseCaseResponse<GetUserInfoUseCaseResponse>> {
+  async execute(
+    params: GetUserInfoUseCaseParams,
+  ): Promise<UseCaseResponse<GetUserInfoUseCaseResponse>> {
     const user = await this.findUserByIdRepository.findById(params.userId)
 
     if (!user) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.USER.NOT_FOUND
+        message: ERROR_MESSAGES.USER.NOT_FOUND,
       }
     }
 
@@ -34,12 +36,12 @@ export class GetUserInfoUseCase implements UseCase {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      phone: user.cellphone
+      phone: user.cellphone,
     }
 
     return {
       ok: true,
-      data: response
+      data: response,
     }
   }
 }

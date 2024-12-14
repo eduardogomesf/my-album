@@ -13,5 +13,8 @@ export interface DeleteRefreshTokenByIdRepository {
 }
 
 export interface GetRefreshTokenByTokenAndUserIdRepository {
-  getByTokenAndUserId: (token: string, userId: string) => Promise<RefreshToken | null>
+  getByTokenAndUserId: (
+    token: string,
+    userId: string,
+  ) => Promise<RefreshToken | null>
 }

@@ -9,7 +9,7 @@ export class MongoConnectionManager {
     connectionName: string,
     connectionURL?: string,
     dbName?: string,
-    connectionOptions?: mongoose.ConnectOptions
+    connectionOptions?: mongoose.ConnectOptions,
   ) {
     try {
       if (MongoConnectionManager.connections[connectionName]) {
@@ -26,7 +26,7 @@ export class MongoConnectionManager {
       const createdConnection = mongoose.createConnection(connectionURL, {
         ...connectionOptions,
         dbName,
-        appName: ENVS.APP.ID
+        appName: ENVS.APP.ID,
       })
 
       MongoConnectionManager.connections[connectionName] = createdConnection

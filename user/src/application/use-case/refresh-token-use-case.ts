@@ -7,7 +7,7 @@ import {
   type TokenGenerator,
   type DeleteRefreshTokenByIdRepository,
   type TokenValidator,
-  type SaveRefreshTokenRepository
+  type SaveRefreshTokenRepository,
 } from '../protocol'
 
 interface RefreshTokenUseCaseParams {
@@ -29,32 +29,37 @@ export class RefreshTokenUseCase implements UseCase {
     private readonly getRefreshTokenByTokenAndUserIdRepository: GetRefreshTokenByTokenAndUserIdRepository,
     private readonly deleteRefreshTokenByIdRepository: DeleteRefreshTokenByIdRepository,
     private readonly refreshTokenValidator: TokenValidator,
-    private readonly saveRefreshToken: SaveRefreshTokenRepository
+    private readonly saveRefreshToken: SaveRefreshTokenRepository,
   ) {}
 
-  async execute (params: RefreshTokenUseCaseParams): Promise<UseCaseResponse<RefreshTokenUseCaseResponse>> {
+  async execute(
+    params: RefreshTokenUseCaseParams,
+  ): Promise<UseCaseResponse<RefreshTokenUseCaseResponse>> {
     const userExists = await this.userExistsRepository.exists(params.userId)
 
     if (!userExists) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.USER.NOT_FOUND
+        message: ERROR_MESSAGES.USER.NOT_FOUND,
       }
     }
 
-    const refreshToken = await this.getRefreshTokenByTokenAndUserIdRepository.getByTokenAndUserId(
-      params.refreshToken,
-      params.userId
-    )
+    const refreshToken =
+      await this.getRefreshTokenByTokenAndUserIdRepository.getByTokenAndUserId(
+        params.refreshToken,
+        params.userId,
+      )
 
     if (!refreshToken) {
       return {
         ok: false,
-        message: ERROR_MESSAGES.REFRESH_TOKEN.INVALID
+        message: ERROR_MESSAGES.REFRESH_TOKEN.INVALID,
       }
     }
 
-    const tokenValidation = await this.refreshTokenValidator.validate(refreshToken.token)
+    const tokenValidation = await this.refreshTokenValidator.validate(
+      refreshToken.token,
+    )
 
     if (!tokenValidation.isValid) {
       await this.deleteRefreshTokenByIdRepository.delete(refreshToken.id)
@@ -62,23 +67,23 @@ export class RefreshTokenUseCase implements UseCase {
       if (tokenValidation.invalidationReason === 'EXPIRED') {
         return {
           ok: false,
-          message: ERROR_MESSAGES.REFRESH_TOKEN.EXPIRED
+          message: ERROR_MESSAGES.REFRESH_TOKEN.EXPIRED,
         }
       }
 
       return {
         ok: false,
-        message: ERROR_MESSAGES.REFRESH_TOKEN.INVALID
+        message: ERROR_MESSAGES.REFRESH_TOKEN.INVALID,
       }
     }
 
     const [accessToken, newRefreshToken] = await Promise.all([
       this.accessTokenGenerator.generate({
-        id: params.userId
+        id: params.userId,
       }),
       this.refreshTokenGenerator.generate({
-        id: params.userId
-      })
+        id: params.userId,
+      }),
     ])
 
     await this.deleteRefreshTokenByIdRepository.delete(refreshToken.id)
@@ -86,7 +91,7 @@ export class RefreshTokenUseCase implements UseCase {
     await this.saveRefreshToken.save({
       id: uuid(),
       token: newRefreshToken,
-      userId: params.userId
+      userId: params.userId,
     })
 
     return {
@@ -94,8 +99,8 @@ export class RefreshTokenUseCase implements UseCase {
       data: {
         accessToken,
         refreshToken: newRefreshToken,
-        userId: params.userId
-      }
+        userId: params.userId,
+      },
     }
   }
 }
