@@ -20,11 +20,17 @@ function setDefaultRoutes(app: express.Express) {
 }
 
 function setRoutes(app: express.Express, useCases: UseCases) {
-  const fileRouter = getFileRouter(useCases)
-  const albumRouter = getAlbumRouter(useCases)
+  let rawApiPrefix = ENVS.APP.API_PREFIX
 
-  app.use(fileRouter)
-  app.use(albumRouter)
+  const apiPrefix = rawApiPrefix.startsWith('/')
+    ? rawApiPrefix
+    : `/${rawApiPrefix}`
+
+  const routers = [getFileRouter(useCases), getAlbumRouter(useCases)]
+
+  routers.map((router) => {
+    app.use(apiPrefix, router)
+  })
 }
 
 export function bootstrapExpressServer(useCases: UseCases) {

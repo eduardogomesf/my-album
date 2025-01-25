@@ -6,6 +6,7 @@ export const ENVS = {
   APP: {
     PORT: process.env.PORT ?? 3000,
     ID: process.env.APP_ID ?? 'user-service',
+    API_PREFIX: process.env.API_PREFIX ?? 'user-management/api/v1',
   },
   MONGO: {
     CONNECTION_NAME: process.env.MONGO_CONNECTION_NAME ?? 'user-service-mongo',

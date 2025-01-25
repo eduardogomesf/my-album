@@ -32,12 +32,15 @@ export interface FilesAndCounts {
 export async function getAlbumFiles(
   params: GetAlbumFilesParams,
 ): Promise<FilesAndCounts> {
-  const response = await api.get(`/albums/${params.albumId}/files`, {
-    params: {
-      page: params.page ?? 0,
-      limit: params.limit ?? 10,
+  const response = await api.get(
+    `/file-management/api/v1/albums/${params.albumId}/files`,
+    {
+      params: {
+        page: params.page ?? 0,
+        limit: params.limit ?? 10,
+      },
     },
-  })
+  )
 
   return response.data
 }

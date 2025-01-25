@@ -9,5 +9,5 @@ interface SignUpDTO {
 }
 
 export const signUp = async (payload: SignUpDTO) => {
-  await api.post('/users', payload)
+  await api.post('/user-management/api/v1/users', payload)
 }

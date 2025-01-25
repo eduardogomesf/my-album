@@ -267,18 +267,21 @@ export class UserController {
   ): void {
     response.setHeader('Set-Cookie', [
       cookie.serialize('accessToken', accessToken, {
+        path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 60 * 60, // 1 hour
       }),
       cookie.serialize('refreshToken', refreshToken, {
+        path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 60 * 60 * 24 * 1, // 1 day
       }),
       cookie.serialize('userId', userId, {
+        path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',

@@ -10,7 +10,7 @@ export interface Album {
 }
 
 export async function getAlbums(onlyDeleted = false): Promise<Album[]> {
-  const response = await api.get('/albums', {
+  const response = await api.get('/file-management/api/v1/albums', {
     params: {
       deletedAlbumsOnly: onlyDeleted,
     },

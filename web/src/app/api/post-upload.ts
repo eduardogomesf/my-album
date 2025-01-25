@@ -6,7 +6,10 @@ export interface PostUploadUseCaseParams {
 }
 
 export async function postUpload(params: PostUploadUseCaseParams) {
-  const response = await api.post('/files/post-upload', params)
+  const response = await api.post(
+    '/file-management/api/v1/files/post-upload',
+    params,
+  )
 
   return response.data
 }

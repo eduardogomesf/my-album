@@ -5,5 +5,5 @@ interface DeleteAlbumParams {
 }
 
 export function deleteAlbum(params: DeleteAlbumParams) {
-  return api.delete(`/albums/${params.albumId}`)
+  return api.delete(`/file-management/api/v1/albums/${params.albumId}`)
 }

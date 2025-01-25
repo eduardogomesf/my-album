@@ -8,6 +8,6 @@ interface CurrentUsage {
 }
 
 export async function getCurrentUsage(): Promise<CurrentUsage> {
-  const response = await api.get('/storage')
+  const response = await api.get('/file-management/api/v1/storage')
   return response?.data
 }

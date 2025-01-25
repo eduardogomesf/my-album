@@ -6,7 +6,7 @@ interface MoveFilesToAlbumParams {
 }
 
 export async function moveFilesToAlbum(params: MoveFilesToAlbumParams) {
-  const response = await api.put(`/files/move`, {
+  const response = await api.put(`/file-management/api/v1/files/move`, {
     targetAlbumId: params.targetAlbumId,
     filesIds: params.filesIds,
   })

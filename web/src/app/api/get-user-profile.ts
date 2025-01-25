@@ -9,6 +9,6 @@ interface UserProfile {
 }
 
 export async function getUserProfile(): Promise<UserProfile> {
-  const response = await api.get('/users/profile')
+  const response = await api.get('/user-management/api/v1/users/profile')
   return response.data
 }

@@ -5,5 +5,5 @@ type CreateNewAlbum = {
 }
 
 export async function createNewAlbum(payload: CreateNewAlbum) {
-  return await api.post('/albums', payload)
+  return await api.post('/file-management/api/v1/albums', payload)
 }
