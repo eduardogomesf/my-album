@@ -16,7 +16,7 @@ services:
     container_name: user-service-app
     restart: always
     build:
-      context: ./user
+      context: ./apps/user
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
@@ -113,7 +113,7 @@ services:
     container_name: file-service-app
     restart: always
     build:
-      context: ./file-manager
+      context: ./apps/file-manager
       dockerfile: Dockerfile
     ports:
       - "3002:3002"
@@ -134,7 +134,7 @@ services:
     container_name: web-app
     restart: always
     build:
-      context: ./web
+      context: ./apps/web
       dockerfile: Dockerfile
     environment:
       - NEXT_PUBLIC_API_URL=http://kong:8000

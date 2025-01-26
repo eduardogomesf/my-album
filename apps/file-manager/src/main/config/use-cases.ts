@@ -20,7 +20,7 @@ import {
   generateDownloadFilesUseCase,
 } from '../factory/use-case'
 import { generateFileStorageService } from '../factory/object-storage'
-import { generateGetFileUrlDecorator } from '../factory/decorator/'
+import { generateGetFileUrlDecorator } from '../factory/decorator'
 import { generateCache } from '../factory/cache'
 import { ENVS } from '@/shared'
 import { generateDeleteFilesFromStorageUseCase } from '../factory/use-case/delete-file-from-storage-use-case.factory'
