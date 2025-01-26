@@ -4,11 +4,11 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "user/**"
+      - "apps/user/**"
   pull_request:
     branches: ["main"]
     paths:
-      - "user/**"
+      - "apps/user/**"
   workflow_dispatch:
 
 jobs:

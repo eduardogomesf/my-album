@@ -4,11 +4,11 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "file-manager/**"
+      - "apps/file-manager/**"
   pull_request:
     branches: ["main"]
     paths:
-      - "file-manager/**"
+      - "apps/file-manager/**"
   workflow_dispatch:
 
 jobs:
