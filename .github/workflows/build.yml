@@ -28,18 +28,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "apps/${{ inputs.project-folder }}/package-lock.json"
+          cache: "yarn"
+          cache-dependency-path: "./yarn.lock"
 
       - name: install dependencies
         working-directory: apps/${{ inputs.project-folder }}
-        run: npm ci
+        run: yarn install --immutable
 
       - name: build app
         working-directory: apps/${{ inputs.project-folder }}
-        run: npm run build --if-present
+        run: yarn build
 
       - name: run tests
         working-directory: apps/${{ inputs.project-folder }}
         if: ${{ inputs.run-tests }}
-        run: npm run test:cov
+        run: yarn test:cov

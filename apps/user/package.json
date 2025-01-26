@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "@my-album/user",
   "version": "1.0.0",
   "description": "User management microservice",
   "author": "eduardogomesf",

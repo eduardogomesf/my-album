@@ -1,5 +1,5 @@
 {
-  "name": "file-manager",
+  "name": "@my-album/file-manager",
   "version": "1.0.0",
   "description": "File manager microservice",
   "author": "eduardogomesf",
