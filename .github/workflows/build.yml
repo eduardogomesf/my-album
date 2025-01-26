@@ -33,11 +33,11 @@ jobs:
 
       - name: install dependencies
         working-directory: apps/${{ inputs.project-folder }}
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: build app
         working-directory: apps/${{ inputs.project-folder }}
-        run: yarn build --if-present
+        run: yarn build
 
       - name: run tests
         working-directory: apps/${{ inputs.project-folder }}
