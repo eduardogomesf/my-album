@@ -1,5 +1,5 @@
 {
-  "name": "file-manager",
+  "name": "@my-album/file-manager",
   "version": "1.0.0",
   "description": "File manager microservice",
   "author": "eduardogomesf",
@@ -9,6 +9,9 @@
     "typescript",
     "microservice"
   ],
+  "installConfig": {
+    "hoistingLimits": "dependencies"
+  },
   "scripts": {
     "test": "jest --silent",
     "test:cov": "jest --coverage",
