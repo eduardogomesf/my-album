@@ -9,6 +9,9 @@
     "typescript",
     "microservice"
   ],
+  "installConfig": {
+    "hoistingLimits": "dependencies"
+  },
   "scripts": {
     "test": "jest --silent",
     "test:cov": "jest --coverage",
