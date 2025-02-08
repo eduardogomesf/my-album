@@ -2,9 +2,21 @@
   "name": "my-album",
   "private": true,
   "packageManager": "yarn@4.6.0",
-  "workspaces": {
-    "packages": [
-      "apps/*"
-    ]
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "lerna": "^8.1.9"
+  },
+  "scripts": {
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "apis:build": "lerna run build --scope=@my-album/user --scope=@my-album/file-manager",
+    "apis:test": "lerna run test --scope=@my-album/user --scope=@my-album/file-manager",
+    "web:build": "lerna run build --scope=@my-album/web",
+    "user:build": "lerna run build --scope=@my-album/user",
+    "user:test": "lerna run test --scope=@my-album/user",
+    "file-manager:build": "lerna run build --scope=@my-album/file-manager",
+    "file-manager:test": "lerna run test --scope=@my-album/file-manager"
   }
 }
