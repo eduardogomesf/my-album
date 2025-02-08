@@ -3,6 +3,10 @@ name: Build (All)
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "apps/**"
 
   workflow_dispatch:
 
