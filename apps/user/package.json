@@ -1,6 +1,6 @@
 {
   "name": "@my-album/user",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "description": "User management microservice",
   "author": "eduardogomesf",
   "license": "MIT",

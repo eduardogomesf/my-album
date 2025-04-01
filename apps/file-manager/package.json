@@ -1,6 +1,6 @@
 {
   "name": "@my-album/file-manager",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "description": "File manager microservice",
   "author": "eduardogomesf",
   "license": "MIT",
