@@ -16,7 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-dep: 0
           token: ${{ secrets.GH_TOKEN }}
       - name: Setup Node
         uses: actions/setup-node@v3
