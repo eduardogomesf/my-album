@@ -1,0 +1,32 @@
+name: Publish apps
+
+on:
+  # push:
+  #   branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  publish-apps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-dep: 0
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: 'https://npm.pkg.github.com'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install
+      - name: Generate versions
+        run: yarn lerna version --conventional-commits --create-release github -y
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
